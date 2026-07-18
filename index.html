@@ -1960,7 +1960,7 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v69</span>
+      <span id="gameVersion" class="game-version">v70</span>
     </div>
 
     <h1 id="gameTitle">Last Wave</h1>
@@ -3063,12 +3063,12 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v69";
+const GAME_VERSION="v70";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
 */
-const DEV_PASSWORD = "admin jungwoo 1220";
+const DEV_PASSWORD = "PASTE_YOUR_ADMIN_PASSWORD_HERE";
 
 /* =========================================================
    유틸
@@ -11658,6 +11658,17 @@ function drawPet(owner){
   const t=performance.now()*.001;
   const bob=Math.sin(t*3.2+owner.id.length)*2.3;
 
+  /*
+    v70:
+    raven의 날갯짓 값은 기본 렌더와 고급 디테일 렌더에서 모두 사용한다.
+    분기 내부 const로 두면 뒤쪽 디테일 블록에서는 스코프 밖이 된다.
+  */
+  const ravenFlap=
+    Math.sin(
+      t*7
+    )*
+    6;
+
   ctx.save();
   ctx.translate(p.x,p.y+bob);
 
@@ -11826,13 +11837,12 @@ function drawPet(owner){
     }
 
   }else if(owner.petId==="raven"){
-    const flap=Math.sin(t*7)*6;
 
     // 날개
     ctx.fillStyle="#5e397f";
     ctx.beginPath();
     ctx.moveTo(-2,-2);
-    ctx.lineTo(-18,-9-flap);
+    ctx.lineTo(-18,-9-ravenFlap);
     ctx.lineTo(-12,3);
     ctx.lineTo(-3,6);
     ctx.closePath();
@@ -11840,7 +11850,7 @@ function drawPet(owner){
 
     ctx.beginPath();
     ctx.moveTo(2,-2);
-    ctx.lineTo(18,-9-flap);
+    ctx.lineTo(18,-9-ravenFlap);
     ctx.lineTo(12,3);
     ctx.lineTo(3,6);
     ctx.closePath();
@@ -11982,8 +11992,8 @@ function drawPet(owner){
       ctx.strokeStyle="rgba(196,137,255,.72)";
       ctx.lineWidth=1;
       ctx.beginPath();
-      ctx.moveTo(-14,-6-flap*.55);ctx.lineTo(-7,1);
-      ctx.moveTo(14,-6-flap*.55);ctx.lineTo(7,1);
+      ctx.moveTo(-14,-6-ravenFlap*.55);ctx.lineTo(-7,1);
+      ctx.moveTo(14,-6-ravenFlap*.55);ctx.lineTo(7,1);
       ctx.stroke();
 
       ctx.fillStyle="rgba(183,131,255,.72)";
@@ -22122,7 +22132,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v69</div>
+        <div class="eyebrow">FIELD ARCHIVE · v70</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -22137,7 +22147,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v69</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v70</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
