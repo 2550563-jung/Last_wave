@@ -1960,7 +1960,7 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v63</span>
+      <span id="gameVersion" class="game-version">v69</span>
     </div>
 
     <h1 id="gameTitle">Last Wave</h1>
@@ -2578,9 +2578,6 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       </div>
 
       <div class="help-section">
-        <h3>🩸 저주받은 거래</h3>
-        <p>일정 웨이브를 마치면 상점으로 들어가기 전에 강한 이득과 명확한 대가가 함께 있는 계약이 제시될 수 있습니다. 하나를 선택하거나 아무것도 받지 않고 거절할 수 있습니다.</p>
-        <p>공격력·공격 속도·관통·치명타·체력·이동 속도 같은 능력이 크게 바뀌므로, 현재 무기와 직업에 맞는 계약을 고르는 것이 핵심입니다. 선택한 저주는 해당 플레이가 끝날 때까지 유지됩니다.</p>
       </div>
 
       <div class="help-section">
@@ -3066,12 +3063,12 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v63";
+const GAME_VERSION="v69";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
 */
-const DEV_PASSWORD = "admin jungwoo 1220";
+const DEV_PASSWORD = "PASTE_YOUR_ADMIN_PASSWORD_HERE";
 
 /* =========================================================
    유틸
@@ -4520,7 +4517,58 @@ document.addEventListener("visibilitychange",()=>{
   ){
     pullCloudProfile().catch(error=>console.warn("복귀 동기화 오류",error));
   }
+
+  /*
+    모바일 브라우저가 백그라운드에서 WebSocket을 정리한 뒤
+    다시 돌아오는 경우 즉시 heartbeat/ping을 보내고,
+    오래된 연결이면 자동 복구한다.
+  */
+  if(
+    document.visibilityState==="visible" &&
+    multiplayer?.active
+  ){
+    multiplayer.heartbeatTimer=0;
+    multiplayer.pingTimer=0;
+
+    const now=
+      performance.now();
+
+    if(
+      multiplayer.lastPacketAt &&
+      now-multiplayer.lastPacketAt>
+        MULTI_PACKET_TIMEOUT &&
+      !multiplayer.reconnecting
+    ){
+      scheduleRealtimeReconnect(
+        "화면 복귀 후 연결 상태 복구"
+      );
+    }
+  }
 });
+
+addEventListener(
+  "online",
+  () => {
+
+    if(
+      multiplayer?.active
+    ){
+      multiplayer.heartbeatTimer=0;
+      multiplayer.pingTimer=0;
+
+      if(
+        multiplayer.connectionState==="오프라인" ||
+        multiplayer.lastReconnectReason
+      ){
+        scheduleRealtimeReconnect(
+          multiplayer.lastReconnectReason ||
+          "인터넷 연결 복구"
+        );
+      }
+    }
+
+  }
+);
 
 addEventListener("pagehide",()=>{
   releaseCloudLease();
@@ -6426,25 +6474,48 @@ const input={
    멀티
 ========================================================= */
 
-const MULTI_INPUT_ACTIVE_INTERVAL=
-  IS_MOBILE ? 1/24 : 1/30;
+/*
+  v66 멀티플레이 안정화
 
-const MULTI_INPUT_IDLE_INTERVAL=.12;
+  기존에는 2명만 접속해도
+  - 각 플레이어 입력 최대 24~30회/초
+  - 호스트 전체 스냅샷 최대 12~15회/초
+  를 Broadcast로 전송했다.
 
-const MULTI_SNAPSHOT_INTERVAL=
-  IS_MOBILE ? 1/12 : 1/15;
+  Supabase Realtime의 프로젝트 메시지 제한을 넘기지 않도록
+  입력/스냅샷 전송률을 크게 낮추고 로컬 예측/보간을 사용한다.
+*/
+/*
+  v68 4인 멀티플레이 최적화
 
-const MULTI_SNAPSHOT_CONGESTED_INTERVAL=
-  IS_MOBILE ? .14 : .11;
+  - 입력: 클라이언트 -> 호스트, 최대 4 Hz
+  - 월드 프레임: 위치/체력 중심의 가벼운 상태, 약 4 Hz
+  - 전체 스냅샷: 호스트 승계용 상세 상태, 2.5초마다
+  - 투사체 프레임: 화면 표시용 최소 필드, 약 2 Hz
+  - 전체 장비 상태: 별도 roster로 저주기/변경 시 동기화
+*/
+const MULTI_INPUT_ACTIVE_INTERVAL=.25;       // 최대 4 Hz
+const MULTI_INPUT_IDLE_INTERVAL=1.00;        // 정지 상태 keep-alive
 
-const MULTI_HEARTBEAT_INTERVAL=10;
-const MULTI_PING_INTERVAL=2.5;
+const MULTI_FRAME_INTERVAL=.25;              // 약 4 Hz
+const MULTI_FRAME_CONGESTED_INTERVAL=.42;    // 혼잡 시 약 2.4 Hz
+const MULTI_FULL_SNAPSHOT_INTERVAL=2.50;     // 호스트 승계용 상세 상태
+const MULTI_PROJECTILE_SYNC_INTERVAL=.50;    // 약 2 Hz
+const MULTI_LOADOUT_ROSTER_INTERVAL=5.00;    // 전체 장비 백업 동기화
+
+const MULTI_HEARTBEAT_INTERVAL=8;
+const MULTI_PING_INTERVAL=5;
+const MULTI_PACKET_TIMEOUT=18000;
+const MULTI_SNAPSHOT_TIMEOUT=7500;
+
+const MULTI_RECONNECT_BASE_DELAY=1800;
+const MULTI_RECONNECT_MAX_DELAY=15000;
 
 const NETWORK_MAX_BULLETS=
-  IS_MOBILE ? 110 : 190;
+  IS_MOBILE ? 52 : 82;
 
 const NETWORK_MAX_ENEMY_BULLETS=
-  IS_MOBILE ? 90 : 150;
+  IS_MOBILE ? 42 : 66;
 
 const multiplayer={
 
@@ -6469,6 +6540,14 @@ const multiplayer={
   teamUsedAuto:false,
 
   snapshotTimer:0,
+  fullSnapshotTimer:0,
+  projectileSyncTimer:0,
+  loadoutRosterTimer:0,
+
+  frameSeq:0,
+  lastFrameSeq:-1,
+  projectileSeq:0,
+  lastProjectileSeq:-1,
 
   inputTimer:0,
 
@@ -6500,7 +6579,29 @@ const multiplayer={
   lastInputSentAt:0,
   hostChangedAt:0,
   hostElectionLockedUntil:0,
-  lastPongAt:0
+  lastPongAt:0,
+
+  /*
+    연결 세대와 현재 권한 호스트 세대를 따로 기록한다.
+    같은 플레이어가 재접속해도 새 연결로 구분해
+    이전 호스트의 재접속으로 인한 이중 호스트를 막는다.
+  */
+  hostSessionId:null,
+  connectionStartedAt:0,
+  connectedAt:0,
+  lastPresenceAt:0,
+  networkBackoffUntil:0,
+  lastReconnectReason:"",
+
+  /*
+    v67 로드아웃 동기화
+    클라이언트가 상점에서 무기/색상 등을 바꾸면
+    호스트에게 변경 세대를 보내고,
+    오래된 호스트 스냅샷이 새 로컬 설정을 되돌리지 못하게 한다.
+  */
+  localLoadoutRevision:0,
+  lastLoadoutAck:0,
+  loadoutDebounceTimer:0
 
 };
 
@@ -6872,6 +6973,20 @@ function createPlayer(
     ownedMelee:[
       "wornSword"
     ],
+
+    /*
+      멀티플레이에서는 각 플레이어의 진화 상태가 서로 다를 수 있다.
+      기존 코드는 전역 save.unlockedEvolutions를 사용해
+      호스트의 진화 상태가 모든 플레이어에게 적용될 수 있었다.
+    */
+    unlockedEvolutions:
+      local
+        ?
+        {...(save.unlockedEvolutions || {})}
+        :
+        {},
+
+    _loadoutRevision:0,
 
     meleeCooldown:0,
     meleeFlash:0,
@@ -7479,6 +7594,18 @@ function getWeaponId(
 
   }
 
+  if(
+    multiplayer.active &&
+    !multiplayer.isHost &&
+    owner.local===false &&
+    owner._netWeaponId &&
+    WEAPONS[
+      owner._netWeaponId
+    ]
+  ){
+    return owner._netWeaponId;
+  }
+
   return (
     owner.weaponSlots[
       owner.activeSlot
@@ -7512,7 +7639,14 @@ function getWeaponStats(
 
   const evolved=
     Boolean(
-      save.unlockedEvolutions[id]
+      owner?.unlockedEvolutions?.[id] ??
+      (
+        owner?.local
+          ?
+          save.unlockedEvolutions[id]
+          :
+          false
+      )
     );
 
   const result={
@@ -7571,12 +7705,40 @@ function addParticle(
     GRAPHICS_MODES[graphicsMode] ||
     GRAPHICS_MODES.normal;
 
+  const multiplayerCount=
+    multiplayer.active
+      ?
+      Math.max(
+        1,
+        multiplayer.members.size ||
+        players.size ||
+        1
+      )
+      :
+      1;
+
+  const multiplayerParticleScale=
+    multiplayerCount>=4
+      ?
+      .48
+      :
+      multiplayerCount===3
+        ?
+        .64
+        :
+        multiplayerCount===2
+          ?
+          .84
+          :
+          1;
+
   const cap=
     Math.max(
-      30,
+      26,
       Math.floor(
         MAX_PARTICLES*
-        mode.particleScale
+        mode.particleScale*
+        multiplayerParticleScale
       )
     );
 
@@ -11016,7 +11178,7 @@ function getPlayerControl(
     const remote=multiplayer.remoteInputs.get(owner.id);
     const age=remote?.__lw?.sentAt ? Date.now()-remote.__lw.sentAt : Infinity;
 
-    if(remote && age<700){
+    if(remote && age<1400){
       return remote;
     }
 
@@ -11240,9 +11402,13 @@ function updatePlayer(
       control.firing
     );
 
+  const ownerAutoMode=
+    owner.local
+      ? autoMode
+      : Boolean(control.auto);
+
   if(
-    owner.local &&
-    autoMode
+    ownerAutoMode
   ){
 
     const target=
@@ -12680,6 +12846,7 @@ function renderPets(){
         player.petId=id;
         save.selectedPet=id;
         persist();
+        notifyMultiplayerLoadoutChanged();
         renderPets();
         renderPetSelect();
       };
@@ -12694,6 +12861,7 @@ function renderPets(){
         player.petId=id;
         save.selectedPet=id;
         persist();
+        notifyMultiplayerLoadoutChanged();
         syncShopEconomyUI({
           clearUpgradeResult:true
         });
@@ -12777,6 +12945,7 @@ function fuseWeapon(recipe){
 
   playSfx("fusion");
   showMessage("무기 합체 완료",recipe.name);
+  notifyMultiplayerLoadoutChanged();
   syncShopEconomyUI({
     clearUpgradeResult:true
   });
@@ -12809,6 +12978,7 @@ function renderMelee(){
       button.disabled=selected;
       button.onclick=()=>{
         player.meleeWeapon=id;
+        notifyMultiplayerLoadoutChanged();
         renderMelee();
       };
     }else{
@@ -12820,6 +12990,7 @@ function renderMelee(){
         if(!Array.isArray(player.ownedMelee)) player.ownedMelee=["wornSword"];
         if(!player.ownedMelee.includes(id)) player.ownedMelee.push(id);
         player.meleeWeapon=id;
+        notifyMultiplayerLoadoutChanged();
         syncShopEconomyUI({
           clearUpgradeResult:true
         });
@@ -13146,6 +13317,8 @@ function renderWeapons(){
               id
             );
 
+          notifyMultiplayerLoadoutChanged();
+
           syncShopEconomyUI({
             clearUpgradeResult:true
           });
@@ -13181,6 +13354,8 @@ function renderWeapons(){
         player.activeSlot =
           player.weaponSlots.length -
           1;
+
+        notifyMultiplayerLoadoutChanged();
 
         showMessage(
           `${weapon.name} 구매 완료`,
@@ -13352,6 +13527,7 @@ function renderColors(){
         player.weaponColors[id] =
           color.type;
 
+        notifyMultiplayerLoadoutChanged();
         renderColors();
 
       };
@@ -13508,6 +13684,17 @@ function startRun(
   player.gender=save.gender || "male";
   player.petId=save.selectedPet || null;
   player.meleeWeapon="wornSword" || "knife";
+  player.unlockedEvolutions=
+    {
+      ...(
+        save.unlockedEvolutions ||
+        {}
+      )
+    };
+
+  multiplayer.localLoadoutRevision=0;
+  multiplayer.lastLoadoutAck=0;
+  player._loadoutRevision=0;
 
   if(multiplayer.active){
     ensureMultiplayerPlayers();
@@ -14342,26 +14529,52 @@ function updateParticles(
 
 }
 
-function update(
+function updateMultiplayerConnection(
   dt
 ){
 
-  updateRain(dt);
-  updateParticles(dt);
-
-  if(state!=="playing" || paused){
+  if(
+    !multiplayer.active
+  ){
     return;
   }
 
-  runTime+=dt;
-  updateVirtualTime(dt);
+  multiplayer.heartbeatTimer-=dt;
+  multiplayer.pingTimer-=dt;
 
-  // 온라인에서는 움직임이 있을 때 더 자주, 가만히 있을 때는 덜 자주 입력을 전송한다.
-  // 불필요한 패킷을 줄여 혼잡을 낮추면서 조작 반응성은 유지한다.
-  if(multiplayer.active){
+  /*
+    방 heartbeat는 전투 중에만 보내면 안 된다.
+    로비/상점/일시정지에서도 방이 살아 있도록 계속 갱신한다.
+  */
+  if(
+    multiplayer.heartbeatTimer<=0
+  ){
+    multiplayer.heartbeatTimer=
+      MULTI_HEARTBEAT_INTERVAL;
+
+    roomHeartbeat();
+  }
+
+  if(
+    multiplayer.pingTimer<=0
+  ){
+    multiplayer.pingTimer=
+      MULTI_PING_INTERVAL;
+
+    sendMultiplayerPing();
+  }
+
+  /*
+    입력은 클라이언트만 전송한다.
+    호스트의 로컬 입력은 이미 호스트가 직접 시뮬레이션하므로
+    자기 자신에게 Broadcast할 이유가 없다.
+  */
+  if(
+    state==="playing" &&
+    !paused &&
+    !multiplayer.isHost
+  ){
     multiplayer.inputTimer-=dt;
-    multiplayer.heartbeatTimer-=dt;
-    multiplayer.pingTimer-=dt;
 
     const inputActive=
       Math.abs(input.moveX)>.02 ||
@@ -14374,21 +14587,88 @@ function update(
         ? MULTI_INPUT_ACTIVE_INTERVAL
         : MULTI_INPUT_IDLE_INTERVAL;
 
-    if(multiplayer.inputTimer<=0){
-      multiplayer.inputTimer=inputInterval;
+    if(
+      multiplayer.inputTimer<=0
+    ){
+      multiplayer.inputTimer=
+        inputInterval;
+
       sendMultiplayerInput(false);
     }
-
-    if(multiplayer.heartbeatTimer<=0){
-      multiplayer.heartbeatTimer=MULTI_HEARTBEAT_INTERVAL;
-      roomHeartbeat();
-    }
-
-    if(multiplayer.pingTimer<=0){
-      multiplayer.pingTimer=MULTI_PING_INTERVAL;
-      sendMultiplayerPing();
-    }
   }
+
+  const now=
+    performance.now();
+
+  /*
+    연결이 20초 이상 안정적으로 유지된 뒤에만
+    재접속 횟수를 초기화한다.
+    연결 직후 다시 끊기는 상황에서 0.5초 단위 재접속 폭주가
+    반복되는 것을 막는다.
+  */
+  if(
+    multiplayer.connectedAt &&
+    now-multiplayer.connectedAt>20000 &&
+    multiplayer.connectionState==="안정"
+  ){
+    multiplayer.reconnectAttempts=0;
+  }
+
+  if(
+    multiplayer.isHost ||
+    multiplayer.reconnecting
+  ){
+    return;
+  }
+
+  /*
+    전투 중 호스트 스냅샷이 장시간 끊겼거나,
+    어떤 멀티 패킷도 오랫동안 들어오지 않으면 복구를 시도한다.
+    상점에서는 스냅샷이 멈추므로 packet/ping 기준만 사용한다.
+  */
+  if(
+    state==="playing" &&
+    multiplayer.lastSnapshotAt &&
+    now-multiplayer.lastSnapshotAt>
+      MULTI_SNAPSHOT_TIMEOUT
+  ){
+    scheduleRealtimeReconnect(
+      "호스트 스냅샷 장시간 미수신"
+    );
+    return;
+  }
+
+  if(
+    multiplayer.lastPacketAt &&
+    now-multiplayer.lastPacketAt>
+      MULTI_PACKET_TIMEOUT
+  ){
+    scheduleRealtimeReconnect(
+      "멀티 패킷 장시간 미수신"
+    );
+  }
+
+}
+
+function update(
+  dt
+){
+
+  updateRain(dt);
+  updateParticles(dt);
+
+  /*
+    게임이 상점/로비/일시정지 상태여도
+    Realtime 연결 유지 로직은 계속 실행한다.
+  */
+  updateMultiplayerConnection(dt);
+
+  if(state!=="playing" || paused){
+    return;
+  }
+
+  runTime+=dt;
+  updateVirtualTime(dt);
 
   if(!multiplayer.active || multiplayer.isHost){
     for(const member of players.values()){
@@ -14423,18 +14703,63 @@ function update(
 
     if(multiplayer.active){
       multiplayer.snapshotTimer-=dt;
-      if(multiplayer.snapshotTimer<=0){
-        const congested=
-          multiplayer.latencyMs>220 ||
-          multiplayer.jitterMs>95 ||
-          multiplayer.sendFailures>=3;
+      multiplayer.fullSnapshotTimer-=dt;
+      multiplayer.projectileSyncTimer-=dt;
+      multiplayer.loadoutRosterTimer-=dt;
 
+      const congested=
+        multiplayer.latencyMs>220 ||
+        multiplayer.jitterMs>95 ||
+        multiplayer.sendFailures>=3;
+
+      if(
+        multiplayer.snapshotTimer<=0
+      ){
         multiplayer.snapshotTimer=
           congested
-            ? MULTI_SNAPSHOT_CONGESTED_INTERVAL
-            : MULTI_SNAPSHOT_INTERVAL;
+            ?
+            MULTI_FRAME_CONGESTED_INTERVAL
+            :
+            MULTI_FRAME_INTERVAL;
+
+        sendWorldFrame();
+      }
+
+      if(
+        multiplayer.projectileSyncTimer<=0
+      ){
+        multiplayer.projectileSyncTimer=
+          congested
+            ?
+            MULTI_PROJECTILE_SYNC_INTERVAL*
+            1.35
+            :
+            MULTI_PROJECTILE_SYNC_INTERVAL;
+
+        sendProjectileFrame();
+      }
+
+      if(
+        multiplayer.fullSnapshotTimer<=0
+      ){
+        multiplayer.fullSnapshotTimer=
+          congested
+            ?
+            MULTI_FULL_SNAPSHOT_INTERVAL*
+            1.35
+            :
+            MULTI_FULL_SNAPSHOT_INTERVAL;
 
         sendWorldSnapshot();
+      }
+
+      if(
+        multiplayer.loadoutRosterTimer<=0
+      ){
+        multiplayer.loadoutRosterTimer=
+          MULTI_LOADOUT_ROSTER_INTERVAL;
+
+        sendLoadoutRoster();
       }
     }
   }else{
@@ -14442,13 +14767,6 @@ function update(
     updatePlayer(player,dt);
     updateClientNetworkVisuals(dt);
 
-    if(
-      multiplayer.lastSnapshotAt&&
-      performance.now()-multiplayer.lastSnapshotAt>3800&&
-      !multiplayer.reconnecting
-    ){
-      scheduleRealtimeReconnect("호스트 스냅샷 3.8초 이상 미수신");
-    }
   }
 
   updateHud();
@@ -14476,7 +14794,7 @@ function updateHud(){
 
   ui.network.textContent=
     multiplayer.active
-      ? `${multiplayer.isHost ? "HOST" : "CLIENT"} · ${multiplayer.roomCode} · ${multiplayer.members.size || 1}/4`
+      ? `${multiplayer.isHost ? "HOST" : "CLIENT"} · ${multiplayer.roomCode} · ${multiplayer.members.size || 1}/4 · ${multiplayer.connectionState || "연결"} · ${Math.round(multiplayer.latencyMs || 0)}ms`
       : GRAPHICS_MODES[graphicsMode]?.name || "기본 모드";
 
   ui.wave.textContent=
@@ -15001,12 +15319,14 @@ function drawPlayer(
   ctx.moveTo(5,-3);ctx.lineTo(18,-4);
   ctx.stroke();
 
+  /*
+    v67: 장착한 탄환 색상을 총기 외형에도 반영한다.
+    멀티에서 다른 플레이어가 어떤 색상 효과를 쓰는지 바로 보인다.
+  */
   ctx.fillStyle=
-    getWeaponId(owner)==="rainbow"
-      ? `hsl(${performance.now()/4%360} 100% 65%)`
-      : getWeaponId(owner)==="rainbowCopy"
-        ? "#ff9ee7"
-        : "#303c42";
+    getWeaponVisualColor(
+      owner
+    );
 
   const weaponLength=
     ["sniper","railgun","crossbow","gaussRifle","voidLance","aegisBreaker"].includes(getWeaponId(owner)) ? 58 :
@@ -15204,17 +15524,46 @@ function drawBullets(){
 
   const mode=GRAPHICS_MODES[graphicsMode] || GRAPHICS_MODES.normal;
 
+  const multiplayerCount=
+    multiplayer.active
+      ?
+      Math.max(
+        1,
+        multiplayer.members.size ||
+        players.size ||
+        1
+      )
+      :
+      1;
+
+  const crowdedMultiplayer=
+    multiplayerCount>=3;
+
+  const allowBulletTrails=
+    mode.detail>=3 &&
+    !crowdedMultiplayer &&
+    bullets.length<110;
+
+  const allowEnemyBulletTrails=
+    mode.detail>=4 &&
+    !crowdedMultiplayer &&
+    enemyBullets.length<90;
+
+  const allowBulletGlow=
+    mode.glow &&
+    !crowdedMultiplayer;
+
   for(const bullet of bullets){
     const p=project(bullet.x,bullet.y);
 
-    if(mode.detail>=3 && Number.isFinite(bullet.vx) && Number.isFinite(bullet.vy)){
+    if(allowBulletTrails && Number.isFinite(bullet.vx) && Number.isFinite(bullet.vy)){
       const len=mode.detail>=6?20:12;
       const speed=Math.hypot(bullet.vx,bullet.vy)||1;
       ctx.save();
       ctx.globalAlpha=mode.detail>=6?.5:.28;
       ctx.strokeStyle=bullet.color;
       ctx.lineWidth=Math.max(1,bullet.radius*(mode.detail>=6?1.3:.8));
-      if(mode.glow){
+      if(allowBulletGlow){
         ctx.shadowBlur=mode.detail>=6?14:8;
         ctx.shadowColor=bullet.color;
       }
@@ -15229,7 +15578,7 @@ function drawBullets(){
     }
 
     ctx.save();
-    if(mode.glow){
+    if(allowBulletGlow){
       ctx.shadowBlur=mode.detail>=6?13:7;
       ctx.shadowColor=bullet.color;
     }
@@ -15243,13 +15592,13 @@ function drawBullets(){
   for(const bullet of enemyBullets){
     const p=project(bullet.x,bullet.y);
 
-    if(mode.detail>=4 && Number.isFinite(bullet.vx) && Number.isFinite(bullet.vy)){
+    if(allowEnemyBulletTrails && Number.isFinite(bullet.vx) && Number.isFinite(bullet.vy)){
       const speed=Math.hypot(bullet.vx,bullet.vy)||1;
       ctx.save();
       ctx.globalAlpha=.32;
       ctx.strokeStyle="#ff786e";
       ctx.lineWidth=Math.max(1,bullet.radius*.8);
-      if(mode.glow){ctx.shadowBlur=10;ctx.shadowColor="#ff4f62";}
+      if(allowBulletGlow){ctx.shadowBlur=10;ctx.shadowColor="#ff4f62";}
       ctx.beginPath();
       ctx.moveTo(p.x,p.y);
       ctx.lineTo(p.x-bullet.vx/speed*13,p.y-bullet.vy/speed*13*WORLD_Y_SCALE);
@@ -15258,7 +15607,7 @@ function drawBullets(){
     }
 
     ctx.save();
-    if(mode.glow){ctx.shadowBlur=10;ctx.shadowColor="#ff4f62";}
+    if(allowBulletGlow){ctx.shadowBlur=10;ctx.shadowColor="#ff4f62";}
     ctx.fillStyle="#ff786e";
     ctx.beginPath();
     ctx.arc(p.x,p.y,bullet.radius,0,Math.PI*2);
@@ -15732,6 +16081,248 @@ function v63DrawDynamicBackdrop(){
   ctx.restore();
 }
 
+let enemyEdgeIndicatorCache=[];
+let enemyEdgeIndicatorNextUpdate=0;
+
+function drawEnemyEdgeIndicators(){
+
+  if(
+    state!=="playing" ||
+    !player
+  ){
+    return;
+  }
+
+  const now=
+    performance.now();
+
+  if(
+    now>=
+    enemyEdgeIndicatorNextUpdate
+  ){
+    enemyEdgeIndicatorNextUpdate=
+      now+
+      (
+        multiplayer.active &&
+        (
+          multiplayer.members.size ||
+          players.size
+        )>=3
+          ?
+          140
+          :
+          95
+      );
+
+    const visibleMargin=
+      44;
+
+    const candidates=[];
+
+    for(
+      const enemy of enemies
+    ){
+      if(
+        !enemy ||
+        enemy.dead
+      ){
+        continue;
+      }
+
+      const point=
+        project(
+          enemy.x,
+          enemy.y
+        );
+
+      const offscreen=
+        point.x<
+          -visibleMargin ||
+        point.x>
+          WIDTH+
+          visibleMargin ||
+        point.y<
+          -visibleMargin ||
+        point.y>
+          HEIGHT+
+          visibleMargin;
+
+      if(
+        !offscreen
+      ){
+        continue;
+      }
+
+      candidates.push(
+        {
+          enemy,
+          point,
+          distance:
+            Math.hypot(
+              enemy.x-
+              player.x,
+              enemy.y-
+              player.y
+            )
+        }
+      );
+    }
+
+    candidates.sort(
+      (
+        a,
+        b
+      ) =>
+        (
+          b.enemy.boss
+            ?
+            1
+            :
+            0
+        )-
+        (
+          a.enemy.boss
+            ?
+            1
+            :
+            0
+        ) ||
+        a.distance-
+        b.distance
+    );
+
+    enemyEdgeIndicatorCache=
+      candidates.slice(
+        0,
+        7
+      );
+  }
+
+  const margin=
+    34;
+
+  for(
+    const item of enemyEdgeIndicatorCache
+  ){
+    const dx=
+      item.point.x-
+      WIDTH/
+      2;
+
+    const dy=
+      item.point.y-
+      HEIGHT/
+      2;
+
+    const length=
+      Math.hypot(
+        dx,
+        dy
+      ) ||
+      1;
+
+    const nx=
+      dx/
+      length;
+
+    const ny=
+      dy/
+      length;
+
+    const maxX=
+      WIDTH/
+      2-
+      margin;
+
+    const maxY=
+      HEIGHT/
+      2-
+      margin;
+
+    const scale=
+      Math.min(
+        maxX/
+        Math.max(
+          Math.abs(nx),
+          .0001
+        ),
+        maxY/
+        Math.max(
+          Math.abs(ny),
+          .0001
+        )
+      );
+
+    const x=
+      WIDTH/
+      2+
+      nx*
+      scale;
+
+    const y=
+      HEIGHT/
+      2+
+      ny*
+      scale;
+
+    const angle=
+      Math.atan2(
+        ny,
+        nx
+      );
+
+    ctx.save();
+    ctx.translate(
+      x,
+      y
+    );
+    ctx.rotate(
+      angle
+    );
+
+    ctx.globalAlpha=
+      item.enemy.boss
+        ?
+        1
+        :
+        .82;
+
+    ctx.fillStyle=
+      item.enemy.boss
+        ?
+        "#ff5f7d"
+        :
+        item.enemy.elite
+          ?
+          "#ffd166"
+          :
+          "#f4f7f8";
+
+    ctx.beginPath();
+    ctx.moveTo(
+      13,
+      0
+    );
+    ctx.lineTo(
+      -7,
+      -7
+    );
+    ctx.lineTo(
+      -4,
+      0
+    );
+    ctx.lineTo(
+      -7,
+      7
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+}
+
 function draw(){
 
   drawCity();
@@ -15800,6 +16391,12 @@ function draw(){
 
 
   drawUltraCinematicGrade();
+
+  /*
+    마지막 적이 화면 밖에 남아도 방향을 찾을 수 있게
+    후처리 위에 가장자리 화살표를 표시한다.
+  */
+  drawEnemyEdgeIndicators();
 }
 
 /* =========================================================
@@ -16015,6 +16612,8 @@ $("adminRainbowButton").onclick=
         "rainbow"
       );
 
+    notifyMultiplayerLoadoutChanged();
+
   };
 
 $("adminMaxWeaponButton").onclick=
@@ -16032,6 +16631,8 @@ $("adminMaxWeaponButton").onclick=
       getWeaponId()
     ]=
       10;
+
+    notifyMultiplayerLoadoutChanged();
 
   };
 
@@ -16133,29 +16734,61 @@ function markMultiplayerPacket(){
   multiplayer.lastPacketAt=performance.now();
 }
 
-function handleMultiplayerSendStatus(status,event,options={}){
+function handleMultiplayerSendStatus(
+  status,
+  event,
+  options={}
+){
+
   const ok=
     status===undefined ||
     status===null ||
     status==="ok";
 
   if(ok){
-    multiplayer.sendFailures=Math.max(0,multiplayer.sendFailures-1);
+    multiplayer.sendFailures=
+      Math.max(
+        0,
+        multiplayer.sendFailures-1
+      );
+
     return status;
   }
 
   multiplayer.sendFailures++;
 
-  if(options.silent!==true){
-    console.warn(`멀티 이벤트 전송 상태: ${event}`,status);
+  /*
+    전송 실패가 시작되면 짧게 송신을 쉬어
+    rate-limit 상태에서 계속 패킷을 밀어 넣지 않는다.
+  */
+  if(
+    event==="input" ||
+    event==="snapshot"
+  ){
+    multiplayer.networkBackoffUntil=
+      Math.max(
+        multiplayer.networkBackoffUntil,
+        performance.now()+1200
+      );
   }
 
   if(
-    multiplayer.sendFailures>=6 &&
+    options.silent!==true
+  ){
+    console.warn(
+      `멀티 이벤트 전송 상태: ${event}`,
+      status
+    );
+  }
+
+  if(
+    multiplayer.sendFailures>=10 &&
     multiplayer.active &&
     !multiplayer.reconnecting
   ){
-    scheduleRealtimeReconnect("패킷 전송 실패가 반복됨");
+    scheduleRealtimeReconnect(
+      "패킷 전송 실패가 반복됨"
+    );
   }
 
   return status;
@@ -16166,6 +16799,19 @@ function sendRoomEvent(event,payload={},options={}){
 
   if(!channel){
     return Promise.resolve("no_channel");
+  }
+
+  const throttledEvent=
+    event==="input" ||
+    event==="snapshot";
+
+  if(
+    throttledEvent &&
+    !options.criticalId &&
+    performance.now()<
+      multiplayer.networkBackoffUntil
+  ){
+    return Promise.resolve("backoff");
   }
 
   const seq=++multiplayer.eventSeq;
@@ -16191,7 +16837,7 @@ function sendRoomEvent(event,payload={},options={}){
           console.warn(`멀티 이벤트 전송 실패: ${event}`,error);
         }
         if(
-          multiplayer.sendFailures>=6 &&
+          multiplayer.sendFailures>=10 &&
           multiplayer.active &&
           !multiplayer.reconnecting
         ){
@@ -16212,7 +16858,7 @@ function sendCriticalRoomEvent(event,payload={}){
   const criticalId=
     `${save.playerId}:${Date.now()}:${Math.random().toString(36).slice(2,8)}`;
 
-  const retryDelays=[0,90,240,620];
+  const retryDelays=[0,260,900];
 
   for(const delay of retryDelays){
     setTimeout(()=>{
@@ -16302,7 +16948,13 @@ function multiplayerInputSignature(control){
 }
 
 function sendMultiplayerInput(force=false){
-  if(!multiplayer.active || !multiplayer.channel) return;
+  if(
+    !multiplayer.active ||
+    !multiplayer.channel ||
+    multiplayer.isHost
+  ){
+    return;
+  }
 
   const now=performance.now();
   const control=getLocalNetworkControl();
@@ -16329,6 +16981,617 @@ function sendMultiplayerInput(force=false){
     firing:control.firing,
     auto:control.auto
   },{silent:true});
+}
+
+
+function sanitizeMultiplayerLoadout(
+  payload,
+  target=null
+){
+
+  const existingSlots=
+    Array.isArray(
+      target?.weaponSlots
+    )
+      ?
+      target.weaponSlots
+      :
+      [
+        "pistol"
+      ];
+
+  const incomingSlots=
+    Array.isArray(
+      payload?.weaponSlots
+    )
+      ?
+      payload.weaponSlots
+      :
+      existingSlots;
+
+  const weaponSlots=
+    [
+      ...new Set(
+        incomingSlots.filter(
+          id =>
+            typeof id==="string" &&
+            Boolean(
+              WEAPONS[id]
+            )
+        )
+      )
+    ];
+
+  if(
+    !weaponSlots.length
+  ){
+    weaponSlots.push(
+      "pistol"
+    );
+  }
+
+  const requestedSlot=
+    Math.floor(
+      Number(
+        payload?.activeSlot
+      ) ||
+      0
+    );
+
+  const activeSlot=
+    clamp(
+      requestedSlot,
+      0,
+      Math.max(
+        0,
+        weaponSlots.length-1
+      )
+    );
+
+  const weaponLevels={
+    ...(
+      target?.weaponLevels ||
+      {}
+    )
+  };
+
+  if(
+    payload?.weaponLevels &&
+    typeof payload.weaponLevels===
+      "object"
+  ){
+    for(
+      const id of
+      Object.keys(
+        WEAPONS
+      )
+    ){
+      const value=
+        Number(
+          payload.weaponLevels[id]
+        );
+
+      if(
+        Number.isFinite(
+          value
+        )
+      ){
+        weaponLevels[id]=
+          clamp(
+            Math.floor(
+              value
+            ),
+            0,
+            99
+          );
+      }
+    }
+  }
+
+  const validColors=
+    new Set(
+      COLORS.map(
+        item =>
+          item.type
+      )
+    );
+
+  validColors.add(
+    "rainbow"
+  );
+
+  const weaponColors={
+    ...(
+      target?.weaponColors ||
+      {}
+    )
+  };
+
+  if(
+    payload?.weaponColors &&
+    typeof payload.weaponColors===
+      "object"
+  ){
+    for(
+      const id of
+      Object.keys(
+        WEAPONS
+      )
+    ){
+      const color=
+        payload.weaponColors[id];
+
+      if(
+        validColors.has(
+          color
+        )
+      ){
+        weaponColors[id]=
+          color;
+      }
+    }
+  }
+
+  const unlockedEvolutions={
+    ...(
+      target?.unlockedEvolutions ||
+      {}
+    )
+  };
+
+  if(
+    payload?.unlockedEvolutions &&
+    typeof payload.unlockedEvolutions===
+      "object"
+  ){
+    for(
+      const id of
+      Object.keys(
+        WEAPONS
+      )
+    ){
+      if(
+        payload.unlockedEvolutions[id]===
+          true
+      ){
+        unlockedEvolutions[id]=
+          true;
+      }
+    }
+  }
+
+  const petId=
+    payload?.petId &&
+    PETS[
+      payload.petId
+    ]
+      ?
+      payload.petId
+      :
+      (
+        target?.petId ||
+        null
+      );
+
+  const meleeWeapon=
+    payload?.meleeWeapon &&
+    MELEE_WEAPONS[
+      payload.meleeWeapon
+    ]
+      ?
+      payload.meleeWeapon
+      :
+      (
+        target?.meleeWeapon ||
+        "wornSword"
+      );
+
+  const ownedMelee=
+    Array.isArray(
+      payload?.ownedMelee
+    )
+      ?
+      [
+        ...new Set(
+          payload.ownedMelee.filter(
+            id =>
+              typeof id==="string" &&
+              Boolean(
+                MELEE_WEAPONS[id]
+              )
+          )
+        )
+      ]
+      :
+      [
+        ...(
+          target?.ownedMelee ||
+          [
+            "wornSword"
+          ]
+        )
+      ];
+
+  if(
+    !ownedMelee.includes(
+      "wornSword"
+    )
+  ){
+    ownedMelee.unshift(
+      "wornSword"
+    );
+  }
+
+  const revision=
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          payload?.loadoutRevision
+        ) ||
+        0
+      )
+    );
+
+  return{
+    weaponSlots,
+    activeSlot,
+    weaponLevels,
+    weaponColors,
+    unlockedEvolutions,
+    petId,
+    meleeWeapon,
+    ownedMelee,
+    loadoutRevision:
+      revision
+  };
+
+}
+
+function applyMultiplayerLoadout(
+  target,
+  payload
+){
+
+  if(
+    !target
+  ){
+    return false;
+  }
+
+  const clean=
+    sanitizeMultiplayerLoadout(
+      payload,
+      target
+    );
+
+  const currentRevision=
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          target._loadoutRevision
+        ) ||
+        0
+      )
+    );
+
+  if(
+    clean.loadoutRevision &&
+    clean.loadoutRevision<
+      currentRevision
+  ){
+    return false;
+  }
+
+  target.weaponSlots=
+    [
+      ...clean.weaponSlots
+    ];
+
+  target.activeSlot=
+    clean.activeSlot;
+
+  target.weaponLevels=
+    {
+      ...clean.weaponLevels
+    };
+
+  target.weaponColors=
+    {
+      ...clean.weaponColors
+    };
+
+  target.unlockedEvolutions=
+    {
+      ...clean.unlockedEvolutions
+    };
+
+  target.petId=
+    clean.petId;
+
+  target.meleeWeapon=
+    clean.meleeWeapon;
+
+  target.ownedMelee=
+    [
+      ...clean.ownedMelee
+    ];
+
+  target._loadoutRevision=
+    Math.max(
+      currentRevision,
+      clean.loadoutRevision
+    );
+
+  return true;
+
+}
+
+function makeMultiplayerLoadoutPayload(){
+
+  if(
+    !player
+  ){
+    return null;
+  }
+
+  return{
+    playerId:
+      save.playerId,
+
+    loadoutRevision:
+      multiplayer.localLoadoutRevision,
+
+    weaponSlots:
+      [
+        ...(
+          player.weaponSlots ||
+          [
+            "pistol"
+          ]
+        )
+      ],
+
+    activeSlot:
+      player.activeSlot ||
+      0,
+
+    weaponLevels:
+      {
+        ...(
+          player.weaponLevels ||
+          {}
+        )
+      },
+
+    weaponColors:
+      {
+        ...(
+          player.weaponColors ||
+          {}
+        )
+      },
+
+    unlockedEvolutions:
+      {
+        ...(
+          player.unlockedEvolutions ||
+          save.unlockedEvolutions ||
+          {}
+        )
+      },
+
+    petId:
+      player.petId ||
+      null,
+
+    meleeWeapon:
+      player.meleeWeapon ||
+      "wornSword",
+
+    ownedMelee:
+      [
+        ...(
+          player.ownedMelee ||
+          [
+            "wornSword"
+          ]
+        )
+      ]
+  };
+
+}
+
+function sendMultiplayerLoadout(
+  force=false
+){
+
+  if(
+    !multiplayer.active ||
+    !multiplayer.channel ||
+    !player
+  ){
+    return;
+  }
+
+  if(
+    multiplayer.isHost
+  ){
+    player._loadoutRevision=
+      Math.max(
+        Number(
+          player._loadoutRevision
+        ) ||
+        0,
+        multiplayer.localLoadoutRevision
+      );
+
+    multiplayer.snapshotTimer=
+      0;
+
+    return;
+  }
+
+  const payload=
+    makeMultiplayerLoadoutPayload();
+
+  if(
+    !payload
+  ){
+    return;
+  }
+
+  const revision=
+    payload.loadoutRevision ||
+    0;
+
+  sendRoomEvent(
+    "loadout_update",
+    payload,
+    {
+      silent:
+        true
+    }
+  );
+
+  /*
+    정상 ACK가 오면 재전송하지 않는다.
+    실제 유실일 때만 한 번 더 보낸다.
+  */
+  if(
+    force
+  ){
+    setTimeout(
+      () => {
+
+        if(
+          multiplayer.active &&
+          !multiplayer.isHost &&
+          multiplayer.lastLoadoutAck<
+            revision
+        ){
+          sendRoomEvent(
+            "loadout_update",
+            makeMultiplayerLoadoutPayload() ||
+            payload,
+            {
+              silent:
+                true
+            }
+          );
+        }
+
+      },
+      850
+    );
+  }
+
+}
+
+function notifyMultiplayerLoadoutChanged(){
+
+  if(
+    !player
+  ){
+    return;
+  }
+
+  /*
+    로컬 플레이어의 진화 정보도 플레이어 상태에 복사해
+    호스트 시뮬레이션에서 다른 플레이어의 진화를 구분한다.
+  */
+  player.unlockedEvolutions=
+    {
+      ...(
+        save.unlockedEvolutions ||
+        player.unlockedEvolutions ||
+        {}
+      )
+    };
+
+  multiplayer.localLoadoutRevision++;
+
+  player._loadoutRevision=
+    multiplayer.localLoadoutRevision;
+
+  if(
+    multiplayer.active
+  ){
+    /*
+      색상 연타/연속 구매는 90ms 안의 마지막 상태만 전송한다.
+    */
+    clearTimeout(
+      multiplayer.loadoutDebounceTimer
+    );
+
+    multiplayer.loadoutDebounceTimer=
+      setTimeout(
+        () => {
+
+          multiplayer.loadoutDebounceTimer=
+            0;
+
+          sendMultiplayerLoadout(
+            true
+          );
+
+        },
+        90
+      );
+  }
+
+}
+
+function getWeaponVisualColor(
+  owner
+){
+
+  const weaponId=
+    getWeaponId(
+      owner
+    );
+
+  if(
+    weaponId===
+      "rainbow"
+  ){
+    return `hsl(${performance.now()/4%360} 100% 65%)`;
+  }
+
+  if(
+    weaponId===
+      "rainbowCopy"
+  ){
+    return "#ff9ee7";
+  }
+
+  const colorType=
+    (
+      multiplayer.active &&
+      !multiplayer.isHost &&
+      owner?.local===false &&
+      owner?._netWeaponColorType
+    )
+      ?
+      owner._netWeaponColorType
+      :
+      (
+        owner?.weaponColors?.[
+          weaponId
+        ] ||
+        "power"
+      );
+
+  return(
+    COLORS.find(
+      color =>
+        color.type===
+        colorType
+    )?.hex ||
+    "#303c42"
+  );
+
 }
 
 function sendMultiplayerPing(){
@@ -16360,6 +17623,14 @@ function sendMultiplayerPing(){
 
 function handleMultiplayerPong(payload){
   if(payload?.to!==save.playerId || !payload?.token) return;
+
+  if(
+    multiplayer.hostId &&
+    payload?.from &&
+    payload.from!==multiplayer.hostId
+  ){
+    return;
+  }
 
   const started=multiplayer.pendingPings.get(payload.token);
   if(started==null) return;
@@ -16420,95 +17691,313 @@ async function leaveMultiplayer(){
   multiplayer.lastInputSignature="";
   multiplayer.lastSnapshotAt=0;
   multiplayer.lastPacketAt=0;
+  multiplayer.lastPongAt=0;
+  multiplayer.hostSessionId=null;
+  multiplayer.connectionStartedAt=0;
+  multiplayer.connectedAt=0;
+  multiplayer.lastPresenceAt=0;
+  multiplayer.networkBackoffUntil=0;
+  multiplayer.lastReconnectReason="";
+  multiplayer.localLoadoutRevision=0;
+  multiplayer.lastLoadoutAck=0;
+  clearTimeout(multiplayer.loadoutDebounceTimer);
+  multiplayer.loadoutDebounceTimer=0;
+  multiplayer.fullSnapshotTimer=0;
+  multiplayer.projectileSyncTimer=0;
+  multiplayer.loadoutRosterTimer=0;
+  multiplayer.frameSeq=0;
+  multiplayer.lastFrameSeq=-1;
+  multiplayer.projectileSeq=0;
+  multiplayer.lastProjectileSeq=-1;
 }
 
 function syncMembers(){
   if(!multiplayer.channel) return;
 
-  const presenceState=multiplayer.channel.presenceState();
-  const uniqueMembers=new Map();
+  markMultiplayerPacket();
+  multiplayer.lastPresenceAt=
+    performance.now();
 
-  for(const values of Object.values(presenceState)){
-    for(const member of values){
-      if(!member?.playerId) continue;
+  const presenceState=
+    multiplayer.channel.presenceState();
 
-      const existing=uniqueMembers.get(member.playerId);
+  const uniqueMembers=
+    new Map();
 
-      if(!existing){
-        uniqueMembers.set(member.playerId,member);
+  for(
+    const values of
+    Object.values(presenceState)
+  ){
+    for(
+      const member of values
+    ){
+      if(
+        !member?.playerId
+      ){
         continue;
       }
 
-      // 재연결 중 같은 플레이어 Presence가 잠깐 중복되어도 한 자리만 사용한다.
-      const existingJoined=Number(existing.joinedAt)||Infinity;
-      const incomingJoined=Number(member.joinedAt)||Infinity;
+      const existing=
+        uniqueMembers.get(
+          member.playerId
+        );
 
-      if(incomingJoined<=existingJoined){
-        uniqueMembers.set(member.playerId,{
-          ...existing,
-          ...member,
-          joinedAt:Math.min(existingJoined,incomingJoined)
-        });
+      if(
+        !existing
+      ){
+        uniqueMembers.set(
+          member.playerId,
+          member
+        );
+
+        continue;
+      }
+
+      /*
+        같은 플레이어가 재접속할 때 Presence가 잠깐 두 개 보일 수 있다.
+        예전 연결이 아니라 가장 최근 connectionStartedAt을 우선한다.
+      */
+      const existingConnection=
+        Number(
+          existing.connectionStartedAt
+        ) ||
+        0;
+
+      const incomingConnection=
+        Number(
+          member.connectionStartedAt
+        ) ||
+        0;
+
+      if(
+        incomingConnection>=
+        existingConnection
+      ){
+        uniqueMembers.set(
+          member.playerId,
+          member
+        );
       }
     }
   }
 
-  const list=[...uniqueMembers.values()]
-    .sort((a,b)=>(a.joinedAt||0)-(b.joinedAt||0))
-    .slice(0,4);
+  const list=
+    [
+      ...uniqueMembers.values()
+    ]
+      .sort(
+        (
+          a,
+          b
+        ) =>
+          (
+            Number(a.joinedAt) ||
+            0
+          )-
+          (
+            Number(b.joinedAt) ||
+            0
+          ) ||
+          String(
+            a.playerId
+          ).localeCompare(
+            String(
+              b.playerId
+            )
+          )
+      )
+      .slice(
+        0,
+        4
+      );
 
   multiplayer.members.clear();
-  for(const member of list){
-    multiplayer.members.set(member.playerId,member);
+
+  for(
+    const member of list
+  ){
+    multiplayer.members.set(
+      member.playerId,
+      member
+    );
   }
 
-  const previousHostId=multiplayer.hostId;
+  const previousHostId=
+    multiplayer.hostId;
 
-  const knownHostStillPresent=
-    Boolean(multiplayer.hostId) &&
-    list.some(member=>member.playerId===multiplayer.hostId);
+  const previousHostSessionId=
+    multiplayer.hostSessionId;
 
-  if(!knownHostStillPresent){
-    const candidate=list[0]?.playerId || null;
-    const selfOnly=
-      list.length===1 &&
-      candidate===save.playerId;
+  const wasHost=
+    multiplayer.isHost;
+
+  const currentHostMember=
+    previousHostId
+      ?
+      multiplayer.members.get(
+        previousHostId
+      )
+      :
+      null;
+
+  /*
+    playerId가 같아도 sessionId가 바뀌면 새 Realtime 연결이다.
+    이전 호스트의 끊긴 연결을 새 연결이 무조건 되찾지 않도록 한다.
+  */
+  const sameHostConnection=
+    Boolean(
+      currentHostMember
+    ) &&
+    (
+      !previousHostSessionId ||
+      !currentHostMember.sessionId ||
+      currentHostMember.sessionId===
+        previousHostSessionId
+    );
+
+  if(
+    !sameHostConnection
+  ){
+    /*
+      방을 최초 생성한 연결의 hostClaim을 우선한다.
+      이미 존재하던 호스트 연결이 사라진 뒤 재접속한 동일 플레이어는
+      후보에서 한 번 제외해 split-brain을 막는다.
+    */
+    const claimedHost=
+      list.find(
+        member =>
+          member.hostClaim===
+            true &&
+          (
+            !previousHostId ||
+            member.playerId!==
+              previousHostId
+          )
+      );
+
+    let candidates=
+      previousHostId
+        ?
+        list.filter(
+          member =>
+            member.playerId!==
+            previousHostId
+        )
+        :
+        [
+          ...list
+        ];
 
     if(
-      selfOnly &&
-      !multiplayer.isHost &&
-      performance.now()<multiplayer.hostElectionLockedUntil
+      !candidates.length
     ){
-      multiplayer.hostId=null;
-    }else{
-      multiplayer.hostId=candidate || save.playerId;
+      candidates=
+        [
+          ...list
+        ];
     }
+
+    const candidate=
+      claimedHost ||
+      candidates[0] ||
+      null;
+
+    multiplayer.hostId=
+      candidate?.playerId ||
+      save.playerId;
+
+    multiplayer.hostSessionId=
+      candidate?.sessionId ||
+      (
+        multiplayer.hostId===
+          save.playerId
+          ?
+          multiplayer.sessionId
+          :
+          null
+      );
+
+  }else if(
+    !multiplayer.hostSessionId &&
+    currentHostMember?.sessionId
+  ){
+    multiplayer.hostSessionId=
+      currentHostMember.sessionId;
   }
 
-  const wasHost=multiplayer.isHost;
-  multiplayer.isHost=multiplayer.hostId===save.playerId;
+  multiplayer.isHost=
+    multiplayer.hostId===
+      save.playerId &&
+    (
+      !multiplayer.hostSessionId ||
+      multiplayer.hostSessionId===
+        multiplayer.sessionId
+    );
 
-  if(previousHostId!==multiplayer.hostId){
-    multiplayer.hostChangedAt=performance.now();
-    multiplayer.snapshotTimer=0;
+  const hostChanged=
+    previousHostId!==
+      multiplayer.hostId ||
+    previousHostSessionId!==
+      multiplayer.hostSessionId;
 
-    if(state==="playing"){
-      if(multiplayer.isHost && !wasHost){
-        // 이전 호스트가 갑자기 사라진 경우 마지막 수신 상태에서 즉시 이어서 진행한다.
-        multiplayer.connectionState="호스트 승계";
-        showMessage("호스트 자동 승계","게임을 이어서 동기화합니다.",1.6);
-        sendCriticalRoomEvent("host_changed",{
-          hostId:save.playerId
-        });
+  if(
+    hostChanged
+  ){
+    multiplayer.hostChangedAt=
+      performance.now();
+
+    multiplayer.snapshotTimer=
+      0;
+
+    multiplayer.fullSnapshotTimer=
+      0;
+
+    multiplayer.projectileSyncTimer=
+      0;
+
+    multiplayer.loadoutRosterTimer=
+      0;
+
+    if(
+      state==="playing"
+    ){
+      if(
+        multiplayer.isHost &&
+        !wasHost
+      ){
+        multiplayer.connectionState=
+          "호스트 승계";
+
+        showMessage(
+          "호스트 자동 승계",
+          "마지막 동기화 상태에서 게임을 이어갑니다.",
+          1.6
+        );
+
+        sendCriticalRoomEvent(
+          "host_changed",
+          {
+            hostId:
+              save.playerId,
+
+            hostSessionId:
+              multiplayer.sessionId
+          }
+        );
+
       }else{
-        multiplayer.connectionState="호스트 변경";
+        multiplayer.connectionState=
+          "호스트 변경";
       }
     }
   }
 
   renderLobby();
 
-  if(state==="playing"){
+  if(
+    state==="playing" ||
+    state==="waveComplete"
+  ){
     ensureMultiplayerPlayers();
   }
 }
@@ -16582,34 +18071,169 @@ function clearRealtimeReconnect(){
   multiplayer.reconnecting=false;
 }
 
-function scheduleRealtimeReconnect(reason="연결 끊김"){
-  if(!multiplayer.active||!multiplayer.roomCode||multiplayer.reconnecting) return;
+function scheduleRealtimeReconnect(
+  reason="연결 끊김"
+){
+  if(
+    !multiplayer.active ||
+    !multiplayer.roomCode ||
+    multiplayer.reconnecting
+  ){
+    return;
+  }
 
-  multiplayer.reconnecting=true;
-  multiplayer.connectionState="재연결 중";
+  if(
+    navigator.onLine===
+      false
+  ){
+    multiplayer.connectionState=
+      "오프라인";
+
+    multiplayer.lastReconnectReason=
+      reason;
+
+    return;
+  }
+
+  multiplayer.reconnecting=
+    true;
+
+  multiplayer.connectionState=
+    "재연결 중";
+
+  multiplayer.lastReconnectReason=
+    reason;
+
   multiplayer.reconnectAttempts++;
 
-  const delay=Math.min(8000,500*Math.pow(1.7,Math.min(multiplayer.reconnectAttempts-1,6)));
-  showMessage("멀티 연결 복구 중",`${reason} · ${Math.round(delay)}ms 후 재시도`,1.8);
+  const exponent=
+    Math.min(
+      multiplayer.reconnectAttempts-1,
+      6
+    );
 
-  clearTimeout(multiplayer.reconnectTimer);
-  multiplayer.reconnectTimer=setTimeout(async()=>{
-    multiplayer.reconnecting=false;
-    if(!multiplayer.active) return;
-    try{
-      await connectRealtimeRoom(multiplayer.roomCode,{
-        isPublic:multiplayer.publicRoom,
-        forceHost:multiplayer.isHost,
-        reconnect:true
-      });
-      multiplayer.reconnectAttempts=0;
-      multiplayer.connectionState="안정";
-      showMessage("멀티 연결 복구 완료");
-    }catch(error){
-      console.warn("멀티 재연결 실패",error);
-      scheduleRealtimeReconnect(error?.message||"재연결 실패");
-    }
-  },delay);
+  const baseDelay=
+    Math.min(
+      MULTI_RECONNECT_MAX_DELAY,
+      MULTI_RECONNECT_BASE_DELAY*
+      Math.pow(
+        1.75,
+        exponent
+      )
+    );
+
+  /*
+    여러 플레이어가 동시에 끊겼을 때 같은 순간에 Presence track을
+    반복하지 않도록 각 클라이언트에 작은 지터를 준다.
+  */
+  const delay=
+    Math.round(
+      baseDelay*
+      (
+        .85+
+        Math.random()*
+        .30
+      )
+    );
+
+  showMessage(
+    "멀티 연결 복구 중",
+    `${reason} · 잠시 후 자동 재연결`,
+    1.8
+  );
+
+  clearTimeout(
+    multiplayer.reconnectTimer
+  );
+
+  multiplayer.reconnectTimer=
+    setTimeout(
+      async () => {
+
+        multiplayer.reconnecting=
+          false;
+
+        if(
+          !multiplayer.active
+        ){
+          return;
+        }
+
+        try{
+          /*
+            재접속한 이전 호스트가 자기 권한을 강제로 되찾지 않는다.
+            Presence의 연결 세대를 기준으로 새 호스트를 합의한다.
+          */
+          await connectRealtimeRoom(
+            multiplayer.roomCode,
+            {
+              isPublic:
+                multiplayer.publicRoom,
+
+              forceHost:
+                false,
+
+              reconnect:
+                true
+            }
+          );
+
+          multiplayer.connectionState=
+            "안정";
+
+          showMessage(
+            "멀티 연결 복구 완료"
+          );
+
+        }catch(
+          error
+        ){
+          console.warn(
+            "멀티 재연결 실패",
+            error
+          );
+
+          scheduleRealtimeReconnect(
+            error?.message ||
+            "재연결 실패"
+          );
+        }
+
+      },
+      delay
+    );
+}
+
+function isCurrentHostPayload(
+  payload
+){
+
+  const sender=
+    payload?.__lw?.sender;
+
+  const senderSession=
+    payload?.__lw?.sessionId;
+
+  if(
+    multiplayer.hostId &&
+    sender &&
+    sender!==
+      multiplayer.hostId
+  ){
+    return false;
+  }
+
+  if(
+    multiplayer.hostSessionId &&
+    senderSession &&
+    senderSession!==
+      multiplayer.hostSessionId
+  ){
+    return false;
+  }
+
+  return true;
+
 }
 
 async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnect=false}={}){
@@ -16619,13 +18243,25 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
   if(cleanCode.length!==6) throw new Error("올바른 6자리 방 코드가 아닙니다.");
 
   const previousChannel=multiplayer.channel;
+  const previousJoinedAt=multiplayer.joinedAt||Date.now();
+  const previousHostId=multiplayer.hostId;
+  const previousHostSessionId=multiplayer.hostSessionId;
+
   multiplayer.channel=null;
 
   if(previousChannel){
-    try{await sbClient.removeChannel(previousChannel);}catch{}
+    try{
+      await sbClient.removeChannel(previousChannel);
+    }catch{}
   }
 
-  const previousJoinedAt=multiplayer.joinedAt||Date.now();
+  /*
+    Realtime 재접속마다 새 sessionId를 사용한다.
+    playerId만으로 호스트 권한을 판단하면 끊긴 이전 호스트와
+    재접속한 새 연결이 동시에 호스트가 될 수 있다.
+  */
+  multiplayer.sessionId=createId();
+  multiplayer.connectionStartedAt=Date.now();
 
   multiplayer.active=true;
   multiplayer.roomCode=cleanCode;
@@ -16641,24 +18277,72 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     multiplayer.pendingPings.clear();
     multiplayer.lastSnapshotSeq=-1;
     multiplayer.snapshotSeq=0;
+    multiplayer.lastFrameSeq=-1;
+    multiplayer.frameSeq=0;
+    multiplayer.lastProjectileSeq=-1;
+    multiplayer.projectileSeq=0;
+    multiplayer.fullSnapshotTimer=0;
+    multiplayer.projectileSyncTimer=0;
+    multiplayer.loadoutRosterTimer=0;
     multiplayer.sendFailures=0;
     multiplayer.lastInputSignature="";
     multiplayer.lastInputSentAt=0;
     multiplayer.jitterMs=0;
+    multiplayer.localLoadoutRevision=0;
+    multiplayer.lastLoadoutAck=0;
   }
 
   multiplayer.heartbeatTimer=0;
   multiplayer.pingTimer=.35;
   multiplayer.connectionState=reconnect?"재연결 중":"연결 중";
 
-  if(forceHost){
-    multiplayer.hostId=save.playerId;
-    multiplayer.isHost=true;
-    multiplayer.hostElectionLockedUntil=0;
+  if(
+    forceHost &&
+    !reconnect
+  ){
+    multiplayer.hostId=
+      save.playerId;
+
+    multiplayer.hostSessionId=
+      multiplayer.sessionId;
+
+    multiplayer.isHost=
+      true;
+
+    multiplayer.hostElectionLockedUntil=
+      0;
+
+  }else if(
+    reconnect
+  ){
+    /*
+      이전에 알고 있던 호스트 정보를 잠시 유지하되,
+      재접속한 내 연결은 자동으로 호스트라고 가정하지 않는다.
+    */
+    multiplayer.hostId=
+      previousHostId;
+
+    multiplayer.hostSessionId=
+      previousHostSessionId;
+
+    multiplayer.isHost=
+      false;
+
+    multiplayer.hostElectionLockedUntil=
+      performance.now()+1200;
+
   }else{
-    multiplayer.hostId=null;
-    multiplayer.isHost=false;
-    multiplayer.hostElectionLockedUntil=performance.now()+1600;
+    multiplayer.hostId=
+      null;
+
+    multiplayer.hostSessionId=
+      null;
+
+    multiplayer.isHost=
+      false;
+
+    multiplayer.hostElectionLockedUntil=
+      performance.now()+1600;
   }
 
   const presenceKey=`${save.playerId}-${multiplayer.sessionId.slice(0,8)}-${Math.random().toString(36).slice(2,7)}`;
@@ -16677,6 +18361,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
   channel.on("presence",{event:"leave"},syncMembers);
 
   channel.on("broadcast",{event:"input"},({payload})=>{
+    if(!multiplayer.isHost) return;
     if(!payload?.playerId || payload.playerId===save.playerId) return;
     const seq=Number(payload?.__lw?.seq)||0;
     const senderSession=payload?.__lw?.sessionId||"legacy";
@@ -16688,7 +18373,144 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     multiplayer.remoteInputs.set(payload.playerId,payload);
   });
 
+  channel.on("broadcast",{event:"loadout_update"},({payload})=>{
+    if(
+      !multiplayer.isHost ||
+      !payload
+    ){
+      return;
+    }
+
+    const sender=
+      payload?.__lw?.sender;
+
+    const senderSession=
+      payload?.__lw?.sessionId;
+
+    if(
+      !sender ||
+      payload.playerId!==
+        sender ||
+      sender===
+        save.playerId
+    ){
+      return;
+    }
+
+    const member=
+      multiplayer.members.get(
+        sender
+      );
+
+    if(
+      member?.sessionId &&
+      senderSession &&
+      member.sessionId!==
+        senderSession
+    ){
+      return;
+    }
+
+    const target=
+      players.get(
+        sender
+      );
+
+    if(
+      !target
+    ){
+      return;
+    }
+
+    const revision=
+      Math.max(
+        0,
+        Math.floor(
+          Number(
+            payload.loadoutRevision
+          ) ||
+          0
+        )
+      );
+
+    const currentRevision=
+      Math.max(
+        0,
+        Math.floor(
+          Number(
+            target._loadoutRevision
+          ) ||
+          0
+        )
+      );
+
+    if(
+      revision &&
+      revision<
+        currentRevision
+    ){
+      return;
+    }
+
+    applyMultiplayerLoadout(
+      target,
+      payload
+    );
+
+    multiplayer.snapshotTimer=
+      0;
+
+    sendRoomEvent(
+      "loadout_ack",
+      {
+        to:
+          sender,
+
+        revision:
+          target._loadoutRevision ||
+          revision
+      },
+      {
+        silent:
+          true
+      }
+    );
+
+    sendLoadoutRoster();
+  });
+
+  channel.on("broadcast",{event:"loadout_ack"},({payload})=>{
+    if(
+      !payload ||
+      payload.to!==
+        save.playerId
+    ){
+      return;
+    }
+
+    if(
+      multiplayer.hostId &&
+      payload?.__lw?.sender &&
+      payload.__lw.sender!==
+        multiplayer.hostId
+    ){
+      return;
+    }
+
+    multiplayer.lastLoadoutAck=
+      Math.max(
+        multiplayer.lastLoadoutAck,
+        Math.floor(
+          Number(
+            payload.revision
+          ) ||
+          0
+        )
+      );
+  });
+
   channel.on("broadcast",{event:"ping"},({payload})=>{
+    if(!multiplayer.isHost) return;
     if(!payload || payload.to!==save.playerId || !payload.token) return;
     markMultiplayerPacket();
     sendRoomEvent("pong",{
@@ -16706,9 +18528,54 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
   channel.on("broadcast",{event:"host_changed"},({payload})=>{
     if(!acceptCriticalPayload(payload)) return;
     if(!payload?.hostId) return;
-    multiplayer.hostId=payload.hostId;
-    multiplayer.isHost=multiplayer.hostId===save.playerId;
-    multiplayer.hostChangedAt=performance.now();
+
+    const member=
+      multiplayer.members.get(
+        payload.hostId
+      );
+
+    if(
+      member &&
+      payload.hostSessionId &&
+      member.sessionId &&
+      member.sessionId!==
+        payload.hostSessionId
+    ){
+      return;
+    }
+
+    multiplayer.hostId=
+      payload.hostId;
+
+    multiplayer.hostSessionId=
+      payload.hostSessionId ||
+      member?.sessionId ||
+      null;
+
+    multiplayer.isHost=
+      multiplayer.hostId===
+        save.playerId &&
+      (
+        !multiplayer.hostSessionId ||
+        multiplayer.hostSessionId===
+          multiplayer.sessionId
+      );
+
+    multiplayer.hostChangedAt=
+      performance.now();
+
+    multiplayer.snapshotTimer=
+      0;
+
+    multiplayer.fullSnapshotTimer=
+      0;
+
+    multiplayer.projectileSyncTimer=
+      0;
+
+    multiplayer.loadoutRosterTimer=
+      0;
+
     renderLobby();
   });
 
@@ -16718,6 +18585,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
 
   channel.on("broadcast",{event:"start_game"},({payload})=>{
     if(!acceptCriticalPayload(payload)) return;
+    if(!isCurrentHostPayload(payload)) return;
     updateMultiplayerLatency(payload);
     if(multiplayer.isHost || multiplayer.starting) return;
     multiplayer.starting=true;
@@ -16727,8 +18595,94 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     multiplayer.starting=false;
   });
 
+  channel.on("broadcast",{event:"world_frame"},({payload})=>{
+    if(!payload) return;
+    if(!isCurrentHostPayload(payload)) return;
+    if(multiplayer.isHost) return;
+
+    const seq=
+      Number(
+        payload.frameSeq
+      ) ||
+      0;
+
+    if(
+      seq &&
+      seq<=
+        multiplayer.lastFrameSeq
+    ){
+      return;
+    }
+
+    if(
+      seq
+    ){
+      multiplayer.lastFrameSeq=
+        seq;
+    }
+
+    updateMultiplayerLatency(
+      payload
+    );
+
+    multiplayer.lastSnapshotAt=
+      performance.now();
+
+    applyWorldFrame(
+      payload
+    );
+  });
+
+  channel.on("broadcast",{event:"projectiles"},({payload})=>{
+    if(!payload) return;
+    if(!isCurrentHostPayload(payload)) return;
+    if(multiplayer.isHost) return;
+
+    const seq=
+      Number(
+        payload.projectileSeq
+      ) ||
+      0;
+
+    if(
+      seq &&
+      seq<=
+        multiplayer.lastProjectileSeq
+    ){
+      return;
+    }
+
+    if(
+      seq
+    ){
+      multiplayer.lastProjectileSeq=
+        seq;
+    }
+
+    markMultiplayerPacket();
+
+    applyProjectileFrame(
+      payload
+    );
+  });
+
+  channel.on("broadcast",{event:"loadout_roster"},({payload})=>{
+    if(!payload) return;
+    if(!isCurrentHostPayload(payload)) return;
+    if(multiplayer.isHost) return;
+
+    markMultiplayerPacket();
+
+    applyLoadoutRoster(
+      payload
+    );
+  });
+
   channel.on("broadcast",{event:"snapshot"},({payload})=>{
-    if(multiplayer.isHost || !payload) return;
+    if(!payload) return;
+    if(!isCurrentHostPayload(payload)) return;
+    if(multiplayer.isHost) return;
+
     const seq=Number(payload.snapshotSeq)||0;
     if(seq&&seq<=multiplayer.lastSnapshotSeq) return;
     if(seq) multiplayer.lastSnapshotSeq=seq;
@@ -16739,6 +18693,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
 
   channel.on("broadcast",{event:"wave_complete"},({payload})=>{
     if(!acceptCriticalPayload(payload)) return;
+    if(!isCurrentHostPayload(payload)) return;
     updateMultiplayerLatency(payload);
     if(multiplayer.isHost) return;
     state="waveComplete";
@@ -16748,6 +18703,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
 
   channel.on("broadcast",{event:"next_wave"},({payload})=>{
     if(!acceptCriticalPayload(payload)) return;
+    if(!isCurrentHostPayload(payload)) return;
     updateMultiplayerLatency(payload);
     if(multiplayer.isHost) return;
     hideOverlay(ui.shop);
@@ -16756,6 +18712,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
 
   channel.on("broadcast",{event:"game_over"},({payload})=>{
     if(!acceptCriticalPayload(payload)) return;
+    if(!isCurrentHostPayload(payload)) return;
     updateMultiplayerLatency(payload);
     if(!runEnded) finishRun();
   });
@@ -16764,7 +18721,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     channel.subscribe(async status=>{
       if(status==="SUBSCRIBED"){
         multiplayer.connectionState="안정";
-        multiplayer.reconnectAttempts=0;
+        multiplayer.connectedAt=performance.now();
         clearRealtimeReconnect();
         try{
           const profile=getProfileStats();
@@ -16772,6 +18729,8 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
           await channel.track({
             playerId:save.playerId,
             sessionId:multiplayer.sessionId,
+            connectionStartedAt:multiplayer.connectionStartedAt,
+            hostClaim:Boolean(forceHost && !reconnect),
             nickname:save.nickname,
             job:save.selectedJob,
             gender:save.gender,
@@ -16791,6 +18750,17 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
           markMultiplayerPacket();
           syncMembers();
           sendMultiplayerInput(true);
+          sendMultiplayerLoadout(true);
+
+          if(
+            multiplayer.isHost
+          ){
+            multiplayer.snapshotTimer=0;
+            multiplayer.fullSnapshotTimer=0;
+            multiplayer.projectileSyncTimer=0;
+            multiplayer.loadoutRosterTimer=0;
+          }
+
           resolve();
         }catch(error){reject(error);}
       }else if(status==="CHANNEL_ERROR" || status==="TIMED_OUT"){
@@ -16809,7 +18779,27 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
   });
 
   hideOverlay(ui.multiMenu);
-  showOverlay(ui.lobby);
+
+  /*
+    기존 코드는 재접속 성공 때도 무조건 로비를 열었다.
+    전투 중 잠깐 재접속만 발생해도 게임 화면 위에 로비가 떠서
+    사용자는 게임이 끊긴 것으로 느낄 수 있었다.
+  */
+  if(
+    reconnect &&
+    (
+      state==="playing" ||
+      state==="waveComplete"
+    )
+  ){
+    hideOverlay(
+      ui.lobby
+    );
+  }else{
+    showOverlay(
+      ui.lobby
+    );
+  }
 }
 
 function ensureMultiplayerPlayers(){
@@ -16832,6 +18822,758 @@ function ensureMultiplayerPlayers(){
       multiplayer.remoteInputs.delete(id);
     }
   }
+}
+
+
+function networkPlayerFrame(
+  p
+){
+
+  const weaponId=
+    getWeaponId(
+      p
+    );
+
+  return{
+    id:p.id,
+    nickname:p.nickname,
+    job:p.job,
+    gender:p.gender,
+    petId:p.petId,
+
+    x:p.x,
+    y:p.y,
+    angle:p.angle,
+
+    hp:p.hp,
+    maxHp:p.maxHp,
+    shield:p.shield,
+    maxShield:p.maxShield,
+
+    level:p.level,
+    xp:p.xp,
+    nextXp:p.nextXp,
+    kills:p.kills,
+    ultimate:p.ultimate,
+
+    dead:p.dead,
+    downed:p.downed,
+
+    petX:p.petX,
+    petY:p.petY,
+
+    weaponId,
+    weaponColorType:
+      p.weaponColors?.[
+        weaponId
+      ] ||
+      "power",
+
+    loadoutRevision:
+      p._loadoutRevision ||
+      0
+  };
+
+}
+
+function networkEnemyFrame(
+  enemy
+){
+
+  return{
+    id:enemy.id,
+    type:enemy.type,
+    name:enemy.name,
+
+    x:enemy.x,
+    y:enemy.y,
+    angle:enemy.angle,
+
+    radius:enemy.radius,
+    hp:enemy.hp,
+    maxHp:enemy.maxHp,
+
+    color:enemy.color,
+
+    elite:Boolean(enemy.elite),
+    boss:Boolean(enemy.boss),
+    bossIndex:enemy.bossIndex,
+
+    dead:Boolean(enemy.dead),
+    hitFlash:enemy.hitFlash,
+
+    v56Variant:enemy.v56Variant,
+    weakBroken:enemy.weakBroken,
+    weakHp:enemy.weakHp
+  };
+
+}
+
+function makeWorldFrame(){
+
+  return{
+    frameSeq:
+      ++multiplayer.frameSeq,
+
+    serverTime:
+      Date.now(),
+
+    wave,
+    score,
+    money,
+    spawnRemaining,
+
+    players:
+      [
+        ...players.values()
+      ].map(
+        networkPlayerFrame
+      ),
+
+    enemies:
+      enemies
+        .filter(
+          enemy =>
+            !enemy.dead
+        )
+        .slice(
+          0,
+          MAX_ENEMIES
+        )
+        .map(
+          networkEnemyFrame
+        )
+  };
+
+}
+
+function sendWorldFrame(){
+
+  if(
+    multiplayer.active &&
+    multiplayer.isHost
+  ){
+    sendRoomEvent(
+      "world_frame",
+      makeWorldFrame(),
+      {
+        silent:true
+      }
+    );
+  }
+
+}
+
+function networkVisualBulletSnapshot(
+  bullet
+){
+
+  return{
+    x:bullet.x,
+    y:bullet.y,
+    vx:bullet.vx,
+    vy:bullet.vy,
+    radius:bullet.radius,
+    life:bullet.life,
+    color:
+      bullet.color ||
+      "#ffffff"
+  };
+
+}
+
+function networkVisualEnemyBulletSnapshot(
+  bullet
+){
+
+  return{
+    x:bullet.x,
+    y:bullet.y,
+    vx:bullet.vx,
+    vy:bullet.vy,
+    radius:bullet.radius,
+    life:bullet.life
+  };
+
+}
+
+function makeProjectileFrame(){
+
+  return{
+    projectileSeq:
+      ++multiplayer.projectileSeq,
+
+    serverTime:
+      Date.now(),
+
+    bullets:
+      bullets
+        .slice(
+          -NETWORK_MAX_BULLETS
+        )
+        .map(
+          networkVisualBulletSnapshot
+        ),
+
+    enemyBullets:
+      enemyBullets
+        .slice(
+          -NETWORK_MAX_ENEMY_BULLETS
+        )
+        .map(
+          networkVisualEnemyBulletSnapshot
+        )
+  };
+
+}
+
+function sendProjectileFrame(){
+
+  if(
+    multiplayer.active &&
+    multiplayer.isHost
+  ){
+    sendRoomEvent(
+      "projectiles",
+      makeProjectileFrame(),
+      {
+        silent:true
+      }
+    );
+  }
+
+}
+
+function makeLoadoutRoster(){
+
+  return{
+    players:
+      [
+        ...players.values()
+      ].map(
+        p => ({
+          playerId:p.id,
+          loadoutRevision:
+            p._loadoutRevision ||
+            0,
+
+          weaponSlots:
+            [
+              ...(
+                p.weaponSlots ||
+                [
+                  "pistol"
+                ]
+              )
+            ],
+
+          activeSlot:
+            p.activeSlot ||
+            0,
+
+          weaponLevels:
+            {
+              ...(
+                p.weaponLevels ||
+                {}
+              )
+            },
+
+          weaponColors:
+            {
+              ...(
+                p.weaponColors ||
+                {}
+              )
+            },
+
+          unlockedEvolutions:
+            {
+              ...(
+                p.unlockedEvolutions ||
+                {}
+              )
+            },
+
+          petId:
+            p.petId ||
+            null,
+
+          meleeWeapon:
+            p.meleeWeapon ||
+            "wornSword",
+
+          ownedMelee:
+            [
+              ...(
+                p.ownedMelee ||
+                [
+                  "wornSword"
+                ]
+              )
+            ]
+        })
+      )
+  };
+
+}
+
+function sendLoadoutRoster(){
+
+  if(
+    multiplayer.active &&
+    multiplayer.isHost
+  ){
+    sendRoomEvent(
+      "loadout_roster",
+      makeLoadoutRoster(),
+      {
+        silent:true
+      }
+    );
+  }
+
+}
+
+function applyLoadoutRoster(
+  payload
+){
+
+  const roster=
+    Array.isArray(
+      payload?.players
+    )
+      ?
+      payload.players
+      :
+      [];
+
+  for(
+    const entry of roster
+  ){
+    const id=
+      entry?.playerId;
+
+    if(
+      !id
+    ){
+      continue;
+    }
+
+    const target=
+      players.get(
+        id
+      );
+
+    if(
+      !target
+    ){
+      continue;
+    }
+
+    if(
+      id===
+        save.playerId &&
+      !multiplayer.isHost &&
+      (
+        Number(
+          entry.loadoutRevision
+        ) ||
+        0
+      )<
+        multiplayer.localLoadoutRevision
+    ){
+      continue;
+    }
+
+    applyMultiplayerLoadout(
+      target,
+      entry
+    );
+  }
+
+}
+
+function applyProjectileFrame(
+  payload
+){
+
+  if(
+    Array.isArray(
+      payload?.bullets
+    )
+  ){
+    bullets.length=
+      0;
+
+    for(
+      const bullet of
+      payload.bullets
+    ){
+      bullets.push(
+        bullet
+      );
+    }
+  }
+
+  if(
+    Array.isArray(
+      payload?.enemyBullets
+    )
+  ){
+    enemyBullets.length=
+      0;
+
+    for(
+      const bullet of
+      payload.enemyBullets
+    ){
+      enemyBullets.push(
+        bullet
+      );
+    }
+  }
+
+}
+
+function applyWorldFrame(
+  frame
+){
+
+  if(
+    !frame
+  ){
+    return;
+  }
+
+  markMultiplayerPacket();
+
+  wave=
+    frame.wave ??
+    wave;
+
+  score=
+    frame.score ??
+    score;
+
+  money=
+    frame.money ??
+    money;
+
+  spawnRemaining=
+    frame.spawnRemaining ??
+    spawnRemaining;
+
+  const incomingPlayers=
+    Array.isArray(
+      frame.players
+    )
+      ?
+      frame.players
+      :
+      [];
+
+  for(
+    const data of
+    incomingPlayers
+  ){
+    if(
+      !data?.id
+    ){
+      continue;
+    }
+
+    let target=
+      players.get(
+        data.id
+      );
+
+    if(
+      !target
+    ){
+      target=
+        createPlayer(
+          data.id,
+          data.nickname,
+          data.job,
+          data.id===
+            save.playerId
+        );
+
+      players.set(
+        data.id,
+        target
+      );
+    }
+
+    const targetX=
+      Number(
+        data.x
+      );
+
+    const targetY=
+      Number(
+        data.y
+      );
+
+    const isLocal=
+      data.id===
+      save.playerId;
+
+    const dynamicKeys=[
+      "nickname",
+      "job",
+      "gender",
+      "petId",
+      "angle",
+      "hp",
+      "maxHp",
+      "shield",
+      "maxShield",
+      "level",
+      "xp",
+      "nextXp",
+      "kills",
+      "ultimate",
+      "dead",
+      "downed",
+      "petX",
+      "petY"
+    ];
+
+    for(
+      const key of
+      dynamicKeys
+    ){
+      if(
+        Object.prototype.hasOwnProperty.call(
+          data,
+          key
+        )
+      ){
+        target[
+          key
+        ]=
+          data[
+            key
+          ];
+      }
+    }
+
+    if(
+      !isLocal
+    ){
+      target._netWeaponId=
+        data.weaponId ||
+        target._netWeaponId;
+
+      target._netWeaponColorType=
+        data.weaponColorType ||
+        target._netWeaponColorType;
+    }
+
+    if(
+      Number.isFinite(
+        targetX
+      ) &&
+      Number.isFinite(
+        targetY
+      )
+    ){
+      if(
+        isLocal
+      ){
+        const error=
+          Math.hypot(
+            (
+              target.x ||
+              0
+            )-
+            targetX,
+            (
+              target.y ||
+              0
+            )-
+            targetY
+          );
+
+        if(
+          error>
+            190
+        ){
+          target.x=
+            targetX;
+
+          target.y=
+            targetY;
+
+        }else if(
+          error>
+            24
+        ){
+          target.x=
+            lerp(
+              target.x,
+              targetX,
+              .20
+            );
+
+          target.y=
+            lerp(
+              target.y,
+              targetY,
+              .20
+            );
+        }
+
+      }else{
+        target._netTargetX=
+          targetX;
+
+        target._netTargetY=
+          targetY;
+
+        if(
+          !Number.isFinite(
+            target.x
+          ) ||
+          !Number.isFinite(
+            target.y
+          )
+        ){
+          target.x=
+            targetX;
+
+          target.y=
+            targetY;
+        }
+      }
+    }
+
+    if(
+      isLocal
+    ){
+      player=
+        target;
+
+      syncPersistentRunKills();
+    }
+  }
+
+  const previousEnemies=
+    new Map(
+      enemies
+        .filter(
+          enemy =>
+            enemy &&
+            enemy.id
+        )
+        .map(
+          enemy =>
+            [
+              enemy.id,
+              enemy
+            ]
+        )
+    );
+
+  const nextEnemies=[];
+
+  for(
+    const data of
+    Array.isArray(
+      frame.enemies
+    )
+      ?
+      frame.enemies
+      :
+      []
+  ){
+    const targetX=
+      Number(
+        data.x
+      );
+
+    const targetY=
+      Number(
+        data.y
+      );
+
+    let enemy=
+      previousEnemies.get(
+        data.id
+      );
+
+    if(
+      !enemy
+    ){
+      enemy={
+        ...data
+      };
+    }
+
+    for(
+      const [
+        key,
+        value
+      ] of
+      Object.entries(
+        data
+      )
+    ){
+      if(
+        key!=="x" &&
+        key!=="y"
+      ){
+        enemy[
+          key
+        ]=
+          value;
+      }
+    }
+
+    if(
+      Number.isFinite(
+        targetX
+      ) &&
+      Number.isFinite(
+        targetY
+      )
+    ){
+      enemy._netTargetX=
+        targetX;
+
+      enemy._netTargetY=
+        targetY;
+
+      if(
+        !Number.isFinite(
+          enemy.x
+        ) ||
+        !Number.isFinite(
+          enemy.y
+        )
+      ){
+        enemy.x=
+          targetX;
+
+        enemy.y=
+          targetY;
+      }
+    }
+
+    nextEnemies.push(
+      enemy
+    );
+  }
+
+  enemies.length=
+    0;
+
+  enemies.push(
+    ...nextEnemies
+  );
+
 }
 
 function networkBulletSnapshot(bullet){
@@ -16870,10 +19612,57 @@ function networkEnemyBulletSnapshot(bullet){
   };
 }
 
+function networkEnemySnapshot(
+  enemy
+){
+
+  return{
+    id:enemy.id,
+    type:enemy.type,
+    name:enemy.name,
+    x:enemy.x,
+    y:enemy.y,
+    angle:enemy.angle,
+    radius:enemy.radius,
+    maxHp:enemy.maxHp,
+    hp:enemy.hp,
+    speed:enemy.speed,
+    damage:enemy.damage,
+    color:enemy.color,
+    elite:Boolean(enemy.elite),
+    boss:Boolean(enemy.boss),
+    bossIndex:enemy.bossIndex,
+    dead:Boolean(enemy.dead),
+    burn:enemy.burn,
+    poison:enemy.poison,
+    slow:enemy.slow,
+    contactTimer:enemy.contactTimer,
+    shootTimer:enemy.shootTimer,
+    skillTimer:enemy.skillTimer,
+    gait:enemy.gait,
+    hitFlash:enemy.hitFlash,
+    textCooldown:enemy.textCooldown,
+
+    /*
+      v56/v63 확장 적 변형 및 보스 약점 상태.
+      호스트 승계 후 AI를 계속 돌리는 데 필요한 값만 보존한다.
+    */
+    v56Applied:enemy.v56Applied,
+    v56RegenPerSecond:enemy.v56RegenPerSecond,
+    v56SplitChild:enemy.v56SplitChild,
+    v56Variant:enemy.v56Variant,
+    weakBroken:enemy.weakBroken,
+    weakHp:enemy.weakHp
+  };
+
+}
+
 function makeSnapshot(){
   return{
     snapshotSeq:++multiplayer.snapshotSeq,
     serverTime:Date.now(),
+    hostId:multiplayer.hostId,
+    hostSessionId:multiplayer.hostSessionId,
     wave,
     score,
     money,
@@ -16905,25 +19694,21 @@ function makeSnapshot(){
       activeSlot:p.activeSlot,
       weaponLevels:p.weaponLevels,
       weaponColors:p.weaponColors,
+      unlockedEvolutions:p.unlockedEvolutions,
+      loadoutRevision:p._loadoutRevision || 0,
       buffs:p.buffs,
       dead:p.dead,
       downed:p.downed,
       meleeWeapon:p.meleeWeapon,
+      ownedMelee:p.ownedMelee,
       petX:p.petX,
       petY:p.petY
     })),
-    // 적은 호스트 승계 시 AI를 계속 돌릴 수 있도록 전체 전투 상태를 보존한다.
+    // 적은 호스트 승계 시 AI를 계속 돌릴 수 있도록 상세 상태를 저주기로 보존한다.
     enemies:enemies
       .filter(enemy=>!enemy.dead)
       .slice(0,MAX_ENEMIES)
-      .map(enemy=>({...enemy})),
-    // 투사체는 필요한 전투 필드만 보내 패킷 크기를 크게 줄인다.
-    bullets:bullets
-      .slice(-NETWORK_MAX_BULLETS)
-      .map(networkBulletSnapshot),
-    enemyBullets:enemyBullets
-      .slice(-NETWORK_MAX_ENEMY_BULLETS)
-      .map(networkEnemyBulletSnapshot)
+      .map(networkEnemySnapshot)
   };
 }
 
@@ -16967,7 +19752,92 @@ function applyWorldSnapshot(snapshot){
     const stateData={...data};
     delete stateData.x;
     delete stateData.y;
+
+    /*
+      클라이언트가 상점에서 막 변경한 로드아웃보다
+      호스트 스냅샷 revision이 오래되면 장비 관련 필드는 적용하지 않는다.
+      위치/체력/점수 등 전투 권위 상태는 계속 호스트 값을 따른다.
+    */
+    if(
+      isLocal &&
+      !multiplayer.isHost
+    ){
+      const incomingLoadoutRevision=
+        Math.max(
+          0,
+          Math.floor(
+            Number(
+              data.loadoutRevision
+            ) ||
+            0
+          )
+        );
+
+      if(
+        incomingLoadoutRevision<
+        multiplayer.localLoadoutRevision
+      ){
+        delete stateData.weaponSlots;
+        delete stateData.activeSlot;
+        delete stateData.weaponLevels;
+        delete stateData.weaponColors;
+        delete stateData.unlockedEvolutions;
+        delete stateData.meleeWeapon;
+        delete stateData.ownedMelee;
+        delete stateData.petId;
+        delete stateData.loadoutRevision;
+      }else{
+        multiplayer.lastLoadoutAck=
+          Math.max(
+            multiplayer.lastLoadoutAck,
+            incomingLoadoutRevision
+          );
+      }
+    }
+
     Object.assign(target,stateData);
+
+    if(
+      !isLocal
+    ){
+      const visualWeaponId=
+        target.weaponSlots?.[
+          target.activeSlot
+        ];
+
+      if(
+        visualWeaponId
+      ){
+        target._netWeaponId=
+          visualWeaponId;
+
+        target._netWeaponColorType=
+          target.weaponColors?.[
+            visualWeaponId
+          ] ||
+          target._netWeaponColorType ||
+          "power";
+      }
+    }
+
+    if(
+      Object.prototype.hasOwnProperty.call(
+        data,
+        "loadoutRevision"
+      )
+    ){
+      target._loadoutRevision=
+        Math.max(
+          Number(
+            target._loadoutRevision
+          ) ||
+          0,
+          Number(
+            data.loadoutRevision
+          ) ||
+          0
+        );
+    }
 
     if(Number.isFinite(targetX)&&Number.isFinite(targetY)){
       if(isLocal){
@@ -17033,15 +19903,6 @@ function applyWorldSnapshot(snapshot){
   enemies.length=0;
   enemies.push(...nextEnemies);
 
-  bullets.length=0;
-  for(const bullet of Array.isArray(snapshot.bullets)?snapshot.bullets:[]){
-    bullets.push(bullet);
-  }
-
-  enemyBullets.length=0;
-  for(const bullet of Array.isArray(snapshot.enemyBullets)?snapshot.enemyBullets:[]){
-    enemyBullets.push(bullet);
-  }
 }
 
 function updateClientNetworkVisuals(dt){
@@ -17894,6 +20755,8 @@ $("upgradeButton").onclick=
     $("upgradeResult").textContent=
       resultMessage;
 
+    notifyMultiplayerLoadoutChanged();
+
   };
 
 $("evolveButton").onclick=
@@ -17922,7 +20785,19 @@ $("evolveButton").onclick=
     save.unlockedEvolutions[id]=
       true;
 
+    player.unlockedEvolutions=
+      {
+        ...(
+          player.unlockedEvolutions ||
+          {}
+        ),
+
+        [id]:
+          true
+      };
+
     persist();
+    notifyMultiplayerLoadoutChanged();
 
     syncShopEconomyUI({
       clearUpgradeResult:true
@@ -18615,10 +21490,39 @@ function bindStick(
   releaseCallback
 ){
 
+  /*
+    v69:
+    모바일 스틱 요소가 없거나 잘못된 객체여도
+    게임 전체 JavaScript가 중단되지 않도록 방어한다.
+  */
+  if(
+    !element ||
+    typeof element.addEventListener!==
+      "function"
+  ){
+    console.warn(
+      "모바일 스틱 요소를 찾지 못했습니다.",
+      element
+    );
+
+    return;
+  }
+
   const knob=
     element.querySelector(
       ".stick-knob"
     );
+
+  if(
+    !knob
+  ){
+    console.warn(
+      "모바일 스틱 knob 요소를 찾지 못했습니다.",
+      element
+    );
+
+    return;
+  }
 
   let pointer=
     null;
@@ -18631,13 +21535,18 @@ function bindStick(
       pointer!==
       event.pointerId
     ){
-
       return;
-
     }
 
     const rect=
       element.getBoundingClientRect();
+
+    if(
+      !rect.width ||
+      !rect.height
+    ){
+      return;
+    }
 
     let dx=
       event.clientX-
@@ -18656,8 +21565,11 @@ function bindStick(
       );
 
     const max=
-      rect.width*
-      .34;
+      Math.max(
+        1,
+        rect.width*
+        .34
+      );
 
     const length=
       Math.hypot(
@@ -18669,7 +21581,6 @@ function bindStick(
       length>
       max
     ){
-
       dx *=
         max/
         length;
@@ -18677,43 +21588,41 @@ function bindStick(
       dy *=
         max/
         length;
-
     }
 
     knob.style.transform=
       `translate(${dx}px,${dy}px)`;
 
-    moveCallback(
-      dx/
-      max,
-      dy/
-      max
-    );
-
+    if(
+      typeof moveCallback===
+      "function"
+    ){
+      moveCallback(
+        dx/
+        max,
+        dy/
+        max
+      );
+    }
   }
 
-  element.addEventListener(
-    "pointerdown",
-    event => {
+  function startPointer(
+    event
+  ){
 
-      pointer=
-        event.pointerId;
+    pointer=
+      event.pointerId;
 
+    try{
       element.setPointerCapture(
         pointer
       );
+    }catch{}
 
-      move(
-        event
-      );
-
-    }
-  );
-
-  element.adentListener(
-    "pointermove",
-    move
-  );
+    move(
+      event
+    );
+  }
 
   function end(
     event
@@ -18723,10 +21632,20 @@ function bindStick(
       pointer!==
       event.pointerId
     ){
-
       return;
-
     }
+
+    try{
+      if(
+        element.hasPointerCapture?.(
+          pointer
+        )
+      ){
+        element.releasePointerCapture(
+          pointer
+        );
+      }
+    }catch{}
 
     pointer=
       null;
@@ -18734,18 +21653,76 @@ function bindStick(
     knob.style.transform=
       "";
 
-    releaseCallback();
-
+    if(
+      typeof releaseCallback===
+      "function"
+    ){
+      releaseCallback();
+    }
   }
+
+  /*
+    반드시 addEventListener를 사용한다.
+    이전 배포본의 addEventListener 오타로 게임이 시작 전에 중단된 문제 수정.
+  */
+  element.addEventListener(
+    "pointerdown",
+    startPointer,
+    {
+      passive:true
+    }
+  );
+
+  element.addEventListener(
+    "pointermove",
+    move,
+    {
+      passive:true
+    }
+  );
 
   element.addEventListener(
     "pointerup",
-    end
+    end,
+    {
+      passive:true
+    }
   );
 
   element.addEventListener(
     "pointercancel",
-    end
+    end,
+    {
+      passive:true
+    }
+  );
+
+  element.addEventListener(
+    "lostpointercapture",
+    event => {
+
+      if(
+        pointer===
+        event.pointerId
+      ){
+        pointer=
+          null;
+
+        knob.style.transform=
+          "";
+
+        if(
+          typeof releaseCallback===
+          "function"
+        ){
+          releaseCallback();
+        }
+      }
+
+    },
+    {
+      passive:true
+    }
   );
 
 }
@@ -19145,7 +22122,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v63</div>
+        <div class="eyebrow">FIELD ARCHIVE · v69</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -19160,7 +22137,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v63</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v69</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
@@ -19906,17 +22883,12 @@ finishRun=async function(){
 };
 
 const v56BaseOpenShop=openShop;
+
+/*
+  v66: 저주받은 거래/계약 시스템 제거.
+  웨이브 완료 후 바로 일반 상점으로 이동한다.
+*/
 openShop=function(){
-  if(
-    v56SystemsEnabled() &&
-    wave>0 &&
-    wave%5===0 &&
-    !v56State.curseHandledWaves.has(wave)
-  ){
-    v56State.curseHandledWaves.add(wave);
-    v56ShowCurseChoices();
-    return;
-  }
   return v56BaseOpenShop();
 };
 
