@@ -2161,7 +2161,7 @@ body.mobile .popup-drag-handle{min-height:34px}
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v77</span>
+      <span id="gameVersion" class="game-version">v78</span>
     </div>
 
     <h1 id="gameTitle">Last Wave</h1>
@@ -3488,7 +3488,7 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v77";
+const GAME_VERSION="v78";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -7589,6 +7589,91 @@ function applyPerformanceCaps(){
 
 applyPerformanceCaps();
 
+/*
+  v78 · 멀티 실전 성능 상한
+
+  그래픽 설정 표시는 그대로 유지하되,
+  멀티에서는 실제 전투 객체 수를 자동으로 제한한다.
+  특히 연사 무기 + 다수 적 조합에서 호스트가 멈추는 것을 줄인다.
+*/
+function getActiveBulletCap(){
+
+  if(
+    !multiplayer?.active
+  ){
+    return MAX_BULLETS;
+  }
+
+  const count=
+    getMultiplayerPlayerCount();
+
+  if(
+    count>=4
+  ){
+    return IS_MOBILE
+      ?
+      80
+      :
+      165;
+  }
+
+  if(
+    count===3
+  ){
+    return IS_MOBILE
+      ?
+      100
+      :
+      200;
+  }
+
+  return IS_MOBILE
+    ?
+    120
+    :
+    240;
+
+}
+
+function getActiveEnemyBulletCap(){
+
+  if(
+    !multiplayer?.active
+  ){
+    return MAX_ENEMY_BULLETS;
+  }
+
+  const count=
+    getMultiplayerPlayerCount();
+
+  if(
+    count>=4
+  ){
+    return IS_MOBILE
+      ?
+      56
+      :
+      100;
+  }
+
+  if(
+    count===3
+  ){
+    return IS_MOBILE
+      ?
+      68
+      :
+      125;
+  }
+
+  return IS_MOBILE
+    ?
+    80
+    :
+    150;
+
+}
+
 let lastRuntimeError=
   null;
 
@@ -7686,31 +7771,36 @@ const MULTIPLAYER_MAX_PLAYERS=
 
 const MULTI_SYNC_PROFILES={
 
+  /*
+    v78:
+    2인부터 전송률을 더 낮춘다.
+    로컬 예측/보간은 유지하고 Realtime Broadcast 수를 줄인다.
+  */
   2:{
-    inputActive:.22,
-    inputIdle:.90,
-    frame:.20,
-    projectile:.45,
-    fullSnapshot:2.50,
-    loadoutRoster:5.00
+    inputActive:.32,
+    inputIdle:1.20,
+    frame:.34,
+    projectile:.90,
+    fullSnapshot:6.00,
+    loadoutRoster:15.00
   },
 
   3:{
-    inputActive:.30,
-    inputIdle:1.20,
-    frame:.28,
-    projectile:.62,
-    fullSnapshot:3.10,
-    loadoutRoster:7.00
+    inputActive:.44,
+    inputIdle:1.60,
+    frame:.48,
+    projectile:1.15,
+    fullSnapshot:7.50,
+    loadoutRoster:18.00
   },
 
   4:{
-    inputActive:.40,
-    inputIdle:1.50,
-    frame:.38,
-    projectile:.82,
-    fullSnapshot:4.00,
-    loadoutRoster:9.00
+    inputActive:.58,
+    inputIdle:2.00,
+    frame:.66,
+    projectile:1.45,
+    fullSnapshot:9.00,
+    loadoutRoster:22.00
   }
 
 };
@@ -7757,19 +7847,19 @@ function getMultiplayerSyncProfile(){
 
 }
 
-const MULTI_HEARTBEAT_INTERVAL=8;
-const MULTI_PING_INTERVAL=5;
-const MULTI_PACKET_TIMEOUT=18000;
-const MULTI_SNAPSHOT_TIMEOUT=7500;
+const MULTI_HEARTBEAT_INTERVAL=10;
+const MULTI_PING_INTERVAL=8;
+const MULTI_PACKET_TIMEOUT=30000;
+const MULTI_SNAPSHOT_TIMEOUT=14000;
 
 const MULTI_RECONNECT_BASE_DELAY=1800;
 const MULTI_RECONNECT_MAX_DELAY=15000;
 
 const NETWORK_MAX_BULLETS=
-  IS_MOBILE ? 52 : 82;
+  IS_MOBILE ? 34 : 52;
 
 const NETWORK_MAX_ENEMY_BULLETS=
-  IS_MOBILE ? 42 : 66;
+  IS_MOBILE ? 28 : 44;
 
 const multiplayer={
 
@@ -9489,7 +9579,7 @@ function addParticle(
         :
         multiplayerCount===2
           ?
-          .84
+          .58
           :
           1;
 
@@ -11192,6 +11282,166 @@ function hitEnemy(
 }
 
 /* =========================================================
+   v78 · 적 공간 분할
+
+   총알 하나마다 모든 적을 검사하던 구조를
+   근처 셀만 조회하도록 바꿔 후반 웨이브 CPU 부하를 줄인다.
+========================================================= */
+
+const ENEMY_SPATIAL_CELL_SIZE=
+  180;
+
+const enemySpatialGrid=
+  new Map();
+
+function enemySpatialKey(
+  cellX,
+  cellY
+){
+  return `${cellX},${cellY}`;
+}
+
+function rebuildEnemySpatialGrid(){
+
+  enemySpatialGrid.clear();
+
+  for(
+    const enemy
+    of enemies
+  ){
+    if(
+      !enemy ||
+      enemy.dead ||
+      !Number.isFinite(
+        enemy.x
+      ) ||
+      !Number.isFinite(
+        enemy.y
+      )
+    ){
+      continue;
+    }
+
+    const cellX=
+      Math.floor(
+        enemy.x/
+        ENEMY_SPATIAL_CELL_SIZE
+      );
+
+    const cellY=
+      Math.floor(
+        enemy.y/
+        ENEMY_SPATIAL_CELL_SIZE
+      );
+
+    const key=
+      enemySpatialKey(
+        cellX,
+        cellY
+      );
+
+    let bucket=
+      enemySpatialGrid.get(
+        key
+      );
+
+    if(
+      !bucket
+    ){
+      bucket=[];
+      enemySpatialGrid.set(
+        key,
+        bucket
+      );
+    }
+
+    bucket.push(
+      enemy
+    );
+  }
+
+}
+
+function getNearbyEnemies(
+  x,
+  y,
+  range
+){
+
+  const results=[];
+
+  const minCellX=
+    Math.floor(
+      (
+        x-
+        range
+      )/
+      ENEMY_SPATIAL_CELL_SIZE
+    );
+
+  const maxCellX=
+    Math.floor(
+      (
+        x+
+        range
+      )/
+      ENEMY_SPATIAL_CELL_SIZE
+    );
+
+  const minCellY=
+    Math.floor(
+      (
+        y-
+        range
+      )/
+      ENEMY_SPATIAL_CELL_SIZE
+    );
+
+  const maxCellY=
+    Math.floor(
+      (
+        y+
+        range
+      )/
+      ENEMY_SPATIAL_CELL_SIZE
+    );
+
+  for(
+    let cellX=
+      minCellX;
+    cellX<=
+      maxCellX;
+    cellX++
+  ){
+    for(
+      let cellY=
+        minCellY;
+      cellY<=
+        maxCellY;
+      cellY++
+    ){
+      const bucket=
+        enemySpatialGrid.get(
+          enemySpatialKey(
+            cellX,
+            cellY
+          )
+        );
+
+      if(
+        bucket
+      ){
+        results.push(
+          ...bucket
+        );
+      }
+    }
+  }
+
+  return results;
+}
+
+/* =========================================================
    총알 업데이트
 
    보스 멈춤 방지 핵심
@@ -11279,9 +11529,16 @@ function updateBullets(
       let best=
         240;
 
+      const nearbyEnemies=
+        getNearbyEnemies(
+          bullet.x,
+          bullet.y,
+          260
+        );
+
       for(
         const enemy
-        of enemies
+        of nearbyEnemies
       ){
 
         if(
@@ -11469,9 +11726,16 @@ function updateBullets(
       보스 몸속에 총알이 남아 있어도 다시 맞지 않는다.
     */
 
+    const collisionCandidates=
+      getNearbyEnemies(
+        bullet.x,
+        bullet.y,
+        96
+      );
+
     for(
       const enemy
-      of enemies
+      of collisionCandidates
     ){
 
       if(
@@ -11658,28 +11922,34 @@ function updateBullets(
 
   }
 
+  const activeBulletCap=
+    getActiveBulletCap();
+
   if(
     bullets.length>
-    MAX_BULLETS
+    activeBulletCap
   ){
 
     bullets.splice(
       0,
       bullets.length-
-      MAX_BULLETS
+      activeBulletCap
     );
 
   }
 
+  const activeEnemyBulletCap=
+    getActiveEnemyBulletCap();
+
   if(
     enemyBullets.length>
-    MAX_ENEMY_BULLETS
+    activeEnemyBulletCap
   ){
 
     enemyBullets.splice(
       0,
       enemyBullets.length-
-      MAX_ENEMY_BULLETS
+      activeEnemyBulletCap
     );
 
   }
@@ -16974,6 +17244,7 @@ function update(
       updateEnemy(enemy,dt);
     }
 
+    rebuildEnemySpatialGrid();
     updateBullets(dt);
 
     cleanupTimer-=dt;
@@ -17026,7 +17297,14 @@ function update(
           syncProfile.projectile*
           congestionMultiplier;
 
-        sendProjectileFrame();
+        if(
+          multiplayer.sendFailures<
+          2 &&
+          performance.now()>=
+            multiplayer.networkBackoffUntil
+        ){
+          sendProjectileFrame();
+        }
       }
 
       if(
@@ -17036,7 +17314,14 @@ function update(
           syncProfile.fullSnapshot*
           congestionMultiplier;
 
-        sendWorldSnapshot();
+        if(
+          multiplayer.sendFailures<
+          3 &&
+          performance.now()>=
+            multiplayer.networkBackoffUntil
+        ){
+          sendWorldSnapshot();
+        }
       }
 
       if(
@@ -17046,7 +17331,14 @@ function update(
           syncProfile.loadoutRoster*
           congestionMultiplier;
 
-        sendLoadoutRoster();
+        if(
+          multiplayer.sendFailures<
+          3 &&
+          performance.now()>=
+            multiplayer.networkBackoffUntil
+        ){
+          sendLoadoutRoster();
+        }
       }
     }
   }else{
@@ -17087,11 +17379,23 @@ function updateHud(){
   ui.wave.textContent=
     wave;
 
+  let aliveEnemyCount=
+    0;
+
+  for(
+    const enemy
+    of enemies
+  ){
+    if(
+      enemy &&
+      !enemy.dead
+    ){
+      aliveEnemyCount++;
+    }
+  }
+
   ui.enemies.textContent=
-    enemies.filter(
-      enemy =>
-        !enemy.dead
-    ).length+
+    aliveEnemyCount+
     spawnRemaining;
 
   ui.score.textContent=
@@ -17162,10 +17466,7 @@ function updateHud(){
 
   ui.missionText.textContent=
     `남은 감염자 ${
-      enemies.filter(
-        enemy =>
-          !enemy.dead
-      ).length+
+      aliveEnemyCount+
       spawnRemaining
     }`;
 
@@ -18007,7 +18308,7 @@ function drawBullets(){
       1;
 
   const crowdedMultiplayer=
-    multiplayerCount>=3;
+    multiplayerCount>=2;
 
   const allowBulletTrails=
     mode.detail>=3 &&
@@ -19309,12 +19610,14 @@ function handleMultiplayerSendStatus(
   */
   if(
     event==="input" ||
-    event==="snapshot"
+    event==="snapshot" ||
+    event==="world_frame" ||
+    event==="projectiles"
   ){
     multiplayer.networkBackoffUntil=
       Math.max(
         multiplayer.networkBackoffUntil,
-        performance.now()+1200
+        performance.now()+1800
       );
   }
 
@@ -19328,7 +19631,7 @@ function handleMultiplayerSendStatus(
   }
 
   if(
-    multiplayer.sendFailures>=10 &&
+    multiplayer.sendFailures>=18 &&
     multiplayer.active &&
     !multiplayer.reconnecting
   ){
@@ -19385,7 +19688,7 @@ function sendRoomEvent(event,payload={},options={}){
           console.warn(`멀티 이벤트 전송 실패: ${event}`,error);
         }
         if(
-          multiplayer.sendFailures>=10 &&
+          multiplayer.sendFailures>=18 &&
           multiplayer.active &&
           !multiplayer.reconnecting
         ){
@@ -25986,7 +26289,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v77</div>
+        <div class="eyebrow">FIELD ARCHIVE · v78</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -26001,7 +26304,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v77</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v78</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
@@ -28360,7 +28663,7 @@ startWave=function(){
     state==="playing"
   ){
     const countMultiplier=
-      1.20*
+      1.24*
       getTimeEnemyCountMultiplier();
 
     spawnRemaining=
@@ -28416,16 +28719,16 @@ spawnEnemy=function(){
       true;
 
     enemy.maxHp *=
-      1.16;
+      1.20;
 
     enemy.hp *=
-      1.16;
+      1.20;
 
     enemy.speed *=
-      1.08;
+      1.09;
 
     enemy.damage *=
-      1.12;
+      1.15;
   }
 
   return result;
@@ -28463,13 +28766,13 @@ spawnBoss=function(){
       true;
 
     enemy.maxHp *=
-      1.14;
+      1.18;
 
     enemy.hp *=
-      1.14;
+      1.18;
 
     enemy.damage *=
-      1.10;
+      1.13;
 
     if(
       Number.isFinite(
@@ -28477,7 +28780,7 @@ spawnBoss=function(){
       )
     ){
       enemy.weakHp *=
-        1.14;
+        1.18;
     }
   }
 
@@ -31308,44 +31611,55 @@ initializeMovableGameUi();
   적 도감/이벤트 HUD처럼 런타임에 나중에 만들어지는 UI도
   생성 즉시 드래그 기능을 붙인다.
 */
+/*
+  v78:
+  v77의 subtree 전체 MutationObserver는 HUD textContent 변경에도
+  계속 실행되어 매 프레임 전체 overlay/UI를 다시 검색할 수 있었다.
+  이제 document.body의 직접 자식 추가만 가볍게 감시한다.
+*/
 const movableUiObserver=
   new MutationObserver(
     records => {
 
-      let shouldRefresh=
-        false;
-
       for(
-        const record of
-        records
+        const record
+        of records
       ){
-        if(
-          record.addedNodes?.length
+        for(
+          const node
+          of record.addedNodes
         ){
-          shouldRefresh=
-            true;
-          break;
+          if(
+            node.nodeType!==
+            Node.ELEMENT_NODE
+          ){
+            continue;
+          }
+
+          const element=
+            node;
+
+          if(
+            element.matches?.(
+              ".overlay"
+            )
+          ){
+            attachDraggablePopup(
+              element
+            );
+          }
+
+          if(
+            element.matches?.(
+              "#v56EventHud"
+            )
+          ){
+            attachMovableGameUi(
+              element
+            );
+          }
         }
       }
-
-      if(
-        !shouldRefresh
-      ){
-        return;
-      }
-
-      for(
-        const overlay of
-        document.querySelectorAll(
-          ".overlay"
-        )
-      ){
-        attachDraggablePopup(
-          overlay
-        );
-      }
-
-      initializeMovableGameUi();
 
     }
   );
@@ -31354,7 +31668,7 @@ movableUiObserver.observe(
   document.body,
   {
     childList:true,
-    subtree:true
+    subtree:false
   }
 );
 
