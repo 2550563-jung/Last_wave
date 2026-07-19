@@ -2161,7 +2161,7 @@ body.mobile .popup-drag-handle{min-height:34px}
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v78</span>
+      <span id="gameVersion" class="game-version">v79</span>
     </div>
 
     <h1 id="gameTitle">Last Wave</h1>
@@ -3488,7 +3488,7 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v78";
+const GAME_VERSION="v79";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -12086,13 +12086,13 @@ function spawnEnemy(){
   const scale=
     1+
     wave*
-    .047+
+    .062+
     Math.max(
       0,
       wave-
-      100
+      60
     )*
-    .018;
+    .026;
 
   const enemy={
 
@@ -12128,9 +12128,9 @@ function spawnEnemy(){
       (
         1+
         Math.min(
-          .58,
+          .82,
           wave*
-          .004
+          .0055
         )
       ),
 
@@ -12139,7 +12139,7 @@ function spawnEnemy(){
       (
         1+
         wave*
-        .017
+        .024
       ),
 
     color:
@@ -12181,13 +12181,16 @@ function spawnEnemy(){
   ){
 
     enemy.maxHp *=
-      1.5;
+      1.75;
 
     enemy.hp=
       enemy.maxHp;
 
+    enemy.speed *=
+      1.08;
+
     enemy.damage *=
-      1.15;
+      1.30;
 
   }
 
@@ -17237,7 +17240,7 @@ function update(
     if(spawnRemaining>0 && spawnTimer<=0 && enemies.length<MAX_ENEMIES){
       spawnEnemy();
       spawnRemaining--;
-      spawnTimer=eliteWave?.38:.58;
+      spawnTimer=eliteWave?.28:.44;
     }
 
     for(const enemy of enemies){
@@ -26289,7 +26292,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v78</div>
+        <div class="eyebrow">FIELD ARCHIVE · v79</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -26304,7 +26307,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v78</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v79</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
@@ -28626,7 +28629,7 @@ v56UpdateSystems=function(
 
 };
 
-/* ---------- v77 · 난이도 추가 상향 + 낮/밤 적 수 ---------- */
+/* ---------- v79 · 고난도 전투 강화 + 낮/밤 적 수 ---------- */
 
 function getTimeEnemyCountMultiplier(){
 
@@ -28634,20 +28637,35 @@ function getTimeEnemyCountMultiplier(){
     timeOfDay
   ){
     case "dawn":
-      return .97;
+      return 1.00;
 
     case "morning":
-      return .94;
+      return .97;
 
     case "noon":
-      return .91;
+      return .94;
 
     case "evening":
-      return 1.05;
+      return 1.12;
 
     default:
-      return 1.18;
+      return 1.32;
   }
+
+}
+
+function getV79LateWaveRamp(){
+
+  return 1+
+    Math.min(
+      1.10,
+      Math.max(
+        0,
+        wave-
+        6
+      )*
+      .022
+    );
 
 }
 
@@ -28662,8 +28680,19 @@ startWave=function(){
   if(
     state==="playing"
   ){
+    /*
+      숫자만 과도하게 늘리면 멀티 렉이 다시 커질 수 있어
+      적 수는 강하게, 하지만 상한 내에서만 증가시킨다.
+    */
     const countMultiplier=
-      1.24*
+      (
+        1.42+
+        Math.min(
+          .28,
+          wave*
+          .006
+        )
+      )*
       getTimeEnemyCountMultiplier();
 
     spawnRemaining=
@@ -28698,6 +28727,9 @@ spawnEnemy=function(){
   const result=
     v73BaseSpawnEnemy();
 
+  const lateWaveRamp=
+    getV79LateWaveRamp();
+
   for(
     let index=before;
     index<
@@ -28719,16 +28751,31 @@ spawnEnemy=function(){
       true;
 
     enemy.maxHp *=
-      1.20;
+      1.48*
+      lateWaveRamp;
 
     enemy.hp *=
-      1.20;
+      1.48*
+      lateWaveRamp;
 
     enemy.speed *=
-      1.09;
+      1.18+
+      Math.min(
+        .18,
+        wave*
+        .003
+      );
 
     enemy.damage *=
-      1.15;
+      1.38*
+      (
+        1+
+        Math.min(
+          .55,
+          wave*
+          .008
+        )
+      );
   }
 
   return result;
@@ -28745,6 +28792,9 @@ spawnBoss=function(){
 
   const result=
     v73BaseSpawnBoss();
+
+  const lateWaveRamp=
+    getV79LateWaveRamp();
 
   for(
     let index=before;
@@ -28766,13 +28816,37 @@ spawnBoss=function(){
       true;
 
     enemy.maxHp *=
-      1.18;
+      1.70*
+      lateWaveRamp;
 
     enemy.hp *=
-      1.18;
+      1.70*
+      lateWaveRamp;
+
+    enemy.speed *=
+      1.18+
+      Math.min(
+        .16,
+        wave*
+        .0025
+      );
 
     enemy.damage *=
-      1.13;
+      1.48*
+      (
+        1+
+        Math.min(
+          .65,
+          wave*
+          .009
+        )
+      );
+
+    enemy.shootTimer *=
+      .78;
+
+    enemy.skillTimer *=
+      .76;
 
     if(
       Number.isFinite(
@@ -28780,7 +28854,8 @@ spawnBoss=function(){
       )
     ){
       enemy.weakHp *=
-        1.18;
+        1.70*
+        lateWaveRamp;
     }
   }
 
