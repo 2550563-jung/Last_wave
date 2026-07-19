@@ -2132,7 +2132,7 @@ body.mobile .popup-drag-handle{min-height:34px}
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v75</span>
+      <span id="gameVersion" class="game-version">v76</span>
     </div>
 
     <h1 id="gameTitle">Last Wave</h1>
@@ -2220,7 +2220,7 @@ body.mobile .popup-drag-handle{min-height:34px}
       </form>
 
       <span id="accountStatus" class="account-status">로그인하지 않음 · 계정 로그인 또는 게스트 모드를 선택하세요.</span>
-      <span id="guestModeStatus" class="guest-mode-status">게스트 모드는 닉네임만 정하면 바로 시작할 수 있습니다.</span>
+      <span id="guestModeStatus" class="guest-mode-status">게스트 버튼을 누르면 계정 없이 사용할 닉네임을 바로 설정할 수 있습니다.</span>
     </div>
 
     <div id="profileSummary" class="profile-summary" aria-label="플레이어 영구 프로필">
@@ -3071,6 +3071,43 @@ body.mobile .popup-drag-handle{min-height:34px}
   </div>
 </div>
 
+
+<div id="guestNicknameOverlay" class="overlay" aria-hidden="true">
+  <div class="panel hero" style="max-width:520px">
+    <div class="eyebrow" style="color:#78dcff">GUEST MODE</div>
+    <h2>게스트 닉네임 설정</h2>
+
+    <p class="account-status">
+      계정이 없어도 사용할 수 있습니다.
+      이 닉네임과 게스트 진행도는 <b>현재 기기에만 저장</b>됩니다.
+      게스트 상태에서도 솔로 플레이, 랭킹 등록, 멀티플레이를 사용할 수 있습니다.
+    </p>
+
+    <input
+      id="guestNicknameInput"
+      type="text"
+      inputmode="text"
+      enterkeyhint="done"
+      maxlength="16"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      placeholder="게스트 닉네임 2~16자"
+    >
+
+    <div id="guestNicknameStatus" class="account-field-status">
+      닉네임을 입력하면 계정 없이 바로 플레이할 수 있습니다.
+    </div>
+
+    <div class="actions" style="justify-content:center">
+      <button id="guestNicknameCancelButton" class="btn" type="button">취소</button>
+      <button id="guestNicknameSaveButton" class="btn primary" type="button">
+        닉네임 저장하고 게스트 시작
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="accountDeleteOverlay" class="overlay">
   <div class="panel hero" style="max-width:560px">
     <div class="eyebrow" style="color:#ff7187">ACCOUNT DELETE</div>
@@ -3422,7 +3459,7 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v75";
+const GAME_VERSION="v76";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -24829,7 +24866,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v75</div>
+        <div class="eyebrow">FIELD ARCHIVE · v76</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -24844,7 +24881,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v75</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v76</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
@@ -28778,7 +28815,7 @@ function writeGuestProfileSnapshotNow(){
     localStorage.setItem(
       GUEST_PROFILE_KEY,
       JSON.stringify({
-        version:75,
+        version:76,
         savedAt:Date.now(),
         playerId:getGuestPlayerId(),
         nickname:safeText(save.nickname||"",16),
@@ -28876,7 +28913,15 @@ function activateGuestMode(options={}){
   if(guestModeActive&&!currentAccountUser?.id){
     restoreGuestProfileSnapshot();
     updateAccountIdentityUi();
-    if(!options.silent) showMessage("게스트 모드","이 기기의 게스트 진행도를 사용합니다.");
+
+    if(!options.silent){
+      if(save.nickname){
+        showMessage("게스트 모드","이 기기의 게스트 진행도를 사용합니다.");
+      }else if(!options.skipNicknamePrompt){
+        openGuestNicknameOverlay();
+      }
+    }
+
     return true;
   }
 
@@ -28889,7 +28934,11 @@ function activateGuestMode(options={}){
   scheduleGuestProfileSnapshot(0);
 
   if(!options.silent){
-    showMessage("게스트 모드 시작","닉네임을 저장하면 랭킹과 멀티플레이를 사용할 수 있습니다.");
+    if(save.nickname){
+      showMessage("게스트 모드 시작",`${save.nickname}(으)로 바로 플레이할 수 있습니다.`);
+    }else if(!options.skipNicknamePrompt){
+      openGuestNicknameOverlay();
+    }
   }
 
   return true;
@@ -28910,6 +28959,137 @@ function deactivateGuestMode(options={}){
   updateAccountStatus("게스트 모드 종료 · 계정으로 로그인하거나 다시 게스트 모드를 시작하세요.","offline");
 
   if(!options.silent) showMessage("게스트 모드 종료");
+}
+
+
+function guestNicknameValue(){
+  return safeText(
+    save.nickname ||
+    localStorage.getItem(GUEST_NICKNAME_KEY) ||
+    "",
+    16
+  );
+}
+
+function openGuestNicknameOverlay(){
+  if(!guestModeActive || currentAccountUser?.id){
+    return false;
+  }
+
+  const overlay=$("guestNicknameOverlay");
+  const input=$("guestNicknameInput");
+  const status=$("guestNicknameStatus");
+
+  if(!overlay || !input){
+    return false;
+  }
+
+  input.value=guestNicknameValue();
+
+  if(status){
+    status.textContent=input.value
+      ? `현재 게스트 닉네임: ${input.value} · 변경할 수도 있습니다.`
+      : "계정 없이 사용할 닉네임을 2~16자로 입력하세요.";
+  }
+
+  showOverlay(overlay);
+
+  /*
+    게스트 닉네임 입력창은 계정용 입력 포털과 분리되어 있다.
+    모바일에서도 이 실제 input에 직접 포커스한다.
+  */
+  setTimeout(()=>{
+    try{
+      input.focus();
+      const end=input.value.length;
+      input.setSelectionRange(end,end);
+    }catch{}
+  },30);
+
+  return true;
+}
+
+function closeGuestNicknameOverlay(options={}){
+  const overlay=$("guestNicknameOverlay");
+
+  if(overlay){
+    hideOverlay(overlay);
+  }
+
+  if(
+    options.cancelGuestWhenEmpty &&
+    guestModeActive &&
+    !currentAccountUser?.id &&
+    !guestNicknameValue()
+  ){
+    deactivateGuestMode({silent:true});
+  }
+}
+
+function saveGuestNicknameFromOverlay(){
+  if(!guestModeActive || currentAccountUser?.id){
+    const status=$("guestNicknameStatus");
+    if(status){
+      status.textContent="현재 게스트 모드가 아닙니다.";
+    }
+    return false;
+  }
+
+  const input=$("guestNicknameInput");
+  const status=$("guestNicknameStatus");
+
+  const nickname=safeText(
+    input?.value || "",
+    16
+  );
+
+  if(nickname.length<2){
+    if(status){
+      status.textContent="게스트 닉네임은 2~16자로 입력하세요.";
+    }
+    return false;
+  }
+
+  const previousNickname=save.nickname;
+
+  save.nickname=nickname;
+  save.playerId=getGuestPlayerId();
+
+  localStorage.setItem(
+    GUEST_NICKNAME_KEY,
+    nickname
+  );
+
+  persist({cloud:false});
+  writeGuestProfileSnapshotNow();
+  updateAccountIdentityUi();
+
+  if(ui.nicknameInput){
+    ui.nicknameInput.value=nickname;
+  }
+
+  if(ui.nicknameHud){
+    ui.nicknameHud.textContent=nickname;
+  }
+
+  closeGuestNicknameOverlay();
+
+  showMessage(
+    "게스트 닉네임 저장 완료",
+    `${nickname}(으)로 계정 없이 플레이할 수 있습니다.`
+  );
+
+  if(
+    previousNickname &&
+    previousNickname!==nickname
+  ){
+    syncRankingNicknameChange(
+      previousNickname,
+      nickname
+    ).catch(()=>{});
+  }
+
+  return true;
 }
 
 function prepareForAccountLogin(){
@@ -28999,7 +29179,7 @@ updateAccountIdentityUi=function(){
       ? "계정 모드 · 서버 저장과 다른 기기 이어하기를 사용할 수 있습니다."
       : guest
         ? "게스트 모드 활성화 · 이 기기에만 저장 · 솔로 랭킹/멀티플레이 사용 가능"
-        : "게스트 모드는 닉네임만 정하면 바로 시작할 수 있습니다.";
+        : "게스트 버튼을 누르면 계정 없이 닉네임을 설정하고 바로 시작할 수 있습니다.";
   }
 
   const syncButton=$("accountSyncButton");
@@ -29045,7 +29225,7 @@ saveNickname=async function(){
   }
 
   if(!currentAccountUser?.id||!currentAccountToken){
-    ui.nicknameStatus.textContent="먼저 계정에 로그인하거나 게스트 모드를 시작하세요.";
+    ui.nicknameStatus.textContent="계정으로 로그인하거나, 게스트 버튼을 눌러 계정 없이 닉네임을 설정하세요.";
     return false;
   }
   if(currentAccountUser.nickname){
@@ -29083,7 +29263,7 @@ const v75BaseOpenMobileTextPortal=openMobileTextPortal;
 openMobileTextPortal=function(target){
   if(target?.id==="nicknameInput"){
     if(!currentAccountUser&&!guestModeActive){
-      ui.nicknameStatus.textContent="먼저 계정에 로그인하거나 게스트 모드를 시작하세요.";
+      ui.nicknameStatus.textContent="계정으로 로그인하거나, 게스트 버튼을 눌러 계정 없이 닉네임을 설정하세요.";
       return;
     }
     if(currentAccountUser?.nickname){
@@ -29132,6 +29312,11 @@ if(guestModeButton){
 
     try{
       if(guestModeActive&&!currentAccountUser){
+        if(!save.nickname){
+          openGuestNicknameOverlay();
+          return;
+        }
+
         deactivateGuestMode();
         return;
       }
@@ -29150,6 +29335,56 @@ if(guestModeButton){
       updateAccountStatus(`게스트 모드 전환 실패: ${friendlyAuthError(error,"게스트 모드")}`,"error");
     }
   });
+}
+
+
+const guestNicknameSaveButton=$("guestNicknameSaveButton");
+const guestNicknameCancelButton=$("guestNicknameCancelButton");
+const guestNicknameInput=$("guestNicknameInput");
+
+if(guestNicknameSaveButton){
+  guestNicknameSaveButton.addEventListener(
+    "click",
+    saveGuestNicknameFromOverlay
+  );
+}
+
+if(guestNicknameCancelButton){
+  guestNicknameCancelButton.addEventListener(
+    "click",
+    ()=>{
+      closeGuestNicknameOverlay({
+        cancelGuestWhenEmpty:true
+      });
+    }
+  );
+}
+
+if(guestNicknameInput){
+  guestNicknameInput.addEventListener(
+    "input",
+    ()=>{
+      const status=$("guestNicknameStatus");
+
+      if(status){
+        status.textContent="";
+      }
+    }
+  );
+
+  guestNicknameInput.addEventListener(
+    "keydown",
+    event=>{
+      if(event.isComposing){
+        return;
+      }
+
+      if(event.key==="Enter"){
+        event.preventDefault();
+        saveGuestNicknameFromOverlay();
+      }
+    }
+  );
 }
 
 addEventListener("pagehide",()=>{
