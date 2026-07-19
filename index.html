@@ -1764,18 +1764,19 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 #v56EventHud{
   position:absolute;
   left:50%;
-  top:72px;
+  top:auto;
+  bottom:calc(var(--safe-b) + 96px);
   transform:translateX(-50%);
   z-index:24;
-  min-width:min(520px,82vw);
-  max-width:86vw;
+  min-width:min(500px,72vw);
+  max-width:78vw;
   padding:8px 12px;
   border:1px solid rgba(255,255,255,.14);
   border-radius:14px;
   background:rgba(4,11,18,.76);
   backdrop-filter:blur(9px);
   text-align:center;
-  pointer-events:none;
+  pointer-events:auto;
   opacity:0;
   transition:opacity .18s ease;
 }
@@ -1954,6 +1955,34 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
   background:linear-gradient(180deg,rgba(123,210,239,.11),rgba(123,210,239,.025));
 }
 .popup-drag-handle:active{cursor:grabbing}
+
+/* =========================================================
+   v77 · 메인 화면을 제외한 전투 UI 이동
+========================================================= */
+.game-ui-movable{
+  pointer-events:auto!important;
+  touch-action:none;
+  will-change:translate;
+}
+
+.game-ui-movable::before{
+  content:"";
+  position:absolute;
+  top:2px;
+  left:50%;
+  width:34px;
+  height:3px;
+  border-radius:999px;
+  background:rgba(190,230,245,.26);
+  transform:translateX(-50%);
+  pointer-events:none;
+  opacity:.72;
+}
+
+.game-ui-movable[data-ui-dragging="1"]::before{
+  background:rgba(120,220,255,.88);
+}
+
 .popup-drag-grip{
   width:52px;
   height:5px;
@@ -2132,7 +2161,7 @@ body.mobile .popup-drag-handle{min-height:34px}
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v76</span>
+      <span id="gameVersion" class="game-version">v77</span>
     </div>
 
     <h1 id="gameTitle">Last Wave</h1>
@@ -2766,7 +2795,7 @@ body.mobile .popup-drag-handle{min-height:34px}
       <div class="help-section">
         <h3>♻️ 환생 · 영구 성장</h3>
         <p>
-          환생은 프로필 레벨, 보유 직업 수, 프리즘 조건을 만족했을 때 사용할 수 있는 장기 성장 시스템입니다.
+          환생은 프로필 레벨 50에 도달하면 언제든 사용할 수 있는 장기 성장 시스템입니다. 환생 횟수가 늘어나도 요구 레벨은 항상 50이며, 직업 수나 프리즘 비용은 요구하지 않습니다.
           환생하면 <b>프로필 레벨 진행도는 1레벨부터 다시 시작</b>하고 필요한 프리즘을 지불하지만,
           누적 플레이 횟수·누적 처치·최고 기록·해금 직업·무기 진화는 유지됩니다.
         </p>
@@ -3459,7 +3488,7 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v76";
+const GAME_VERSION="v77";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -5259,18 +5288,19 @@ function getProfileStats(source=save){
 }
 
 function prestigeRequirements(){
-  const prestige=Math.max(0,Math.floor(Number(save.prestige)||0));
-  const maxJobs=Object.keys(JOBS).length;
+  /*
+    v77: 환생 조건은 언제나 프로필 레벨 50 하나만 요구한다.
+  */
   return{
-    level:25+prestige*10+Math.floor(prestige*prestige*1.5),
-    jobs:Math.min(maxJobs,5+Math.floor(prestige/2)),
-    cost:Math.round((100*Math.pow(1.65,prestige))/10)*10
+    level:50,
+    jobs:0,
+    cost:0
   };
 }
 
 function canPrestige(){
-  const profile=getProfileStats();const req=prestigeRequirements();
-  return profile.level>=req.level&&save.ownedJobs.length>=req.jobs&&save.prism>=req.cost;
+  const profile=getProfileStats();
+  return profile.level>=50;
 }
 
 function refreshProfileSummary(){
@@ -7826,7 +7856,21 @@ const multiplayer={
   */
   localLoadoutRevision:0,
   lastLoadoutAck:0,
-  loadoutDebounceTimer:0
+  loadoutDebounceTimer:0,
+
+  /*
+    v77
+    - 로드아웃은 playerId별 완전 분리
+    - 돈만 호스트 권위의 파티 공용 재화
+    - 레벨업 선택 중에는 멀티 전투 전체 일시정지
+  */
+  loadoutByPlayerId:new Map(),
+  pendingMoneyRequests:new Map(),
+  pendingMoneyActionKeys:new Set(),
+  processedMoneyRequests:new Map(),
+  moneyRequestSeq:0,
+  levelUpPauseOwners:new Set(),
+  levelUpPaused:false
 
 };
 
@@ -10310,6 +10354,9 @@ function gainXp(
   owner.xp +=
     amount;
 
+  let gainedLevels=
+    0;
+
   while(
     owner.xp>=
     owner.nextXp
@@ -10319,6 +10366,7 @@ function gainXp(
       owner.nextXp;
 
     owner.level++;
+    gainedLevels++;
 
     owner.nextXp=
       Math.floor(
@@ -10345,6 +10393,28 @@ function gainXp(
 
     openLevelUp();
 
+  }else if(
+    gainedLevels>
+      0 &&
+    multiplayer.active &&
+    multiplayer.isHost &&
+    !owner.local
+  ){
+
+    setMultiplayerLevelUpPauseOwner(
+      owner.id,
+      true
+    );
+
+    sendCriticalRoomEvent(
+      "level_up_offer",
+      {
+        to:
+          owner.id,
+        count:
+          gainedLevels
+      }
+    );
   }
 
 }
@@ -12744,6 +12814,164 @@ const LEVEL_UPGRADES=[
 
 ];
 
+
+function updatePausedFromMultiplayerLocks(){
+
+  const multiplayerPause=
+    multiplayer.active &&
+    (
+      multiplayer.adminPaused ||
+      multiplayer.levelUpPaused
+    );
+
+  const localOverlayPause=
+    ui.pauseMenu?.style.display===
+      "flex" ||
+    ui.adminPanel?.style.display===
+      "flex" ||
+    ui.adminLogin?.style.display===
+      "flex" ||
+    ui.levelUp?.style.display===
+      "flex";
+
+  if(
+    state==="playing"
+  ){
+    paused=
+      Boolean(
+        multiplayerPause ||
+        localOverlayPause
+      );
+  }
+
+}
+
+function broadcastLevelUpPauseState(){
+
+  if(
+    !multiplayer.active ||
+    !multiplayer.isHost
+  ){
+    return;
+  }
+
+  multiplayer.levelUpPaused=
+    multiplayer.levelUpPauseOwners.size>
+    0;
+
+  sendRoomEvent(
+    "levelup_pause",
+    {
+      owners:
+        [
+          ...multiplayer.levelUpPauseOwners
+        ],
+      paused:
+        multiplayer.levelUpPaused
+    },
+    {
+      silent:true
+    }
+  );
+
+  updatePausedFromMultiplayerLocks();
+
+}
+
+function setMultiplayerLevelUpPauseOwner(
+  playerId,
+  enabled
+){
+
+  const id=
+    String(
+      playerId ||
+      ""
+    );
+
+  if(
+    !id
+  ){
+    return;
+  }
+
+  if(
+    !multiplayer.active
+  ){
+    multiplayer.levelUpPaused=
+      Boolean(
+        enabled
+      );
+
+    updatePausedFromMultiplayerLocks();
+    return;
+  }
+
+  if(
+    enabled
+  ){
+    paused=
+      true;
+  }
+
+  if(
+    multiplayer.isHost
+  ){
+    if(
+      enabled
+    ){
+      multiplayer.levelUpPauseOwners.add(
+        id
+      );
+    }else{
+      multiplayer.levelUpPauseOwners.delete(
+        id
+      );
+    }
+
+    broadcastLevelUpPauseState();
+    return;
+  }
+
+  sendRoomEvent(
+    "levelup_pause_request",
+    {
+      playerId:
+        id,
+      paused:
+        Boolean(
+          enabled
+        )
+    },
+    {
+      silent:true
+    }
+  );
+
+}
+
+function finishLocalLevelUpPause(){
+
+  const localId=
+    player?.id ||
+    save.playerId;
+
+  if(
+    multiplayer.active
+  ){
+    setMultiplayerLevelUpPauseOwner(
+      localId,
+      false
+    );
+  }else{
+    multiplayer.levelUpPaused=
+      false;
+
+    updatePausedFromMultiplayerLocks();
+  }
+
+}
+
 function openLevelUp(){
 
   if(
@@ -12758,14 +12986,13 @@ function openLevelUp(){
 
   }
 
-  if(
-    !multiplayer.active
-  ){
+  paused=
+    true;
 
-    paused=
-      true;
-
-  }
+  setMultiplayerLevelUpPauseOwner(
+    player.id,
+    true
+  );
 
   ui.levelChoices.innerHTML=
     "";
@@ -12842,12 +13069,24 @@ function openLevelUp(){
           player
         );
 
+        if(
+          multiplayer.active &&
+          !multiplayer.isHost
+        ){
+          sendCriticalRoomEvent(
+            "level_up_choice",
+            {
+              playerId:
+                player.id,
+              upgradeIndex:
+                index
+            }
+          );
+        }
+
         playSfx("levelUp");
 
         pendingLevelUps--;
-
-        paused=
-          false;
 
         hideOverlay(
           ui.levelUp
@@ -12858,10 +13097,17 @@ function openLevelUp(){
           0
         ){
 
+          paused=
+            true;
+
           setTimeout(
             openLevelUp,
             50
           );
+
+        }else{
+
+          finishLocalLevelUpPause();
 
         }
 
@@ -14889,65 +15135,69 @@ function renderPets(){
       button.onclick=
         () => {
 
-          if(
-            money<
-            pet.cost
-          ){
-            return;
-          }
+          spendSharedRunMoney(
+            pet.cost,
+            `pet:${id}`,
+            () => {
 
-          money -=
-            pet.cost;
+              playSfx(
+                "buy"
+              );
 
-          playSfx(
-            "buy"
-          );
+              if(
+                !Array.isArray(
+                  player.ownedPets
+                )
+              ){
+                player.ownedPets=[
+                  "drone"
+                ];
+              }
 
-          if(
-            !Array.isArray(
-              player.ownedPets
-            )
-          ){
-            player.ownedPets=[
-              "drone"
-            ];
-          }
+              if(
+                !player.ownedPets.includes(
+                  id
+                )
+              ){
+                player.ownedPets.push(
+                  id
+                );
+              }
 
-          if(
-            !player.ownedPets.includes(
-              id
-            )
-          ){
-            player.ownedPets.push(
-              id
-            );
-          }
+              /*
+                돈만 파티 공용이고 펫 보유/장착은 이 플레이어 개인 상태다.
+              */
+              if(
+                getOwnerEquippedPets(
+                  player
+                ).length<
+                getPetSlotLimit()
+              ){
+                togglePlayerPetSelection(
+                  player,
+                  id
+                );
+              }
 
-          /*
-            빈 슬롯이 있을 때만 자동 장착한다.
-            이미 슬롯이 가득 찼으면 보유만 하고 기존 조합은 유지한다.
-          */
-          if(
-            getOwnerEquippedPets(
-              player
-            ).length<
-            getPetSlotLimit()
-          ){
-            togglePlayerPetSelection(
-              player,
-              id
-            );
-          }
+              notifyMultiplayerLoadoutChanged();
 
-          notifyMultiplayerLoadoutChanged();
+              syncShopEconomyUI(
+                {
+                  clearUpgradeResult:true
+                }
+              );
 
-          syncShopEconomyUI(
-            {
-              clearUpgradeResult:true
+              renderPetSelect();
+
+            },
+            message => {
+              showMessage(
+                "구매 실패",
+                message ||
+                  "공용 돈이 부족합니다."
+              );
             }
           );
-
-          renderPetSelect();
 
         };
     }
@@ -15075,15 +15325,22 @@ function renderMelee(){
       button.textContent=canAfford?`${formatNumber(item.cost)} 구매`:`${formatNumber(item.cost-money)} 부족`;
       button.disabled=!canAfford;
       button.onclick=()=>{
-        if(money<item.cost) return;
-        money-=item.cost;
-        if(!Array.isArray(player.ownedMelee)) player.ownedMelee=["wornSword"];
-        if(!player.ownedMelee.includes(id)) player.ownedMelee.push(id);
-        player.meleeWeapon=id;
-        notifyMultiplayerLoadoutChanged();
-        syncShopEconomyUI({
-          clearUpgradeResult:true
-        });
+        spendSharedRunMoney(
+          item.cost,
+          `melee:${id}`,
+          () => {
+            if(!Array.isArray(player.ownedMelee)) player.ownedMelee=["wornSword"];
+            if(!player.ownedMelee.includes(id)) player.ownedMelee.push(id);
+            player.meleeWeapon=id;
+            notifyMultiplayerLoadoutChanged();
+            syncShopEconomyUI({
+              clearUpgradeResult:true
+            });
+          },
+          message=>{
+            showMessage("구매 실패",message||"공용 돈이 부족합니다.");
+          }
+        );
       };
     }
 
@@ -15315,24 +15572,31 @@ function renderWeapons(){
         return;
       }
 
-      if(money<weapon.cost){
-        showMessage("돈 부족",`₩${formatNumber(weapon.cost-money)} 더 필요`);
-        return;
-      }
+      spendSharedRunMoney(
+        weapon.cost,
+        `weapon:${id}`,
+        () => {
+          playSfx("buy");
+          player.weaponSlots.push(id);
+          player.activeSlot=player.weaponSlots.length-1;
+          notifyMultiplayerLoadoutChanged();
 
-      money-=weapon.cost;
-      playSfx("buy");
-      player.weaponSlots.push(id);
-      player.activeSlot=player.weaponSlots.length-1;
-      notifyMultiplayerLoadoutChanged();
+          showMessage(
+            `${weapon.name} 구매 완료`,
+            "공용 돈으로 구매했지만 무기 소유와 장착은 나에게만 적용됩니다."
+          );
 
-      showMessage(
-        `${weapon.name} 구매 완료`,
-        "새 무기를 장착했습니다. 자세한 능력은 게임 설명의 무기 표에서 확인할 수 있습니다."
+          syncShopEconomyUI({clearUpgradeResult:true});
+          renderColors();
+        },
+        message=>{
+          showMessage(
+            "돈 부족",
+            message ||
+              "공용 돈이 부족합니다."
+          );
+        }
       );
-
-      syncShopEconomyUI({clearUpgradeResult:true});
-      renderColors();
     };
 
     card.append(title,status,button);
@@ -16160,16 +16424,6 @@ async function performPrestige(){
     return false;
   }
 
-  if(save.ownedJobs.length<req.jobs){
-    showMessage("환생 조건 부족",`직업 ${req.jobs}개 필요 · 현재 ${save.ownedJobs.length}개`);
-    return false;
-  }
-
-  if(save.prism<req.cost){
-    showMessage("프리즘 부족",`💎 ${formatNumber(req.cost-save.prism)} 더 필요`);
-    return false;
-  }
-
   const currentBonuses=
     getPrestigeBonuses();
 
@@ -16184,7 +16438,7 @@ async function performPrestige(){
 
   const accepted=confirm(
     `환생하시겠습니까?\n\n`+
-    `비용: 💎 프리즘 ${formatNumber(req.cost)}\n`+
+    `조건: 프로필 레벨 50\n`+
     `현재 환생: ${save.prestige}회 → ${save.prestige+1}회\n\n`+
     `다음 환생 영구 보너스\n`+
     `• 경험치 ×${nextBonuses.xpMultiplier.toFixed(2)}\n`+
@@ -16202,7 +16456,6 @@ async function performPrestige(){
 
   if(!accepted) return false;
 
-  save.prism-=req.cost;
   save.prestige=Math.max(0,Math.floor(Number(save.prestige)||0))+1;
   save.profileXp=0;
 
@@ -19502,6 +19755,50 @@ function sanitizeMultiplayerLoadout(
     petIds[0] ||
     null;
 
+  const incomingOwnedPets=
+    Array.isArray(
+      payload?.ownedPets
+    )
+      ?
+      payload.ownedPets
+      :
+      (
+        Array.isArray(
+          target?.ownedPets
+        )
+          ?
+          target.ownedPets
+          :
+          [
+            "drone"
+          ]
+      );
+
+  const ownedPets=
+    [
+      ...new Set(
+        incomingOwnedPets.filter(
+          id =>
+            typeof id==="string" &&
+            Boolean(
+              PETS[
+                id
+              ]
+            )
+        )
+      )
+    ];
+
+  if(
+    !ownedPets.includes(
+      "drone"
+    )
+  ){
+    ownedPets.unshift(
+      "drone"
+    );
+  }
+
   const meleeWeapon=
     payload?.meleeWeapon &&
     MELEE_WEAPONS[
@@ -19563,6 +19860,20 @@ function sanitizeMultiplayerLoadout(
     );
 
   return{
+    playerId:
+      typeof payload?.playerId==="string"
+        ?
+        payload.playerId
+        :
+        (
+          typeof payload?.loadoutOwnerId==="string"
+            ?
+            payload.loadoutOwnerId
+            :
+            target?.id ||
+            ""
+        ),
+
     weaponSlots,
     activeSlot,
     weaponLevels,
@@ -19570,6 +19881,7 @@ function sanitizeMultiplayerLoadout(
     unlockedEvolutions,
     petIds,
     petId,
+    ownedPets,
     meleeWeapon,
     ownedMelee,
     loadoutRevision:
@@ -19585,6 +19897,32 @@ function applyMultiplayerLoadout(
 
   if(
     !target
+  ){
+    return false;
+  }
+
+  const payloadOwnerId=
+    typeof payload?.playerId==="string"
+      ?
+      payload.playerId
+      :
+      (
+        typeof payload?.loadoutOwnerId==="string"
+          ?
+          payload.loadoutOwnerId
+          :
+          ""
+      );
+
+  /*
+    v77 핵심:
+    한 플레이어의 장비 패킷이 다른 플레이어 객체에 적용되는 것을 차단한다.
+  */
+  if(
+    payloadOwnerId &&
+    target.id &&
+    payloadOwnerId!==
+      target.id
   ){
     return false;
   }
@@ -19645,6 +19983,11 @@ function applyMultiplayerLoadout(
   target.petId=
     clean.petId;
 
+  target.ownedPets=
+    [
+      ...clean.ownedPets
+    ];
+
   if(
     !target.petStates ||
     typeof target.petStates!==
@@ -19668,6 +20011,29 @@ function applyMultiplayerLoadout(
       clean.loadoutRevision
     );
 
+  if(
+    target.id
+  ){
+    multiplayer.loadoutByPlayerId.set(
+      target.id,
+      {
+        playerId:target.id,
+        loadoutOwnerId:target.id,
+        loadoutRevision:target._loadoutRevision || 0,
+        weaponSlots:[...(target.weaponSlots || ["pistol"])],
+        activeSlot:target.activeSlot || 0,
+        weaponLevels:{...(target.weaponLevels || {})},
+        weaponColors:{...(target.weaponColors || {})},
+        unlockedEvolutions:{...(target.unlockedEvolutions || {})},
+        petIds:getOwnerEquippedPets(target),
+        petId:target.petId || null,
+        ownedPets:[...(target.ownedPets || ["drone"])],
+        meleeWeapon:target.meleeWeapon || "wornSword",
+        ownedMelee:[...(target.ownedMelee || ["wornSword"])]
+      }
+    );
+  }
+
   return true;
 
 }
@@ -19682,7 +20048,10 @@ function makeMultiplayerLoadoutPayload(){
 
   return{
     playerId:
-      save.playerId,
+      player.id,
+
+    loadoutOwnerId:
+      player.id,
 
     loadoutRevision:
       multiplayer.localLoadoutRevision,
@@ -19734,6 +20103,16 @@ function makeMultiplayerLoadoutPayload(){
       player.petId ||
       null,
 
+    ownedPets:
+      [
+        ...(
+          player.ownedPets ||
+          [
+            "drone"
+          ]
+        )
+      ],
+
     meleeWeapon:
       player.meleeWeapon ||
       "wornSword",
@@ -19777,6 +20156,11 @@ function sendMultiplayerLoadout(
 
     multiplayer.snapshotTimer=
       0;
+
+    /*
+      호스트 자신의 무기/색상/펫 변경도 다른 참가자에게 즉시 전달한다.
+    */
+    sendLoadoutRoster();
 
     return;
   }
@@ -19941,6 +20325,248 @@ function getWeaponVisualColor(
 
 }
 
+
+function refreshSharedMoneyUi(){
+
+  if(
+    ui.money
+  ){
+    ui.money.textContent=
+      formatNumber(
+        money
+      );
+  }
+
+  if(
+    ui.shopMoney
+  ){
+    ui.shopMoney.textContent=
+      formatNumber(
+        money
+      );
+  }
+
+  if(
+    ui.shop?.style.display===
+      "flex"
+  ){
+    syncShopEconomyUI(
+      {
+        clearUpgradeResult:false
+      }
+    );
+  }
+
+}
+
+function rememberProcessedMoneyRequest(
+  requestId,
+  result
+){
+
+  multiplayer.processedMoneyRequests.set(
+    requestId,
+    result
+  );
+
+  if(
+    multiplayer.processedMoneyRequests.size>
+      160
+  ){
+    const oldest=
+      multiplayer.processedMoneyRequests.keys().next().value;
+
+    multiplayer.processedMoneyRequests.delete(
+      oldest
+    );
+  }
+
+}
+
+function broadcastSharedMoney(
+  reason="sync"
+){
+
+  if(
+    !multiplayer.active ||
+    !multiplayer.isHost
+  ){
+    return;
+  }
+
+  sendRoomEvent(
+    "money_sync",
+    {
+      money,
+      reason
+    },
+    {
+      silent:true
+    }
+  );
+
+}
+
+function spendSharedRunMoney(
+  rawCost,
+  actionKey,
+  onApproved,
+  onDenied
+){
+
+  const cost=
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          rawCost
+        ) ||
+        0
+      )
+    );
+
+  const key=
+    String(
+      actionKey ||
+      "purchase"
+    );
+
+  if(
+    cost<=0
+  ){
+    onApproved?.();
+    return true;
+  }
+
+  if(
+    !multiplayer.active ||
+    multiplayer.isHost
+  ){
+    if(
+      money<
+      cost
+    ){
+      onDenied?.(
+        "돈이 부족합니다."
+      );
+      return false;
+    }
+
+    money-=
+      cost;
+
+    refreshSharedMoneyUi();
+
+    if(
+      multiplayer.active &&
+      multiplayer.isHost
+    ){
+      broadcastSharedMoney(
+        key
+      );
+    }
+
+    onApproved?.();
+    return true;
+  }
+
+  if(
+    multiplayer.pendingMoneyActionKeys.has(
+      key
+    )
+  ){
+    return false;
+  }
+
+  multiplayer.pendingMoneyActionKeys.add(
+    key
+  );
+
+  const requestId=
+    `${player?.id || save.playerId}:money:${++multiplayer.moneyRequestSeq}:${Date.now()}`;
+
+  const timeoutId=
+    setTimeout(
+      () => {
+
+        const pending=
+          multiplayer.pendingMoneyRequests.get(
+            requestId
+          );
+
+        if(
+          !pending
+        ){
+          return;
+        }
+
+        multiplayer.pendingMoneyRequests.delete(
+          requestId
+        );
+
+        multiplayer.pendingMoneyActionKeys.delete(
+          key
+        );
+
+        onDenied?.(
+          "공용 돈 동기화 응답이 늦어 구매를 취소했습니다."
+        );
+
+        refreshSharedMoneyUi();
+
+      },
+      4200
+    );
+
+  multiplayer.pendingMoneyRequests.set(
+    requestId,
+    {
+      actionKey:key,
+      cost,
+      onApproved,
+      onDenied,
+      timeoutId
+    }
+  );
+
+  const sendRequest=
+    () => {
+
+      if(
+        !multiplayer.active ||
+        multiplayer.isHost
+      ){
+        return;
+      }
+
+      sendRoomEvent(
+        "money_spend_request",
+        {
+          requestId,
+          playerId:
+            player?.id ||
+            save.playerId,
+          cost,
+          actionKey:key
+        },
+        {
+          silent:true
+        }
+      );
+
+    };
+
+  sendRequest();
+
+  setTimeout(
+    sendRequest,
+    700
+  );
+
+  return true;
+
+}
+
 function sendMultiplayerPing(){
   if(
     !multiplayer.active ||
@@ -20056,6 +20682,23 @@ async function leaveMultiplayer(){
   multiplayer.lastFrameSeq=-1;
   multiplayer.projectileSeq=0;
   multiplayer.lastProjectileSeq=-1;
+  multiplayer.loadoutByPlayerId.clear();
+
+  for(
+    const pending of
+    multiplayer.pendingMoneyRequests.values()
+  ){
+    clearTimeout(
+      pending.timeoutId
+    );
+  }
+
+  multiplayer.pendingMoneyRequests.clear();
+  multiplayer.pendingMoneyActionKeys.clear();
+  multiplayer.processedMoneyRequests.clear();
+  multiplayer.moneyRequestSeq=0;
+  multiplayer.levelUpPauseOwners.clear();
+  multiplayer.levelUpPaused=false;
 }
 
 function syncMembers(){
@@ -20211,6 +20854,41 @@ function syncMembers(){
       member.playerId,
       member
     );
+  }
+
+  if(
+    multiplayer.isHost &&
+    multiplayer.levelUpPauseOwners.size
+  ){
+    let changed=
+      false;
+
+    for(
+      const ownerId of
+      [
+        ...multiplayer.levelUpPauseOwners
+      ]
+    ){
+      if(
+        ownerId!==
+          save.playerId &&
+        !multiplayer.members.has(
+          ownerId
+        )
+      ){
+        multiplayer.levelUpPauseOwners.delete(
+          ownerId
+        );
+        changed=
+          true;
+      }
+    }
+
+    if(
+      changed
+    ){
+      broadcastLevelUpPauseState();
+    }
   }
 
   const previousHostId=
@@ -20791,6 +21469,221 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     multiplayer.remoteInputs.set(payload.playerId,payload);
   });
 
+  channel.on("broadcast",{event:"money_spend_request"},({payload})=>{
+    if(
+      !multiplayer.isHost ||
+      !payload
+    ){
+      return;
+    }
+
+    const sender=
+      payload?.__lw?.sender;
+
+    const requestId=
+      String(
+        payload.requestId ||
+        ""
+      );
+
+    const playerId=
+      String(
+        payload.playerId ||
+        ""
+      );
+
+    const cost=
+      Math.max(
+        0,
+        Math.floor(
+          Number(
+            payload.cost
+          ) ||
+          0
+        )
+      );
+
+    if(
+      !sender ||
+      !requestId ||
+      playerId!==
+        sender ||
+      cost<=0 ||
+      cost>
+        100000000
+    ){
+      return;
+    }
+
+    const previous=
+      multiplayer.processedMoneyRequests.get(
+        requestId
+      );
+
+    if(
+      previous
+    ){
+      sendRoomEvent(
+        "money_spend_result",
+        {
+          ...previous,
+          to:sender,
+          requestId
+        },
+        {
+          silent:true
+        }
+      );
+      return;
+    }
+
+    const approved=
+      money>=
+      cost;
+
+    if(
+      approved
+    ){
+      money-=
+        cost;
+    }
+
+    const result={
+      approved,
+      money,
+      cost,
+      actionKey:
+        String(
+          payload.actionKey ||
+          ""
+        )
+    };
+
+    rememberProcessedMoneyRequest(
+      requestId,
+      result
+    );
+
+    sendRoomEvent(
+      "money_spend_result",
+      {
+        ...result,
+        to:sender,
+        requestId
+      },
+      {
+        silent:true
+      }
+    );
+
+    broadcastSharedMoney(
+      approved
+        ?
+        "purchase"
+        :
+        "purchase_denied"
+    );
+
+    refreshSharedMoneyUi();
+  });
+
+  channel.on("broadcast",{event:"money_spend_result"},({payload})=>{
+    if(
+      !payload ||
+      payload.to!==
+        (
+          player?.id ||
+          save.playerId
+        )
+    ){
+      return;
+    }
+
+    const requestId=
+      String(
+        payload.requestId ||
+        ""
+      );
+
+    const pending=
+      multiplayer.pendingMoneyRequests.get(
+        requestId
+      );
+
+    if(
+      !pending
+    ){
+      return;
+    }
+
+    clearTimeout(
+      pending.timeoutId
+    );
+
+    multiplayer.pendingMoneyRequests.delete(
+      requestId
+    );
+
+    multiplayer.pendingMoneyActionKeys.delete(
+      pending.actionKey
+    );
+
+    if(
+      Number.isFinite(
+        Number(
+          payload.money
+        )
+      )
+    ){
+      money=
+        Number(
+          payload.money
+        );
+    }
+
+    refreshSharedMoneyUi();
+
+    if(
+      payload.approved
+    ){
+      pending.onApproved?.();
+    }else{
+      pending.onDenied?.(
+        "공용 돈이 부족합니다."
+      );
+    }
+  });
+
+  channel.on("broadcast",{event:"money_sync"},({payload})=>{
+    if(
+      !payload ||
+      !isCurrentHostPayload(
+        payload
+      ) ||
+      multiplayer.isHost
+    ){
+      return;
+    }
+
+    const nextMoney=
+      Number(
+        payload.money
+      );
+
+    if(
+      !Number.isFinite(
+        nextMoney
+      )
+    ){
+      return;
+    }
+
+    money=
+      nextMoney;
+
+    refreshSharedMoneyUi();
+  });
+
   channel.on("broadcast",{event:"loadout_update"},({payload})=>{
     if(
       !multiplayer.isHost ||
@@ -20829,15 +21722,43 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
       return;
     }
 
-    const target=
+    let target=
       players.get(
         sender
       );
 
+    /*
+      Presence는 들어왔지만 players Map 생성 전일 수 있다.
+      기존에는 이 경우 친구의 장비 변경을 버려 기본 장비가 남았다.
+    */
     if(
       !target
     ){
-      return;
+      const member=
+        multiplayer.members.get(
+          sender
+        );
+
+      target=
+        createPlayer(
+          sender,
+          member?.nickname ||
+            "SURVIVOR",
+          member?.job ||
+            "soldier",
+          false,
+          member?.prestige ||
+            0
+        );
+
+      target.gender=
+        member?.gender ||
+        target.gender;
+
+      players.set(
+        sender,
+        target
+      );
     }
 
     const revision=
@@ -21005,6 +21926,161 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     multiplayer.teamAdminUsed=true;
   });
 
+  channel.on("broadcast",{event:"levelup_pause_request"},({payload})=>{
+    if(
+      !multiplayer.isHost ||
+      !payload
+    ){
+      return;
+    }
+
+    const sender=
+      payload?.__lw?.sender;
+
+    if(
+      !sender ||
+      payload.playerId!==
+        sender
+    ){
+      return;
+    }
+
+    if(
+      payload.paused
+    ){
+      multiplayer.levelUpPauseOwners.add(
+        sender
+      );
+    }else{
+      multiplayer.levelUpPauseOwners.delete(
+        sender
+      );
+    }
+
+    broadcastLevelUpPauseState();
+  });
+
+  channel.on("broadcast",{event:"levelup_pause"},({payload})=>{
+    if(
+      !payload ||
+      !isCurrentHostPayload(
+        payload
+      ) ||
+      multiplayer.isHost
+    ){
+      return;
+    }
+
+    multiplayer.levelUpPauseOwners=
+      new Set(
+        Array.isArray(
+          payload.owners
+        )
+          ?
+          payload.owners
+          :
+          []
+      );
+
+    multiplayer.levelUpPaused=
+      Boolean(
+        payload.paused
+      ) ||
+      multiplayer.levelUpPauseOwners.size>
+        0;
+
+    updatePausedFromMultiplayerLocks();
+  });
+
+  channel.on("broadcast",{event:"level_up_offer"},({payload})=>{
+    if(
+      !payload ||
+      !acceptCriticalPayload(
+        payload
+      ) ||
+      !isCurrentHostPayload(
+        payload
+      ) ||
+      payload.to!==
+        (
+          player?.id ||
+          save.playerId
+        )
+    ){
+      return;
+    }
+
+    const count=
+      Math.max(
+        1,
+        Math.floor(
+          Number(
+            payload.count
+          ) ||
+          1
+        )
+      );
+
+    pendingLevelUps+=
+      count;
+
+    paused=
+      true;
+
+    openLevelUp();
+  });
+
+  channel.on("broadcast",{event:"level_up_choice"},({payload})=>{
+    if(
+      !multiplayer.isHost ||
+      !payload ||
+      !acceptCriticalPayload(
+        payload
+      )
+    ){
+      return;
+    }
+
+    const sender=
+      payload?.__lw?.sender;
+
+    if(
+      !sender ||
+      payload.playerId!==
+        sender
+    ){
+      return;
+    }
+
+    const upgradeIndex=
+      Math.floor(
+        Number(
+          payload.upgradeIndex
+        )
+      );
+
+    const upgrade=
+      LEVEL_UPGRADES[
+        upgradeIndex
+      ];
+
+    const target=
+      players.get(
+        sender
+      );
+
+    if(
+      !upgrade ||
+      !target
+    ){
+      return;
+    }
+
+    upgrade.apply(
+      target
+    );
+  });
+
   channel.on("broadcast",{event:"admin_pause"},({payload})=>{
     if(
       !payload ||
@@ -21054,6 +22130,8 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     gameMode="multi";
     startRun("multi");
     if(payload?.clock!=null) gameClockMinutes=payload.clock;
+    if(payload?.money!=null) money=Number(payload.money)||0;
+    refreshSharedMoneyUi();
     multiplayer.starting=false;
   });
 
@@ -21574,6 +22652,7 @@ function makeLoadoutRoster(){
       ].map(
         p => ({
           playerId:p.id,
+          loadoutOwnerId:p.id,
           loadoutRevision:
             p._loadoutRevision ||
             0,
@@ -21624,6 +22703,16 @@ function makeLoadoutRoster(){
           petId:
             p.petId ||
             null,
+
+          ownedPets:
+            [
+              ...(
+                p.ownedPets ||
+                [
+                  "drone"
+                ]
+              )
+            ],
 
           meleeWeapon:
             p.meleeWeapon ||
@@ -21686,7 +22775,7 @@ function applyLoadoutRoster(
       continue;
     }
 
-    const target=
+    let target=
       players.get(
         id
       );
@@ -21694,7 +22783,28 @@ function applyLoadoutRoster(
     if(
       !target
     ){
-      continue;
+      const member=
+        multiplayer.members.get(
+          id
+        );
+
+      target=
+        createPlayer(
+          id,
+          member?.nickname ||
+            "SURVIVOR",
+          member?.job ||
+            "soldier",
+          id===
+            save.playerId,
+          member?.prestige ||
+            0
+        );
+
+      players.set(
+        id,
+        target
+      );
     }
 
     if(
@@ -22212,6 +23322,7 @@ function makeSnapshot(){
       prestige:p.prestige || 0,
       petIds:getOwnerEquippedPets(p),
       petId:p.petId,
+      ownedPets:p.ownedPets,
       x:p.x,
       y:p.y,
       angle:p.angle,
@@ -22326,6 +23437,7 @@ function applyWorldSnapshot(snapshot){
         delete stateData.ownedMelee;
         delete stateData.petIds;
         delete stateData.petId;
+        delete stateData.ownedPets;
         delete stateData.loadoutRevision;
       }else{
         multiplayer.lastLoadoutAck=
@@ -22608,10 +23720,22 @@ async function startMultiplayerGame(){
     console.warn("방 상태 변경 오류",error);
   }
 
-  sendCriticalRoomEvent("start_game",{clock:8*60});
+  const sharedStartMoney=
+    getPrestigeBonuses().startMoney;
+
+  sendCriticalRoomEvent(
+    "start_game",
+    {
+      clock:8*60,
+      money:sharedStartMoney
+    }
+  );
+
   gameMode="multi";
   hideOverlay(ui.lobby);
   startRun("multi");
+  money=sharedStartMoney;
+  refreshSharedMoneyUi();
   multiplayer.starting=false;
 }
 
@@ -23413,64 +24537,60 @@ $("upgradeButton").onclick=
       level*
       220;
 
-    if(
-      money<
-      cost
-    ){
+    spendSharedRunMoney(
+      cost,
+      `upgrade:${player.id}:${id}:${level}`,
+      () => {
 
-      $("upgradeResult").textContent=
-        "돈이 부족합니다.";
-
-      return;
-
-    }
-
-    money -=
-      cost;
-
-    const chance=
-      Math.min(
-        .98,
-        UPGRADE_SUCCESS[
+        const chance=
           Math.min(
-            level,
-            9
-          )
-        ]+
-        getPrestigeBonuses().upgradeBonus
-      );
+            .98,
+            UPGRADE_SUCCESS[
+              Math.min(
+                level,
+                9
+              )
+            ]+
+            getPrestigeBonuses().upgradeBonus
+          );
 
-    let resultMessage=
-      "강화 실패 · 단계 유지";
+        let resultMessage=
+          "강화 실패 · 단계 유지";
 
-    if(
-      runRandom()<
-      chance
-    ){
+        if(
+          runRandom()<
+          chance
+        ){
 
-      player.weaponLevels[id]++;
+          player.weaponLevels[id]++;
 
-      resultMessage=
-        "강화 성공";
+          resultMessage=
+            "강화 성공";
 
-      playSfx("upgradeSuccess");
+          playSfx("upgradeSuccess");
 
-    }else{
+        }else{
 
-      playSfx("upgradeFail");
+          playSfx("upgradeFail");
 
-    }
+        }
 
-    /*
-      강화 비용 차감 직후 모든 가격/구매 가능 상태를
-      즉시 다시 계산한다.
-    */
-    syncShopEconomyUI();
+        syncShopEconomyUI();
 
-    $("upgradeResult").textContent=
-      resultMessage;
+        $("upgradeResult").textContent=
+          resultMessage;
 
-    notifyMultiplayerLoadoutChanged();
+        notifyMultiplayerLoadoutChanged();
+
+      },
+      message => {
+
+        $("upgradeResult").textContent=
+          message ||
+          "공용 돈이 부족합니다.";
+
+      }
+    );
 
   };
 
@@ -24866,7 +25986,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v76</div>
+        <div class="eyebrow">FIELD ARCHIVE · v77</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -24881,7 +26001,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v76</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v77</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
@@ -25241,7 +26361,21 @@ function v56CollectSupply(supply){
   }else if(supply.kind==="shockwave"){
     explosion(player.x,player.y,180,90+wave*9,player);
   }else if(supply.kind==="cache"){
-    money+=120+wave*22;
+    if(
+      !multiplayer.active ||
+      multiplayer.isHost
+    ){
+      money+=120+wave*22;
+
+      if(
+        multiplayer.active &&
+        multiplayer.isHost
+      ){
+        broadcastSharedMoney(
+          "supply_cache"
+        );
+      }
+    }
   }
 
   playSfx("buy");
@@ -27189,7 +28323,7 @@ v56UpdateSystems=function(
 
 };
 
-/* ---------- v75 · v71 기준 중간 난이도 상승 + 낮/밤 적 수 ---------- */
+/* ---------- v77 · 난이도 추가 상향 + 낮/밤 적 수 ---------- */
 
 function getTimeEnemyCountMultiplier(){
 
@@ -27226,7 +28360,7 @@ startWave=function(){
     state==="playing"
   ){
     const countMultiplier=
-      1.12*
+      1.20*
       getTimeEnemyCountMultiplier();
 
     spawnRemaining=
@@ -27282,16 +28416,16 @@ spawnEnemy=function(){
       true;
 
     enemy.maxHp *=
-      1.10;
+      1.16;
 
     enemy.hp *=
-      1.10;
+      1.16;
 
     enemy.speed *=
-      1.05;
+      1.08;
 
     enemy.damage *=
-      1.08;
+      1.12;
   }
 
   return result;
@@ -27329,13 +28463,13 @@ spawnBoss=function(){
       true;
 
     enemy.maxHp *=
-      1.09;
+      1.14;
 
     enemy.hp *=
-      1.09;
+      1.14;
 
     enemy.damage *=
-      1.08;
+      1.10;
 
     if(
       Number.isFinite(
@@ -27343,7 +28477,7 @@ spawnBoss=function(){
       )
     ){
       enemy.weakHp *=
-        1.09;
+        1.14;
     }
   }
 
@@ -29705,6 +30839,559 @@ addEventListener("resize",()=>{
     }
   }
 });
+
+
+/* =========================================================
+   v77 · HUD / 이벤트 문구 / 주요 전투 버튼 이동
+   메인 화면(#menu)은 제외한다.
+========================================================= */
+
+const movableGameUiState=new WeakMap();
+
+function setMovableGameUiOffset(
+  element,
+  x,
+  y
+){
+  if(!element){
+    return;
+  }
+
+  const safeX=
+    Number.isFinite(x)
+      ?
+      x
+      :
+      0;
+
+  const safeY=
+    Number.isFinite(y)
+      ?
+      y
+      :
+      0;
+
+  element.dataset.uiDragX=
+    String(
+      safeX
+    );
+
+  element.dataset.uiDragY=
+    String(
+      safeY
+    );
+
+  /*
+    기존 transform을 덮어쓰지 않기 위해 CSS translate 속성을 사용한다.
+    missionHud/message처럼 원래 transform이 있는 UI도 안전하게 이동한다.
+  */
+  element.style.translate=
+    `${safeX}px ${safeY}px`;
+}
+
+function resetMovableGameUi(
+  element
+){
+  setMovableGameUiOffset(
+    element,
+    0,
+    0
+  );
+}
+
+function attachMovableGameUi(
+  element
+){
+  if(
+    !element ||
+    element.closest?.(
+      "#menu"
+    ) ||
+    element.dataset.uiDragReady===
+      "1"
+  ){
+    return;
+  }
+
+  element.dataset.uiDragReady=
+    "1";
+
+  element.classList.add(
+    "game-ui-movable"
+  );
+
+  setMovableGameUiOffset(
+    element,
+    Number(
+      element.dataset.uiDragX
+    ) ||
+    0,
+    Number(
+      element.dataset.uiDragY
+    ) ||
+    0
+  );
+
+  let drag=
+    null;
+
+  let suppressClickUntil=
+    0;
+
+  function finish(
+    event
+  ){
+    if(
+      !drag
+    ){
+      return;
+    }
+
+    if(
+      event?.pointerId!==undefined &&
+      event.pointerId!==
+        drag.pointerId
+    ){
+      return;
+    }
+
+    try{
+      if(
+        element.hasPointerCapture?.(
+          drag.pointerId
+        )
+      ){
+        element.releasePointerCapture(
+          drag.pointerId
+        );
+      }
+    }catch{}
+
+    if(
+      drag.moved
+    ){
+      suppressClickUntil=
+        performance.now()+
+        260;
+    }
+
+    element.dataset.uiDragging=
+      "0";
+
+    drag=
+      null;
+  }
+
+  element.addEventListener(
+    "pointerdown",
+    event => {
+
+      if(
+        event.button!==undefined &&
+        event.button!==0
+      ){
+        return;
+      }
+
+      const rect=
+        element.getBoundingClientRect();
+
+      if(
+        rect.width<=0 ||
+        rect.height<=0
+      ){
+        return;
+      }
+
+      /*
+        요청대로 UI의 윗부분을 잡았을 때만 이동한다.
+        작은 버튼은 위쪽 45%, 일반 HUD는 최대 28px을 손잡이로 사용한다.
+      */
+      const relativeY=
+        event.clientY-
+        rect.top;
+
+      const handleHeight=
+        element.matches(
+          "button"
+        )
+          ?
+          Math.max(
+            12,
+            rect.height*
+            .45
+          )
+          :
+          Math.min(
+            28,
+            Math.max(
+              14,
+              rect.height*
+              .32
+            )
+          );
+
+      if(
+        relativeY>
+        handleHeight
+      ){
+        return;
+      }
+
+      drag={
+        pointerId:
+          event.pointerId,
+
+        startPointerX:
+          event.clientX,
+
+        startPointerY:
+          event.clientY,
+
+        startX:
+          Number(
+            element.dataset.uiDragX
+          ) ||
+          0,
+
+        startY:
+          Number(
+            element.dataset.uiDragY
+          ) ||
+          0,
+
+        startRect:
+          rect,
+
+        moved:
+          false
+      };
+
+      element.dataset.uiDragging=
+        "1";
+
+      try{
+        element.setPointerCapture(
+          event.pointerId
+        );
+      }catch{}
+
+      event.preventDefault();
+
+    },
+    {
+      passive:false
+    }
+  );
+
+  element.addEventListener(
+    "pointermove",
+    event => {
+
+      if(
+        !drag ||
+        event.pointerId!==
+          drag.pointerId
+      ){
+        return;
+      }
+
+      const rawX=
+        event.clientX-
+        drag.startPointerX;
+
+      const rawY=
+        event.clientY-
+        drag.startPointerY;
+
+      if(
+        !drag.moved &&
+        Math.hypot(
+          rawX,
+          rawY
+        )>
+          5
+      ){
+        drag.moved=
+          true;
+      }
+
+      if(
+        !drag.moved
+      ){
+        return;
+      }
+
+      const visibleX=
+        Math.min(
+          72,
+          Math.max(
+            30,
+            drag.startRect.width*
+            .35
+          )
+        );
+
+      const visibleY=
+        Math.min(
+          48,
+          Math.max(
+            22,
+            drag.startRect.height*
+            .45
+          )
+        );
+
+      const minDeltaX=
+        -drag.startRect.right+
+        visibleX;
+
+      const maxDeltaX=
+        innerWidth-
+        visibleX-
+        drag.startRect.left;
+
+      const minDeltaY=
+        -drag.startRect.bottom+
+        visibleY;
+
+      const maxDeltaY=
+        innerHeight-
+        visibleY-
+        drag.startRect.top;
+
+      const deltaX=
+        clamp(
+          rawX,
+          Math.min(
+            minDeltaX,
+            maxDeltaX
+          ),
+          Math.max(
+            minDeltaX,
+            maxDeltaX
+          )
+        );
+
+      const deltaY=
+        clamp(
+          rawY,
+          Math.min(
+            minDeltaY,
+            maxDeltaY
+          ),
+          Math.max(
+            minDeltaY,
+            maxDeltaY
+          )
+        );
+
+      setMovableGameUiOffset(
+        element,
+        drag.startX+
+          deltaX,
+        drag.startY+
+          deltaY
+      );
+
+      event.preventDefault();
+
+    },
+    {
+      passive:false
+    }
+  );
+
+  element.addEventListener(
+    "pointerup",
+    finish
+  );
+
+  element.addEventListener(
+    "pointercancel",
+    finish
+  );
+
+  element.addEventListener(
+    "lostpointercapture",
+    finish
+  );
+
+  /*
+    버튼을 실제로 드래그했을 때 손을 떼면서 클릭되는 것을 막는다.
+    이동하지 않은 일반 클릭은 그대로 작동한다.
+  */
+  element.addEventListener(
+    "click",
+    event => {
+
+      if(
+        performance.now()<
+        suppressClickUntil
+      ){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+
+    },
+    true
+  );
+
+  element.addEventListener(
+    "dblclick",
+    event => {
+
+      resetMovableGameUi(
+        element
+      );
+
+      event.preventDefault();
+
+    }
+  );
+
+  movableGameUiState.set(
+    element,
+    {
+      reset:
+        () =>
+          resetMovableGameUi(
+            element
+          )
+    }
+  );
+}
+
+function initializeMovableGameUi(){
+
+  const selectors=[
+    "#stats",
+    "#weaponHud",
+    "#missionHud",
+    "#bossHud",
+    "#dangerHud",
+    "#networkHud",
+    "#timeHud",
+    "#effects",
+    "#message",
+    "#v56EventHud",
+    "#pauseButton",
+    "#adminFloatingButton",
+    "#ultimateButton",
+    "#dashButton",
+    "#meleeButton"
+  ];
+
+  for(
+    const selector of
+    selectors
+  ){
+    const element=
+      document.querySelector(
+        selector
+      );
+
+    if(
+      element
+    ){
+      attachMovableGameUi(
+        element
+      );
+    }
+  }
+
+}
+
+initializeMovableGameUi();
+
+/*
+  적 도감/이벤트 HUD처럼 런타임에 나중에 만들어지는 UI도
+  생성 즉시 드래그 기능을 붙인다.
+*/
+const movableUiObserver=
+  new MutationObserver(
+    records => {
+
+      let shouldRefresh=
+        false;
+
+      for(
+        const record of
+        records
+      ){
+        if(
+          record.addedNodes?.length
+        ){
+          shouldRefresh=
+            true;
+          break;
+        }
+      }
+
+      if(
+        !shouldRefresh
+      ){
+        return;
+      }
+
+      for(
+        const overlay of
+        document.querySelectorAll(
+          ".overlay"
+        )
+      ){
+        attachDraggablePopup(
+          overlay
+        );
+      }
+
+      initializeMovableGameUi();
+
+    }
+  );
+
+movableUiObserver.observe(
+  document.body,
+  {
+    childList:true,
+    subtree:true
+  }
+);
+
+addEventListener(
+  "resize",
+  () => {
+
+    for(
+      const element of
+      document.querySelectorAll(
+        ".game-ui-movable"
+      )
+    ){
+      const rect=
+        element.getBoundingClientRect();
+
+      if(
+        rect.right<
+          26 ||
+        rect.left>
+          innerWidth-
+          26 ||
+        rect.bottom<
+          22 ||
+        rect.top>
+          innerHeight-
+          22
+      ){
+        resetMovableGameUi(
+          element
+        );
+      }
+    }
+
+  }
+);
+
 
 </script>
 </body>
