@@ -1795,6 +1795,178 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 .v56-route-selected{outline:2px solid rgba(255,222,111,.58);box-shadow:0 0 0 4px rgba(255,205,75,.08)}
 .v56-route-tag{display:inline-block;margin-top:7px;padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.07);font-size:11px;color:#b8d4df}
 
+
+    .pet-loadout-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .pet-loadout-buttons .btn{
+      width:auto;
+      min-width:0;
+      padding:8px 10px;
+      font-size:12px;
+    }
+
+    .pet-loadout-buttons .btn.selected{
+      outline:2px solid rgba(111,224,255,.72);
+      box-shadow:0 0 0 3px rgba(111,224,255,.12);
+    }
+
+    #adminContextStatus{
+      color:#9fe7ff;
+      font-weight:800;
+    }
+
+/* =========================================================
+   v73 · 일일 보상 / 도움말 표 / 일시정지 설정
+========================================================= */
+.daily-rewards-panel{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0 16px;
+}
+.daily-reward-card{
+  padding:14px;
+  border:1px solid rgba(116,220,255,.22);
+  border-radius:16px;
+  background:linear-gradient(145deg,rgba(7,24,34,.88),rgba(14,35,47,.74));
+  text-align:left;
+}
+.daily-reward-card h3{margin:0 0 7px;color:#e9faff}
+.daily-reward-card p{margin:5px 0;color:#afc8d3;line-height:1.5;font-size:13px}
+.daily-reward-card .btn{width:100%;margin-top:8px}
+.daily-reward-card.claimed{
+  border-color:rgba(98,210,138,.28);
+  background:linear-gradient(145deg,rgba(10,35,28,.84),rgba(8,28,35,.76));
+}
+.weapon-table-wrap{
+  width:100%;
+  overflow:auto;
+  border:1px solid rgba(116,220,255,.16);
+  border-radius:14px;
+}
+.weapon-help-table{
+  width:100%;
+  min-width:980px;
+  border-collapse:collapse;
+  background:rgba(4,16,23,.72);
+}
+.weapon-help-table th,
+.weapon-help-table td{
+  padding:10px 11px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  border-right:1px solid rgba(255,255,255,.05);
+  text-align:left;
+  vertical-align:top;
+  font-size:12px;
+  line-height:1.45;
+}
+.weapon-help-table th{
+  position:sticky;
+  top:0;
+  z-index:1;
+  background:#112735;
+  color:#9ee7ff;
+  font-size:12px;
+}
+.weapon-help-table td:first-child{
+  color:#fff;
+  font-weight:900;
+  white-space:nowrap;
+}
+.weapon-help-table tr:last-child td{border-bottom:0}
+.pause-settings-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  margin:14px 0 18px;
+}
+.pause-setting-card{
+  padding:10px;
+  border:1px solid rgba(116,220,255,.16);
+  border-radius:12px;
+  background:rgba(4,17,24,.72);
+  text-align:left;
+}
+.pause-setting-card label{
+  display:block;
+  margin-bottom:6px;
+  color:#bfe9f7;
+  font-size:12px;
+  font-weight:800;
+}
+.pause-setting-card select,
+.pause-setting-card input[type="range"]{width:100%}
+.pause-setting-card .audio-value{
+  display:block;
+  margin-top:4px;
+  text-align:right;
+  font-size:11px;
+}
+#adminMenuAccessButton{display:none}
+@media(max-width:650px){
+  .daily-rewards-panel,
+  .pause-settings-grid{grid-template-columns:1fr}
+}
+
+
+
+/* =========================================================
+   v75 · 게스트 모드 / 드래그 가능한 팝업
+========================================================= */
+.guest-mode-btn{
+  border-color:rgba(126,224,255,.5);
+  background:linear-gradient(180deg,rgba(28,118,154,.95),rgba(12,66,91,.96));
+  color:#f5fdff;
+}
+.guest-mode-btn.active{
+  border-color:rgba(255,211,105,.72);
+  background:linear-gradient(180deg,rgba(151,111,24,.96),rgba(92,62,10,.97));
+}
+.guest-mode-status{
+  display:block;
+  margin-top:8px;
+  color:#9fc2cf;
+  font-size:12px;
+  line-height:1.55;
+}
+.guest-mode-status.active{color:#8df0b2}
+
+.popup-drag-handle{
+  position:sticky;
+  top:0;
+  z-index:30;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:30px;
+  margin:-4px 0 8px;
+  cursor:grab;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  border-radius:12px 12px 8px 8px;
+  background:linear-gradient(180deg,rgba(123,210,239,.11),rgba(123,210,239,.025));
+}
+.popup-drag-handle:active{cursor:grabbing}
+.popup-drag-grip{
+  width:52px;
+  height:5px;
+  border-radius:999px;
+  background:linear-gradient(90deg,rgba(164,229,249,.18),rgba(194,241,255,.74),rgba(164,229,249,.18));
+  box-shadow:0 0 14px rgba(100,211,246,.17);
+  pointer-events:none;
+}
+.popup-draggable-panel{
+  will-change:transform;
+}
+body.mobile .popup-drag-handle{min-height:34px}
+
 </style>
 
 
@@ -1960,7 +2132,7 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v70</span>
+      <span id="gameVersion" class="game-version">v75</span>
     </div>
 
     <h1 id="gameTitle">Last Wave</h1>
@@ -2000,7 +2172,9 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       <h3>계정 저장</h3>
       <p class="account-status">
         이메일 인증 없이 아이디와 비밀번호로 로그인합니다.
-        같은 계정으로 로그인하면 저장된 진행도를 불러옵니다.
+        같은 계정으로 로그인하면 저장된 진행도를 불러옵니다.<br>
+        계정을 만들지 않아도 <b>게스트 모드</b>로 바로 플레이할 수 있습니다.
+        게스트 진행도와 닉네임은 이 기기에만 저장되며, 랭킹과 멀티플레이도 사용할 수 있습니다.
       </p>
 
       <form id="accountForm" autocomplete="on">
@@ -2037,6 +2211,7 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
         <div class="account-actions">
           <button id="accountSignInButton" class="btn primary" type="submit">로그인</button>
           <button id="accountSignUpButton" class="btn" type="button">새 계정 만들기</button>
+          <button id="guestModeButton" class="btn guest-mode-btn" type="button">게스트로 플레이</button>
           <button id="accountConnectionButton" class="btn" type="button">연결 상태 확인</button>
           <button id="accountSyncButton" class="btn" type="button">지금 동기화</button>
           <button id="accountSignOutButton" class="btn danger-btn" type="button">로그아웃</button>
@@ -2044,7 +2219,8 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
         </div>
       </form>
 
-      <span id="accountStatus" class="account-status">로그인하지 않음 · 이 기기에만 저장 중</span>
+      <span id="accountStatus" class="account-status">로그인하지 않음 · 계정 로그인 또는 게스트 모드를 선택하세요.</span>
+      <span id="guestModeStatus" class="guest-mode-status">게스트 모드는 닉네임만 정하면 바로 시작할 수 있습니다.</span>
     </div>
 
     <div id="profileSummary" class="profile-summary" aria-label="플레이어 영구 프로필">
@@ -2055,6 +2231,19 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       <div class="profile-chip"><span>프리즘</span><b id="profilePrismText" class="prism-line"><i class="prism-icon"></i><span>0</span></b></div>
       <div class="profile-chip"><span>환생</span><b id="profilePrestigeText">★ 0</b></div>
       <div class="profile-progress" title="다음 플레이어 레벨 진행도"><i id="profileProgressFill"></i></div>
+    </div>
+
+    <div id="dailyRewardsPanel" class="daily-rewards-panel">
+      <div id="dailyChallengeRewardCard" class="daily-reward-card">
+        <h3>일일 챌린지 보상</h3>
+        <p id="dailyChallengeRewardStatus">오늘의 일일 도전을 완료하면 보상을 받을 수 있습니다.</p>
+      </div>
+
+      <div id="dailyChestCard" class="daily-reward-card">
+        <h3>일일 보상 상자</h3>
+        <p id="dailyChestStatus">매일 한국 시간 기준으로 한 번 열 수 있습니다.</p>
+        <button id="dailyChestButton" class="btn gold-btn" type="button">오늘의 상자 열기</button>
+      </div>
     </div>
 
     <div class="menu-settings">
@@ -2078,9 +2267,11 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       </div>
 
       <div class="setting-card">
-        <label for="petSelect">시작 펫</label>
+        <label for="petSelect">시작 펫 장착</label>
         <select id="petSelect"></select>
-        <span class="audio-value">펫 완전 해제는 게임 시작 전 여기에서만 가능합니다.</span>
+        <div id="petLoadoutSummary" class="audio-value"></div>
+        <div id="petLoadoutButtons" class="pet-loadout-buttons"></div>
+        <span class="audio-value">기본 2마리까지 장착할 수 있고, 환생할 때마다 장착 가능 수가 1마리씩 증가합니다.</span>
       </div>
 
       <div class="setting-card">
@@ -2093,20 +2284,20 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
       <div class="setting-card">
         <label for="bgmVolume">BGM 볼륨</label>
-        <input id="bgmVolume" type="range" min="0" max="100" step="1" value="34">
-        <span id="bgmVolumeText" class="audio-value">34%</span>
+        <input id="bgmVolume" type="range" min="0" max="100" step="1" value="52">
+        <span id="bgmVolumeText" class="audio-value">52%</span>
       </div>
 
       <div class="setting-card">
         <label for="sfxVolume">효과음 볼륨</label>
-        <input id="sfxVolume" type="range" min="0" max="100" step="1" value="68">
-        <span id="sfxVolumeText" class="audio-value">68%</span>
+        <input id="sfxVolume" type="range" min="0" max="100" step="1" value="82">
+        <span id="sfxVolumeText" class="audio-value">82%</span>
       </div>
 
       <div class="setting-card">
         <label for="gunVolume">총소리 볼륨</label>
-        <input id="gunVolume" type="range" min="0" max="100" step="1" value="24">
-        <span id="gunVolumeText" class="audio-value">24%</span>
+        <input id="gunVolume" type="range" min="0" max="100" step="1" value="28">
+        <span id="gunVolumeText" class="audio-value">28%</span>
       </div>
     </div>
 
@@ -2130,6 +2321,10 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
       <button id="helpButton" class="btn" type="button">
         게임 설명
+      </button>
+
+      <button id="adminMenuAccessButton" class="btn" type="button">
+        관리자 모드
       </button>
 
       <button id="prestigeMenuButton" class="btn gold-btn" type="button">환생</button>
@@ -2420,6 +2615,45 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       게임은 일시정지되지 않습니다.
     </p>
 
+    <div class="pause-settings-grid">
+      <div class="pause-setting-card">
+        <label for="pauseGraphicsSelect">그래픽 모드</label>
+        <select id="pauseGraphicsSelect">
+          <option value="ultraPerformance">초성능 모드</option>
+          <option value="performance">성능 모드</option>
+          <option value="normal">기본 모드</option>
+          <option value="high">고급 모드</option>
+          <option value="ultra">초고퀄리티 모드</option>
+        </select>
+      </div>
+
+      <div class="pause-setting-card">
+        <label for="pauseSoundSelect">사운드</label>
+        <select id="pauseSoundSelect">
+          <option value="on">켜기</option>
+          <option value="off">끄기</option>
+        </select>
+      </div>
+
+      <div class="pause-setting-card">
+        <label for="pauseBgmVolume">BGM 볼륨</label>
+        <input id="pauseBgmVolume" type="range" min="0" max="100" step="1" value="52">
+        <span id="pauseBgmVolumeText" class="audio-value">52%</span>
+      </div>
+
+      <div class="pause-setting-card">
+        <label for="pauseSfxVolume">효과음 볼륨</label>
+        <input id="pauseSfxVolume" type="range" min="0" max="100" step="1" value="82">
+        <span id="pauseSfxVolumeText" class="audio-value">82%</span>
+      </div>
+
+      <div class="pause-setting-card">
+        <label for="pauseGunVolume">총소리 볼륨</label>
+        <input id="pauseGunVolume" type="range" min="0" max="100" step="1" value="28">
+        <span id="pauseGunVolumeText" class="audio-value">28%</span>
+      </div>
+    </div>
+
     <div class="grid">
 
       <button id="resumeButton" class="btn primary" type="button">
@@ -2508,27 +2742,52 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       </div>
 
       <div class="help-section">
-        <h3>🤖 펫</h3>
-        <p>펫은 플레이어 주변을 따라다니며 자동으로 보조합니다. 시작 화면에서 보유 펫을 고를 수 있고 상점에서 추가 펫을 구매할 수 있습니다. <b>펫을 완전히 빼는 선택은 게임 시작 전 메인 화면에서만 가능</b>하며, 게임 중 상점에서는 보유 펫 사이의 교체만 할 수 있습니다.</p>
+        <h3>🤖 펫 · 다중 장착</h3>
+        <p>
+          v71부터 펫은 한 마리만 고르는 방식이 아니라 여러 마리를 동시에 장착할 수 있습니다.
+          기본 장착 슬롯은 <b>2마리</b>이며 환생할 때마다 장착 가능 수가 <b>1마리씩 영구 증가</b>합니다.
+          메인 메뉴의 펫 장착 버튼에서 보유 펫 조합을 미리 구성하고, 게임 중 상점에서는 새 펫을 구매하거나 현재 조합을 바꿀 수 있습니다.
+        </p>
+        <p>
+          펫마다 공격·회복·방어·관통·폭발·연쇄·상태 이상 역할이 다르므로,
+          공격형만 가득 채우기보다 회복·방어형을 섞으면 높은 웨이브에서 훨씬 안정적입니다.
+          여러 펫의 전투 계산은 호스트가 처리하고 멀티플레이 클라이언트에는 필요한 정보만 동기화해 네트워크 부하를 줄입니다.
+        </p>
         <ul>
           <li><b>정찰 드론:</b> 기본 자동 사격.</li>
-          <li><b>기계 사냥개:</b> 귀여운 근거리 고속 공격.</li>
+          <li><b>기계 사냥개:</b> 근거리 고속 공격.</li>
           <li><b>메딕 봇:</b> 주기적인 체력 회복.</li>
           <li><b>보이드 레이븐:</b> 장거리 관통 지원탄.</li>
-          <li><b>가디언 오브:</b> 적탄 제거와 보조 사격.</li>
-          <li><b>프리즘 여우:</b> 유도탄 중심의 빠른 추적 공격.</li>
-          <li><b>스크랩 캣:</b> 독성 미세탄 초고속 연사.</li>
-          <li><b>나이트 아울:</b> 초장거리 고관통 저격 지원.</li>
-          <li><b>나노 비 군체:</b> 다발 독성 탄막.</li>
-          <li><b>이지스 터틀:</b> 방어와 둔화 지원.</li>
-          <li><b>엠버 피닉스:</b> 화상과 폭발 공격.</li>
-          <li><b>프로스트 스프라이트:</b> 냉각·둔화 공격.</li>
-          <li><b>스파크 임프:</b> 연쇄 전격 지원.</li>
-          <li><b>크리스탈 골렘:</b> 느리지만 강한 관통 공격.</li>
-          <li><b>문라이트 래빗:</b> 회복과 공격을 동시에 지원.</li>
-          <li><b>보이드 젤리:</b> 분열 탄막 지원.</li>
-          <li><b>루비 라이온:</b> 강한 대형 폭발 공격.</li>
+          <li><b>가디언 오브:</b> 적탄 제거와 방어 지원.</li>
+          <li><b>그 외 고급 펫:</b> 유도·독·저격·군체·빙결·전격·폭발 등 역할에 맞춰 조합할 수 있습니다.</li>
         </ul>
+      </div>
+
+      <div class="help-section">
+        <h3>♻️ 환생 · 영구 성장</h3>
+        <p>
+          환생은 프로필 레벨, 보유 직업 수, 프리즘 조건을 만족했을 때 사용할 수 있는 장기 성장 시스템입니다.
+          환생하면 <b>프로필 레벨 진행도는 1레벨부터 다시 시작</b>하고 필요한 프리즘을 지불하지만,
+          누적 플레이 횟수·누적 처치·최고 기록·해금 직업·무기 진화는 유지됩니다.
+        </p>
+        <p>
+          환생 1회마다 다음 영구 보너스가 누적됩니다.
+        </p>
+        <ul>
+          <li>프로필 경험치 획득량 <b>+15%</b></li>
+          <li>최대 체력 <b>+5%</b></li>
+          <li>공격력 <b>+3%</b></li>
+          <li>이동 속도 <b>+1.5%</b></li>
+          <li>게임 시작 돈 <b>+150</b></li>
+          <li>시작 보호막 <b>+6</b></li>
+          <li>게임 종료 프리즘 보상 <b>+10%</b></li>
+          <li>무기 강화 성공률 <b>+1%p</b> · 최대 +20%p</li>
+          <li>펫 동시 장착 슬롯 <b>+1</b></li>
+          <li>환생 2회마다 시작 진화 프리즘 <b>+1</b></li>
+        </ul>
+        <p>
+          따라서 높은 환생 단계에서는 단순 경험치 배율뿐 아니라 생존력·화력·경제·펫 조합 폭까지 모두 커집니다.
+        </p>
       </div>
 
       <div class="help-section">
@@ -2629,7 +2888,19 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       </div>
 
       <div class="help-section">
+        <h3>👤 계정과 게스트 모드</h3>
+        <p><b>계정 모드</b>는 아이디와 비밀번호로 로그인해 서버에 영구 진행도를 저장하고 다른 기기에서도 이어서 플레이할 수 있습니다. <b>게스트 모드</b>는 계정 생성 없이 닉네임만 정해 바로 시작하는 방식입니다.</p>
+        <p>게스트의 프로필 진행도와 닉네임은 현재 브라우저의 로컬 저장소에만 보관됩니다. 같은 기기와 같은 브라우저에서는 다시 이어서 플레이할 수 있지만, 브라우저 데이터 삭제·시크릿 모드 종료·기기 초기화·다른 브라우저 사용 시 복구할 수 없습니다.</p>
+        <p>게스트도 <b>일반 솔로 랭킹 등록</b>, <b>공개/비공개 멀티플레이 방 만들기와 참가</b>를 사용할 수 있습니다. 게스트 랭킹과 멀티플레이 식별자는 이 기기에서 생성된 전용 ID를 사용하므로 계정 기록과 섞이지 않습니다.</p>
+      </div>
+
+      <div class="help-section">
         <h3>🌐 멀티플레이</h3>
+        <p>
+          한 방의 최대 인원은 <b>4명</b>입니다.
+          2명에서는 반응성을 조금 더 높이고, 3명·4명으로 늘어날수록 입력·월드·투사체 동기화 주기를 단계적으로 낮춰
+          메시지 폭주와 프레임 드랍을 줄입니다. 인원이 많아져도 장비 데이터는 매 프레임 보내지 않고 변경 시점과 저주기 백업으로만 동기화합니다.
+        </p>
         <p>비공개 방 코드를 만들어 친구와 참가하거나, 공개 방을 만들고 공개 목록에서 참가할 수 있습니다. 랜덤 매치는 참가 가능한 공개 방을 찾고, 없으면 새 공개 방을 만듭니다.</p>
         <p>최대 4인 PvE 협동이며 방장이 게임을 시작합니다. 공개 방·랜덤 매치는 Supabase 공개 방 SQL 함수와 Realtime 설정이 필요합니다.</p>
       </div>
@@ -2650,10 +2921,10 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       </div>
 
       <div class="help-section">
-        <h3>🏆 온라인 랭킹 TOP 10</h3>
-        <p>일반 생존과 일일 챌린지의 최고 기록을 각각 <b>TOP 10</b>으로 확인할 수 있습니다. 웨이브가 끝날 때 기록 동기화를 시도하고 게임 종료 시 최종 기록을 다시 반영합니다.</p>
+        <h3>🏆 온라인 랭킹 TOP 7</h3>
+        <p>일반 생존과 일일 챌린지의 최고 기록을 각각 <b>TOP 7</b>으로 확인할 수 있습니다. 웨이브가 끝날 때 기록 동기화를 시도하고 게임 종료 시 최종 기록을 다시 반영합니다.</p>
         <p class="help-danger"><b>AUTO를 한 번이라도 사용한 게임</b>과 <b>멀티플레이 게임</b>은 온라인 랭킹 대상에서 제외됩니다.</p>
-        <p>같은 플레이어의 기록은 더 좋은 점수·웨이브·처치 기록을 우선해 유지합니다. <b>일일 챌린지 TOP 10은 한국 시간 날짜별로 분리</b>되어 매일 새로운 규칙에서 다시 경쟁합니다.</p>
+        <p>같은 플레이어의 기록은 더 좋은 점수·웨이브·처치 기록을 우선해 유지합니다. <b>일일 챌린지 TOP 7은 한국 시간 날짜별로 분리</b>되어 매일 새로운 규칙에서 다시 경쟁합니다.</p>
       </div>
 
       <div class="help-section">
@@ -2665,7 +2936,7 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
       <div class="help-section" style="grid-column:1/-1">
         <h3>🔫 전체 총기 도감</h3>
         <p>현재 게임의 일반 총기·특수 총기·합체 총기를 전부 자동 표시합니다. 피해량, 연사력, 산탄 수, 관통, 폭발, 연쇄 특성과 운용법을 함께 확인할 수 있습니다.</p>
-        <div id="weaponHelpCatalog" class="catalog-grid"></div>
+        <div id="weaponHelpCatalog" class="weapon-table-wrap"></div>
       </div>
 
       <div class="help-section" style="grid-column:1/-1">
@@ -2704,7 +2975,7 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
   <div class="panel">
 
-    <h2>온라인 랭킹 TOP 10</h2>
+    <h2>온라인 랭킹 TOP 7</h2>
 
     <div class="menu-buttons">
 
@@ -2876,12 +3147,79 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
     <h2>관리자 모드</h2>
 
-    <p>
-      관리자 기능을 실제 사용한 게임은
-      온라인 랭킹에서 제외됩니다.
+    <p id="adminContextStatus">
+      현재 화면에 필요한 관리자 기능만 표시됩니다.
     </p>
 
-    <div class="admin-grid">
+    <p>
+      전투에서 관리자 기능을 실제 사용한 게임은 온라인 랭킹에서 제외됩니다.
+      전투 중 관리자 화면을 열면 게임이 자동으로 일시정지됩니다.
+    </p>
+
+    <div id="adminMenuSection" class="admin-grid">
+
+      <div class="admin-box">
+
+        <h3>프로필 레벨</h3>
+
+        <input
+          id="adminProfileLevelInput"
+          type="number"
+          min="1"
+          max="9999"
+          value="1"
+        >
+
+        <button id="adminProfileLevelApplyButton" class="btn primary" type="button">
+          프로필 레벨 적용
+        </button>
+
+        <button id="adminProfileLevelPlusButton" class="btn" type="button">
+          프로필 레벨 +10
+        </button>
+
+        <p class="pet-detail-note">
+          메뉴의 영구 프로필 레벨만 조정합니다. 전투 레벨과는 별개입니다.
+        </p>
+
+      </div>
+
+      <div class="admin-box">
+
+        <h3>영구 진행도</h3>
+
+        <button id="adminCoreButton" class="btn gold-btn" type="button">
+          프리즘 +50
+        </button>
+
+        <button id="adminUnlockJobsButton" class="btn" type="button">
+          모든 직업 해제
+        </button>
+
+        <button id="adminUnlockEvolutionsButton" class="btn" type="button">
+          모든 무기 진화 영구 해제
+        </button>
+
+      </div>
+
+      <div class="admin-box">
+
+        <h3>펫 데이터</h3>
+
+        <button id="adminPetResetButton" class="btn danger-btn" type="button">
+          펫 전체 초기화
+        </button>
+
+        <p class="pet-detail-note">
+          보유 펫과 장착 펫을 기본 정찰 드론 1마리 상태로 되돌립니다.
+          환생으로 늘어난 장착 슬롯 수는 유지됩니다.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div id="adminCombatSection" class="admin-grid">
 
       <div class="admin-box">
 
@@ -2907,36 +3245,46 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
       <div class="admin-box">
 
-        <h3>자원</h3>
+        <h3>현재 전투 레벨</h3>
 
-        <button id="adminMoneyButton" class="btn gold-btn" type="button">
-          돈 +10,000
+        <input
+          id="adminRunLevelInput"
+          type="number"
+          min="1"
+          max="9999"
+          value="1"
+        >
+
+        <button id="adminRunLevelApplyButton" class="btn primary" type="button">
+          전투 레벨 적용
         </button>
 
-        <button id="adminCoreButton" class="btn gold-btn" type="button">
-          프리즘 +50
-        </button>
-
-        <button id="adminUnlockJobsButton" class="btn" type="button">
-          모든 직업 해제
-        </button>
-
-        <button id="adminUnlockEvolutionsButton" class="btn" type="button">
-          모든 무기 진화 해제
+        <button id="adminRunLevelPlusButton" class="btn" type="button">
+          전투 레벨 +10
         </button>
 
       </div>
 
       <div class="admin-box">
 
-        <h3>무기</h3>
+        <h3>전투 자원</h3>
+
+        <button id="adminMoneyButton" class="btn gold-btn" type="button">
+          돈 +10,000
+        </button>
+
+      </div>
+
+      <div class="admin-box">
+
+        <h3>현재 판 무기</h3>
 
         <button
           id="adminRainbowButton"
           class="btn rainbow-btn"
           type="button"
         >
-          ∞ RAINBOW 장착
+          ∞ RAINBOW 임시 장착
         </button>
 
         <button
@@ -2944,8 +3292,12 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
           class="btn"
           type="button"
         >
-          현재 무기 최대 강화
+          현재 무기만 +10 임시 강화
         </button>
+
+        <p class="pet-detail-note">
+          관리자 강화는 현재 판의 현재 무기에만 적용되며 영구 저장되지 않습니다.
+        </p>
 
       </div>
 
@@ -2992,19 +3344,27 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 
       </div>
 
-      <div class="admin-box">
+    </div>
 
-        <h3>관리자</h3>
+    <div id="adminRestrictedSection" class="admin-box hidden">
+      <h3>멀티플레이 참가자 제한</h3>
+      <p>
+        멀티플레이 전투에서는 호스트만 전투 관리자 기능을 사용할 수 있습니다.
+        참가자는 메인 메뉴로 돌아간 뒤 영구 진행도 관리자 기능을 사용하세요.
+      </p>
+    </div>
 
-        <button
-          id="adminDisableButton"
-          class="btn danger-btn"
-          type="button"
-        >
-          관리자 모드 종료
-        </button>
+    <div class="admin-box">
 
-      </div>
+      <h3>관리자</h3>
+
+      <button
+        id="adminDisableButton"
+        class="btn danger-btn"
+        type="button"
+      >
+        관리자 모드 종료
+      </button>
 
     </div>
 
@@ -3023,7 +3383,6 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
   </div>
 
 </div>
-
 
 <div id="errorOverlay" class="overlay error-screen">
   <div class="panel hero">
@@ -3063,7 +3422,7 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v70";
+const GAME_VERSION="v75";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -3494,6 +3853,8 @@ const ui={
   genderSelect:$("genderSelect"),
   graphicsSelect:$("graphicsSelect"),
   petSelect:$("petSelect"),
+  petLoadoutSummary:$("petLoadoutSummary"),
+  petLoadoutButtons:$("petLoadoutButtons"),
   soundSelect:$("soundSelect"),
   bgmVolume:$("bgmVolume"),
   bgmVolumeText:$("bgmVolumeText"),
@@ -3624,7 +3985,11 @@ const defaultSave={
 
   selectedPet:"drone",
 
+  selectedPets:["drone"],
+
   ownedPets:["drone"],
+
+  petDataResetVersion:71,
 
 
   soundEnabled:true,
@@ -3715,6 +4080,127 @@ function loadSave(){
     );
 
   }
+
+  /*
+    v71 펫 데이터 구조 마이그레이션.
+    요청에 따라 기존 버전의 보유/장착 펫 데이터는 v71 최초 실행 시
+    기본 정찰 드론 상태로 한 번 초기화한다.
+  */
+  if(
+    Math.floor(
+      Number(
+        loaded.petDataResetVersion
+      ) ||
+      0
+    )<
+    71
+  ){
+    result.ownedPets=[
+      "drone"
+    ];
+
+    result.selectedPets=[
+      "drone"
+    ];
+
+    result.selectedPet=
+      "drone";
+
+    result.petDataResetVersion=
+      71;
+  }
+
+  if(
+    !Array.isArray(
+      result.ownedPets
+    )
+  ){
+    result.ownedPets=[
+      "drone"
+    ];
+  }
+
+  result.ownedPets=
+    [
+      ...new Set(
+        result.ownedPets.filter(
+          value =>
+            typeof value===
+            "string" &&
+            value
+        )
+      )
+    ];
+
+  if(
+    !result.ownedPets.includes(
+      "drone"
+    )
+  ){
+    result.ownedPets.unshift(
+      "drone"
+    );
+  }
+
+  if(
+    !Array.isArray(
+      result.selectedPets
+    )
+  ){
+    result.selectedPets=
+      result.selectedPet
+        ?
+        [
+          result.selectedPet
+        ]
+        :
+        [];
+  }
+
+  result.selectedPets=
+    [
+      ...new Set(
+        result.selectedPets.filter(
+          value =>
+            typeof value===
+              "string" &&
+            result.ownedPets.includes(
+              value
+            )
+        )
+      )
+    ]
+      .slice(
+        0,
+        Math.max(
+          2,
+          2+
+          Math.max(
+            0,
+            Math.floor(
+              Number(
+                result.prestige
+              ) ||
+              0
+            )
+          )
+        )
+      );
+
+  if(
+    !result.selectedPets.length
+  ){
+    result.selectedPets=[
+      "drone"
+    ];
+  }
+
+  result.selectedPet=
+    result.selectedPets[0] ||
+    "";
+
+  result.petDataResetVersion=
+    71;
 
   result.totalRuns=
     Math.max(0,Math.floor(Number(result.totalRuns)||0));
@@ -3911,7 +4397,9 @@ function cloudProfilePayload(){
     gender:save.gender==="female"?"female":"male",
     graphicsMode:save.graphicsMode||"normal",
     selectedPet:save.selectedPet||"",
+    selectedPets:Array.isArray(save.selectedPets)?[...new Set(save.selectedPets)]:[],
     ownedPets:Array.isArray(save.ownedPets)?[...new Set(save.ownedPets)]:["drone"],
+    petDataResetVersion:71,
     soundEnabled:save.soundEnabled!==false,
     bgmVolume:clamp(Number(save.bgmVolume??.34),0,1),
     sfxVolume:clamp(Number(save.sfxVolume??.68),0,1),
@@ -3937,7 +4425,7 @@ function applyCloudProfile(profile){
   const allowed=[
     "nickname","prism","profileXp","bestWave","bestScore","totalRuns","totalKills",
     "prestige","ownedJobs","selectedJob","unlockedEvolutions","weaponMastery",
-    "ultimateBranches","gender","graphicsMode","selectedPet","ownedPets",
+    "ultimateBranches","gender","graphicsMode","selectedPet","selectedPets","ownedPets","petDataResetVersion",
     "soundEnabled","bgmVolume","sfxVolume","gunVolume"
   ];
   for(const key of allowed){
@@ -3945,7 +4433,74 @@ function applyCloudProfile(profile){
   }
   if(!Array.isArray(save.ownedJobs)||!save.ownedJobs.length) save.ownedJobs=["soldier"];
   if(!save.ownedJobs.includes("soldier")) save.ownedJobs.unshift("soldier");
+  /*
+    v71 이전 클라우드 프로필이 로그인 직후 로컬의 초기화된 펫 데이터를
+    다시 되살리지 않도록 이전 펫 프로필은 기본 상태로 마이그레이션한다.
+  */
+  if(
+    Math.floor(
+      Number(
+        profile.petDataResetVersion
+      ) ||
+      0
+    )<
+    71
+  ){
+    save.ownedPets=[
+      "drone"
+    ];
+
+    save.selectedPets=[
+      "drone"
+    ];
+
+    save.selectedPet=
+      "drone";
+
+    save.petDataResetVersion=
+      71;
+  }
+
   if(!Array.isArray(save.ownedPets)) save.ownedPets=["drone"];
+  if(!save.ownedPets.includes("drone")) save.ownedPets.unshift("drone");
+
+  if(!Array.isArray(save.selectedPets)){
+    save.selectedPets=save.selectedPet?[save.selectedPet]:[];
+  }
+
+  save.selectedPets=[
+    ...new Set(
+      save.selectedPets.filter(
+        id =>
+          typeof id==="string" &&
+          save.ownedPets.includes(id)
+      )
+    )
+  ]
+    .slice(
+      0,
+      Math.max(
+        2,
+        2+
+        Math.max(
+          0,
+          Math.floor(
+            Number(
+              save.prestige
+            ) ||
+            0
+          )
+        )
+      )
+    );
+
+  if(!save.selectedPets.length){
+    save.selectedPets=["drone"];
+  }
+
+  save.selectedPet=save.selectedPets[0]||"";
+  save.petDataResetVersion=71;
+
   if(currentAccountUser?.id) save.playerId=currentAccountUser.id;
   save.cloudProfileUpdatedAt=Math.max(0,Number(profile.updatedAt)||Date.now());
   cloudLastPayloadSignature=cloudProfileSignature(profile);
@@ -4236,7 +4791,7 @@ async function loadAccountProfile(user){
     if(document.activeElement!==ui.nicknameInput){ui.nicknameInput.value=save.nickname||"";}
     ui.nicknameHud.textContent=save.nickname||"SURVIVOR";
     ui.genderSelect.value=save.gender||"male";
-    applyGraphicsMode(save.graphicsMode||"normal");
+    applyGraphicsMode(save.graphicsMode||"ultra");
     renderPetSelect();
     renderJobs();
     refreshProfileSummary();
@@ -4286,7 +4841,7 @@ async function pullCloudProfile(options={}){
     if(document.activeElement!==ui.nicknameInput){ui.nicknameInput.value=save.nickname||"";}
     ui.nicknameHud.textContent=save.nickname||"SURVIVOR";
     ui.genderSelect.value=save.gender||"male";
-    applyGraphicsMode(save.graphicsMode||"normal");
+    applyGraphicsMode(save.graphicsMode||"ultra");
     renderPetSelect();
     renderJobs();
     refreshProfileSummary();
@@ -4581,8 +5136,80 @@ addEventListener("pagehide",()=>{
 const PROFILE_POINTS_PER_LEVEL=150;
 const PROFILE_POINTS_PER_RUN=25;
 
+function getPrestigeBonuses(
+  source=save
+){
+
+  const prestige=
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          source?.prestige
+        ) ||
+        0
+      )
+    );
+
+  return{
+    prestige,
+
+    xpMultiplier:
+      1+
+      prestige*
+      .15,
+
+    petSlots:
+      2+
+      prestige,
+
+    maxHpMultiplier:
+      1+
+      prestige*
+      .05,
+
+    damageMultiplier:
+      1+
+      prestige*
+      .03,
+
+    speedMultiplier:
+      1+
+      prestige*
+      .015,
+
+    startMoney:
+      350+
+      prestige*
+      150,
+
+    startShield:
+      prestige*
+      6,
+
+    prismMultiplier:
+      1+
+      prestige*
+      .10,
+
+    upgradeBonus:
+      Math.min(
+        .20,
+        prestige*
+        .01
+      ),
+
+    startEvolutionCores:
+      Math.floor(
+        prestige/
+        2
+      )
+  };
+
+}
+
 function getPrestigeXpMultiplier(source=save){
-  return 1+Math.max(0,Math.floor(Number(source?.prestige)||0))*.15;
+  return getPrestigeBonuses(source).xpMultiplier;
 }
 
 function getProfileStats(source=save){
@@ -4616,7 +5243,11 @@ function refreshProfileSummary(){
   if(ui.profileKillsText) ui.profileKillsText.textContent=formatNumber(profile.kills);
   if(ui.profileBestText) ui.profileBestText.textContent=`W${save.bestWave||0} · ${formatNumber(save.bestScore||0)}점`;
   if(ui.profilePrismText){const amount=ui.profilePrismText.querySelector("span");if(amount) amount.textContent=formatNumber(save.prism||0);}
-  if(ui.profilePrestigeText) ui.profilePrestigeText.textContent=`★ ${Math.max(0,Math.floor(Number(save.prestige)||0))} · XP ×${profile.xpMultiplier.toFixed(2)}`;
+  if(ui.profilePrestigeText){
+    const bonuses=getPrestigeBonuses();
+    ui.profilePrestigeText.textContent=
+      `★ ${bonuses.prestige} · XP ×${bonuses.xpMultiplier.toFixed(2)} · 펫 ${bonuses.petSlots}칸`;
+  }
   if(ui.profileProgressFill){
     ui.profileProgressFill.style.width=`${clamp(profile.progress*100,0,100)}%`;
     if(ui.profileProgressFill.parentElement) ui.profileProgressFill.parentElement.title=`LV.${profile.level} → LV.${profile.level+1} · ${Math.floor(profile.current)}/${profile.needed} XP · 환생 배율 ×${profile.xpMultiplier.toFixed(2)}`;
@@ -5378,6 +6009,72 @@ const WEAPONS={
     category:"합체 · 쌍발포격",desc:"유탄과 로켓을 쌍발로 발사해 거대한 두 개의 폭발권을 만든다. 느리지만 웨이브 제거력은 최상급이다."
   },
 
+  cryoCarbine:{
+    name:"크라이오 카빈",cost:4200,damage:34,rate:6.8,speed:1080,spread:.028,pellets:1,pierce:2,blast:0,
+    category:"냉각 전술소총",desc:"탄속과 명중률이 높은 제어형 카빈. 청록 둔화 색상과 결합하면 빠른 적의 접근을 안정적으로 막으며, 관통 덕분에 좁은 길목에서도 효율이 좋다."
+  },
+  needleGun:{
+    name:"니들 스웜",cost:3900,damage:8,rate:22,speed:1020,spread:.105,pellets:1,pierce:1,blast:0,
+    category:"초고속 침탄총",desc:"아주 약한 침탄을 극단적으로 빠르게 쏜다. 중독·화상·흡혈처럼 적중 횟수에 비례해 강해지는 색상 효과를 빠르게 누적하는 특수 연사 무기다."
+  },
+  flechetteCannon:{
+    name:"플레셰트 캐논",cost:6600,damage:38,rate:2.8,speed:980,spread:.21,pellets:8,pierce:3,blast:0,
+    category:"관통 산탄포",desc:"여러 개의 금속 화살탄을 부채꼴로 발사하며 각 탄환이 적을 관통한다. 근거리 보스 화력과 밀집 적 정리를 동시에 노릴 수 있다."
+  },
+  mortar:{
+    name:"중형 박격포",cost:7300,damage:170,rate:.58,speed:470,spread:.075,pellets:1,pierce:0,blast:165,
+    category:"곡사 폭발화기",desc:"탄속은 느리지만 매우 넓은 폭발을 만드는 중화기. 빠르게 움직이는 단일 적보다 대규모 좀비 무리를 한 번에 지우는 데 특화된다."
+  },
+  arcRifle:{
+    name:"아크 라이플",cost:7600,damage:52,rate:5.1,speed:1120,spread:.03,pellets:1,pierce:2,blast:0,chain:5,
+    category:"연쇄 전격소총",desc:"탄환이 적중한 뒤 주변 적에게 전격이 연쇄된다. 적이 많을수록 한 발의 총 피해량이 커지는 군중전 특화 소총이다."
+  },
+  pulseCannon:{
+    name:"펄스 캐논",cost:8700,damage:72,rate:3.4,speed:1250,spread:.045,pellets:3,pierce:2,blast:0,
+    category:"삼중 펄스포",desc:"한 번의 발사에 세 개의 고속 에너지 펄스를 좁게 묶어 발사한다. 중거리에서 안정적인 순간 화력과 관통을 동시에 제공한다."
+  },
+  harpoon:{
+    name:"하푼 레일러",cost:9400,damage:265,rate:.88,speed:1380,spread:.004,pellets:1,pierce:12,blast:0,
+    category:"중량 관통포",desc:"거대한 단발 투사체가 적의 대열을 길게 뚫고 지나간다. 가우스 라이플보다 느리지만 한 발의 피해가 높아 엘리트와 보스 보조 처리에 강하다."
+  },
+  ionRepeater:{
+    name:"이온 리피터",cost:9800,damage:27,rate:17.5,speed:1320,spread:.065,pellets:1,pierce:2,blast:0,
+    category:"고속 에너지 기관총",desc:"높은 탄속과 연사력을 함께 가진 후반 자동화기. 일반 기관총보다 정확하고 관통력이 높아 원거리에서도 탄막 손실이 적다."
+  },
+  scatterLaser:{
+    name:"스캐터 레이저",cost:11200,damage:40,rate:5.2,speed:1650,spread:.17,pellets:5,pierce:3,blast:0,
+    category:"레이저 산탄기",desc:"다섯 줄의 초고속 레이저 펄스를 퍼뜨린다. 가까운 보스에게는 다중 적중, 먼 거리에서는 넓은 범위 제압이 가능하다."
+  },
+  microMissilePod:{
+    name:"마이크로 미사일 포드",cost:12800,damage:76,rate:2.4,speed:720,spread:.19,pellets:4,pierce:0,blast:72,
+    category:"다연장 미사일",desc:"작은 폭발 미사일 네 발을 동시에 흩뿌린다. 개별 폭발은 작지만 적이 많은 구역에 여러 폭발권을 겹쳐 만들 수 있다."
+  },
+  heavyRailPistol:{
+    name:"헤비 레일 피스톨",cost:13600,damage:390,rate:.72,speed:1750,spread:.0025,pellets:1,pierce:16,blast:0,
+    category:"초중량 권총",desc:"권총 형태지만 사실상 휴대형 레일건에 가까운 초고관통 무기. 연사력은 매우 낮지만 정확한 한 발의 가치가 크다."
+  },
+  vortexCannon:{
+    name:"보텍스 캐논",cost:15400,damage:118,rate:2.2,speed:920,spread:.035,pellets:1,pierce:4,blast:92,chain:3,
+    category:"복합 특수포",desc:"관통·폭발·연쇄 효과를 모두 조금씩 가진 고급 복합 무기. 한 분야의 극단적인 성능보다 다양한 전투 상황에 대응하는 유연성이 장점이다."
+  },
+
+  cryoNova:{
+    name:"크라이오 노바",cost:0,damage:126,rate:5.4,speed:1280,spread:.028,pellets:2,pierce:5,blast:62,chain:0,fusion:true,
+    category:"합체 · 냉각 폭발",desc:"크라이오 카빈과 플라즈마 기술을 합쳐 두 발의 냉각 에너지 탄을 발사한다. 관통 후 작은 폭발까지 발생해 밀집 적 제어에 강하다."
+  },
+  toxicHive:{
+    name:"톡식 하이브",cost:0,damage:34,rate:13.5,speed:980,spread:.15,pellets:3,pierce:2,blast:48,chain:0,fusion:true,
+    category:"합체 · 독성 군체",desc:"니들 스웜의 연사력과 미사일 포드의 범위를 결합한 독성 탄막 무기. 넓은 지역에 빠르게 상태 이상을 누적한다."
+  },
+  arcMortar:{
+    name:"아크 모타르",cost:0,damage:260,rate:.95,speed:620,spread:.05,pellets:1,pierce:2,blast:190,chain:6,fusion:true,
+    category:"합체 · 전격 포격",desc:"대형 폭발과 연쇄 전격이 동시에 발생하는 중포. 적이 많이 몰린 후반 웨이브에서 한 발로 광범위한 피해를 만든다."
+  },
+  starPiercer:{
+    name:"스타 피어서",cost:0,damage:690,rate:1.05,speed:1950,spread:.001,pellets:1,pierce:28,blast:45,chain:0,fusion:true,
+    category:"합체 · 초광속 관통",desc:"하푼 레일러의 중량 탄자와 레이저 기술을 결합한 최상급 관통 무기. 긴 직선을 거의 즉시 관통하며 마지막에 작은 에너지 폭발을 남긴다."
+  },
+
   rainbowCopy:{
     name:"PRISM-Ω 복제품",cost:250000,damage:4200,rate:7,speed:1550,spread:.02,pellets:1,pierce:12,blast:0,replica:true,
     category:"초고가 특수무기",desc:"극비 실험무기를 민간용으로 재설계한 초고가 복제품. 가격이 매우 높지만 일반 무기와 비교하기 어려운 막대한 피해를 준다."
@@ -5412,6 +6109,18 @@ const EVOLUTION_NAMES={
   laserRifle:"헬리오스 라이플",
   gaussRifle:"마그네타 브레이커",
   launcher:"카타스트로피 런처",
+  cryoCarbine:"앱솔루트 제로",
+  needleGun:"바이오 해저드",
+  flechetteCannon:"스틸 템페스트",
+  mortar:"시즈 메이커",
+  arcRifle:"체인 오버로드",
+  pulseCannon:"트라이 펄서",
+  harpoon:"리바이어던 피어스",
+  ionRepeater:"이온 오버드라이브",
+  scatterLaser:"프리즘 스프레더",
+  microMissilePod:"미사일 레인",
+  heavyRailPistol:"라스트 저지먼트",
+  vortexCannon:"싱귤래리티 포지",
   rainbowCopy:"PRISM-Ω EX"
 };
 
@@ -5522,6 +6231,413 @@ const PETS={
   }
 };
 
+
+const PET_RESET_VERSION=
+  71;
+
+function getPetSlotLimit(
+  source=save
+){
+
+  const prestige=
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          source?.prestige
+        ) ||
+        0
+      )
+    );
+
+  return Math.min(
+    Object.keys(
+      PETS
+    ).length,
+    2+
+    prestige
+  );
+
+}
+
+function normalizeSavedPetSelection(){
+
+  if(
+    !Array.isArray(
+      save.ownedPets
+    )
+  ){
+    save.ownedPets=[
+      "drone"
+    ];
+  }
+
+  save.ownedPets=
+    [
+      ...new Set(
+        save.ownedPets.filter(
+          id =>
+            Boolean(
+              PETS[
+                id
+              ]
+            )
+        )
+      )
+    ];
+
+  if(
+    !save.ownedPets.includes(
+      "drone"
+    )
+  ){
+    save.ownedPets.unshift(
+      "drone"
+    );
+  }
+
+  if(
+    !Array.isArray(
+      save.selectedPets
+    )
+  ){
+    save.selectedPets=
+      save.selectedPet
+        ?
+        [
+          save.selectedPet
+        ]
+        :
+        [];
+  }
+
+  save.selectedPets=
+    [
+      ...new Set(
+        save.selectedPets.filter(
+          id =>
+            save.ownedPets.includes(
+              id
+            ) &&
+            Boolean(
+              PETS[
+                id
+              ]
+            )
+        )
+      )
+    ]
+      .slice(
+        0,
+        getPetSlotLimit()
+      );
+
+  if(
+    !save.selectedPets.length
+  ){
+    save.selectedPets=[
+      "drone"
+    ];
+  }
+
+  save.selectedPet=
+    save.selectedPets[0] ||
+    "";
+
+  return [
+    ...save.selectedPets
+  ];
+
+}
+
+function getSavedEquippedPets(){
+
+  return normalizeSavedPetSelection();
+
+}
+
+function getOwnerEquippedPets(
+  owner
+){
+
+  if(
+    !owner
+  ){
+    return[];
+  }
+
+  const source=
+    Array.isArray(
+      owner.petIds
+    )
+      ?
+      owner.petIds
+      :
+      owner.petId
+        ?
+        [
+          owner.petId
+        ]
+        :
+        [];
+
+  return[
+    ...new Set(
+      source.filter(
+        id =>
+          Boolean(
+            PETS[
+              id
+            ]
+          )
+      )
+    )
+  ];
+
+}
+
+function syncPrimaryPetFields(
+  owner
+){
+
+  if(
+    !owner
+  ){
+    return;
+  }
+
+  const ids=
+    getOwnerEquippedPets(
+      owner
+    );
+
+  owner.petIds=
+    [
+      ...ids
+    ];
+
+  owner.petId=
+    ids[0] ||
+    null;
+
+}
+
+function toggleSavedPetSelection(
+  id
+){
+
+  if(
+    !PETS[
+      id
+    ] ||
+    !save.ownedPets.includes(
+      id
+    )
+  ){
+    return false;
+  }
+
+  normalizeSavedPetSelection();
+
+  const selected=
+    [
+      ...save.selectedPets
+    ];
+
+  const index=
+    selected.indexOf(
+      id
+    );
+
+  if(
+    index>=0
+  ){
+    selected.splice(
+      index,
+      1
+    );
+
+    save.selectedPets=
+      selected;
+
+  }else{
+
+    const limit=
+      getPetSlotLimit();
+
+    if(
+      selected.length>=
+      limit
+    ){
+      showMessage(
+        "펫 장착 슬롯 부족",
+        `현재 ${limit}마리까지 장착 가능 · 환생할 때마다 +1`
+      );
+
+      return false;
+    }
+
+    selected.push(
+      id
+    );
+
+    save.selectedPets=
+      selected;
+  }
+
+  save.selectedPet=
+    save.selectedPets[0] ||
+    "";
+
+  persist();
+
+  return true;
+
+}
+
+function togglePlayerPetSelection(
+  owner,
+  id
+){
+
+  if(
+    !owner ||
+    !PETS[
+      id
+    ]
+  ){
+    return false;
+  }
+
+  const selected=
+    getOwnerEquippedPets(
+      owner
+    );
+
+  const index=
+    selected.indexOf(
+      id
+    );
+
+  if(
+    index>=0
+  ){
+    selected.splice(
+      index,
+      1
+    );
+
+  }else{
+
+    const limit=
+      owner.local
+        ?
+        getPetSlotLimit()
+        :
+        Object.keys(
+          PETS
+        ).length;
+
+    if(
+      selected.length>=
+      limit
+    ){
+      if(
+        owner.local
+      ){
+        showMessage(
+          "펫 장착 슬롯 부족",
+          `현재 ${limit}마리까지 장착 가능합니다.`
+        );
+      }
+
+      return false;
+    }
+
+    selected.push(
+      id
+    );
+  }
+
+  owner.petIds=
+    selected;
+
+  syncPrimaryPetFields(
+    owner
+  );
+
+  /*
+    v74:
+    펫 장착 상태는 owner(player) 객체에만 존재한다.
+    로컬/클라우드 저장에는 기록하지 않는다.
+  */
+
+  return true;
+
+}
+
+function resetAllPetProgress(
+  options={}
+){
+
+  save.ownedPets=[
+    "drone"
+  ];
+
+  save.selectedPets=[
+    "drone"
+  ];
+
+  save.selectedPet=
+    "drone";
+
+  save.petDataResetVersion=
+    PET_RESET_VERSION;
+
+  if(
+    player?.local
+  ){
+    player.petIds=[
+      "drone"
+    ];
+
+    player.petId=
+      "drone";
+
+    player.petStates=
+      {};
+  }
+
+  persist();
+
+  if(
+    typeof renderPetSelect===
+    "function"
+  ){
+    renderPetSelect();
+  }
+
+  if(
+    typeof renderPets===
+      "function" &&
+    player
+  ){
+    renderPets();
+  }
+
+  if(
+    options.showMessage!==
+      false
+  ){
+    showMessage(
+      "펫 전체 초기화 완료",
+      "정찰 드론 1마리만 보유·장착된 기본 상태로 돌아갔습니다."
+    );
+  }
+
+}
+
+
 const FUSIONS=[
   {id:"swarmSmg",name:"스웜 SMG",requires:["smg"],color:"split",desc:"SMG + 보라(분열) · 2연장 초고속 탄막"},
   {id:"railgun",name:"레일건",requires:["sniper"],color:"pierce",desc:"저격소총 + 청색(관통) · 초고관통 단발"},
@@ -5532,7 +6648,11 @@ const FUSIONS=[
   {id:"stormReaper",name:"스톰 리퍼",requires:["minigun","tesla"],color:"slow",desc:"미니건 + 테슬라 캐논 + 청록(둔화) · 초고속 연쇄 전격"},
   {id:"solarFlare",name:"솔라 플레어",requires:["laserRifle","plasma"],color:"power",desc:"레이저 라이플 + 플라즈마 캐논 + 백색(공격력) · 고속 광열 폭발"},
   {id:"aegisBreaker",name:"이지스 브레이커",requires:["dmr","gaussRifle"],color:"pierce",desc:"DMR + 가우스 라이플 + 청색(관통) · 초고관통 방어선 파괴"},
-  {id:"hellstorm",name:"헬스톰 포대",requires:["grenadeLauncher","launcher"],color:"blast",desc:"유탄발사기 + 로켓 런처 + 주황(폭발) · 쌍발 초대형 포격"}
+  {id:"hellstorm",name:"헬스톰 포대",requires:["grenadeLauncher","launcher"],color:"blast",desc:"유탄발사기 + 로켓 런처 + 주황(폭발) · 쌍발 초대형 포격"},
+  {id:"cryoNova",name:"크라이오 노바",requires:["cryoCarbine","plasma"],color:"slow",desc:"크라이오 카빈 + 플라즈마 캐논 + 청록(둔화) · 냉각 관통 폭발"},
+  {id:"toxicHive",name:"톡식 하이브",requires:["needleGun","microMissilePod"],color:"poison",desc:"니들 스웜 + 마이크로 미사일 포드 + 녹색(중독) · 독성 군체 탄막"},
+  {id:"arcMortar",name:"아크 모타르",requires:["mortar","arcRifle"],color:"blast",desc:"중형 박격포 + 아크 라이플 + 주황(폭발) · 대형 전격 포격"},
+  {id:"starPiercer",name:"스타 피어서",requires:["harpoon","laserRifle"],color:"pierce",desc:"하푼 레일러 + 레이저 라이플 + 청색(관통) · 초광속 초관통"}
 ];
 
 const MELEE_WEAPONS={
@@ -6368,7 +7488,7 @@ let gameClockMinutes=
 
 let graphicsMode=
   save.graphicsMode ||
-  "normal";
+  "ultra";
 
 function applyPerformanceCaps(){
 
@@ -6494,14 +7614,81 @@ const input={
   - 투사체 프레임: 화면 표시용 최소 필드, 약 2 Hz
   - 전체 장비 상태: 별도 roster로 저주기/변경 시 동기화
 */
-const MULTI_INPUT_ACTIVE_INTERVAL=.25;       // 최대 4 Hz
-const MULTI_INPUT_IDLE_INTERVAL=1.00;        // 정지 상태 keep-alive
+const MULTIPLAYER_MAX_PLAYERS=
+  4;
 
-const MULTI_FRAME_INTERVAL=.25;              // 약 4 Hz
-const MULTI_FRAME_CONGESTED_INTERVAL=.42;    // 혼잡 시 약 2.4 Hz
-const MULTI_FULL_SNAPSHOT_INTERVAL=2.50;     // 호스트 승계용 상세 상태
-const MULTI_PROJECTILE_SYNC_INTERVAL=.50;    // 약 2 Hz
-const MULTI_LOADOUT_ROSTER_INTERVAL=5.00;    // 전체 장비 백업 동기화
+const MULTI_SYNC_PROFILES={
+
+  2:{
+    inputActive:.22,
+    inputIdle:.90,
+    frame:.20,
+    projectile:.45,
+    fullSnapshot:2.50,
+    loadoutRoster:5.00
+  },
+
+  3:{
+    inputActive:.30,
+    inputIdle:1.20,
+    frame:.28,
+    projectile:.62,
+    fullSnapshot:3.10,
+    loadoutRoster:7.00
+  },
+
+  4:{
+    inputActive:.40,
+    inputIdle:1.50,
+    frame:.38,
+    projectile:.82,
+    fullSnapshot:4.00,
+    loadoutRoster:9.00
+  }
+
+};
+
+function getMultiplayerPlayerCount(){
+
+  if(
+    !multiplayer?.active
+  ){
+    return 1;
+  }
+
+  return clamp(
+    Math.max(
+      1,
+      multiplayer.members.size ||
+      players.size ||
+      1
+    ),
+    1,
+    MULTIPLAYER_MAX_PLAYERS
+  );
+
+}
+
+function getMultiplayerSyncProfile(){
+
+  const count=
+    getMultiplayerPlayerCount();
+
+  if(
+    count>=4
+  ){
+    return MULTI_SYNC_PROFILES[4];
+  }
+
+  if(
+    count===3
+  ){
+    return MULTI_SYNC_PROFILES[3];
+  }
+
+  return MULTI_SYNC_PROFILES[2];
+
+}
 
 const MULTI_HEARTBEAT_INTERVAL=8;
 const MULTI_PING_INTERVAL=5;
@@ -6555,6 +7742,7 @@ const multiplayer={
     new Set(),
 
   teamAdminUsed:false,
+  adminPaused:false,
   publicRoom:false,
   heartbeatTimer:0,
   pingTimer:0,
@@ -6860,7 +8048,8 @@ function createPlayer(
   id,
   nickname,
   job,
-  local=false
+  local=false,
+  prestigeOverride=null
 ){
 
   let maxHp=
@@ -6947,6 +8136,56 @@ function createPlayer(
 
   }
 
+  const effectivePrestige=
+    prestigeOverride===
+      null
+      ?
+      (
+        local
+          ?
+          Math.max(
+            0,
+            Math.floor(
+              Number(
+                save.prestige
+              ) ||
+              0
+            )
+          )
+          :
+          0
+      )
+      :
+      Math.max(
+        0,
+        Math.floor(
+          Number(
+            prestigeOverride
+          ) ||
+          0
+        )
+      );
+
+  const prestigeBonuses=
+    getPrestigeBonuses(
+      {
+        prestige:
+          effectivePrestige
+      }
+    );
+
+  maxHp *=
+    prestigeBonuses.maxHpMultiplier;
+
+  speed *=
+    prestigeBonuses.speedMultiplier;
+
+  damageMult *=
+    prestigeBonuses.damageMultiplier;
+
+  const prestigeShield=
+    prestigeBonuses.startShield;
+
   return{
 
     id,
@@ -6954,12 +8193,34 @@ function createPlayer(
     job,
     local,
 
+    prestige:
+      effectivePrestige,
+
     gender:
       local ? (save.gender || "male") : "male",
 
-    petId:
-      local ? (save.selectedPet || null) : "drone",
+    /*
+      v74:
+      모든 플레이어는 매 판 정찰 드론 1마리 상태에서 시작한다.
+      펫 구매/장착은 현재 판에서만 유지된다.
+    */
+    petIds:[
+      "drone"
+    ],
 
+    petId:
+      "drone",
+
+    ownedPets:[
+      "drone"
+    ],
+
+    petStates:{},
+
+    /*
+      첫 번째 펫 호환 필드.
+      기존 네트워크/렌더 코드와의 호환을 위해 유지한다.
+    */
     petX:0,
     petY:0,
     petAngle:0,
@@ -6979,12 +8240,7 @@ function createPlayer(
       기존 코드는 전역 save.unlockedEvolutions를 사용해
       호스트의 진화 상태가 모든 플레이어에게 적용될 수 있었다.
     */
-    unlockedEvolutions:
-      local
-        ?
-        {...(save.unlockedEvolutions || {})}
-        :
-        {},
+    unlockedEvolutions:{},
 
     _loadoutRevision:0,
 
@@ -7013,20 +8269,26 @@ function createPlayer(
     maxHp,
 
     shield:
-      job===
-      "guard"
-        ?
-        35
-        :
-        0,
+      (
+        job===
+        "guard"
+          ?
+          35
+          :
+          0
+      )+
+      prestigeShield,
 
     maxShield:
-      job===
-      "guard"
-        ?
-        35
-        :
-        0,
+      (
+        job===
+        "guard"
+          ?
+          35
+          :
+          0
+      )+
+      prestigeShield,
 
     speed,
     damageMult,
@@ -7188,8 +8450,15 @@ function renderJobs(){
   ui.jobGrid.innerHTML=
     "";
 
+  const prestigeBonuses=
+    getPrestigeBonuses();
+
   ui.coreText.textContent=
-    `💎 프리즘 ${formatNumber(save.prism)} · 환생 ★${save.prestige} · 경험치 ×${getPrestigeXpMultiplier().toFixed(2)}`;
+    `💎 프리즘 ${formatNumber(save.prism)} · 환생 ★${save.prestige}`+
+    ` · 경험치 ×${prestigeBonuses.xpMultiplier.toFixed(2)}`+
+    ` · 최대 체력 +${Math.round((prestigeBonuses.maxHpMultiplier-1)*100)}%`+
+    ` · 공격력 +${Math.round((prestigeBonuses.damageMultiplier-1)*100)}%`+
+    ` · 펫 ${prestigeBonuses.petSlots}칸`;
 
   for(
     const [
@@ -7465,17 +8734,49 @@ function setAuto(
    관리자
 ========================================================= */
 
-function markAdminUsed(){
+let adminOpenContext=
+  "menu";
 
-  if(
+let adminPausedByPanel=
+  false;
+
+function adminRunActive(){
+
+  return Boolean(
+    player
+  ) &&
+  (
     state===
       "playing" ||
     state===
       "waveComplete"
+  );
+
+}
+
+function markAdminUsed(){
+
+  if(
+    adminRunActive()
   ){
 
     runAdminUsed=
       true;
+
+    multiplayer.teamAdminUsed=
+      true;
+
+    if(
+      multiplayer.active
+    ){
+      sendRoomEvent(
+        "admin_used",
+        {},
+        {
+          silent:true
+        }
+      );
+    }
 
   }
 
@@ -7483,24 +8784,247 @@ function markAdminUsed(){
 
 function updateAdminButton(){
 
-  $("adminFloatingButton")
-    .style
-    .display=
-      adminMode
+  const button=
+    $("adminFloatingButton");
+
+  if(
+    !button
+  ){
+    return;
+  }
+
+  button.style.display=
+    adminMode
+      ?
+      "block"
+      :
+      "none";
+
+}
+
+function setMultiplayerAdminPause(
+  enabled
+){
+
+  if(
+    !multiplayer.active ||
+    !multiplayer.isHost
+  ){
+    return;
+  }
+
+  multiplayer.adminPaused=
+    Boolean(
+      enabled
+    );
+
+  sendRoomEvent(
+    "admin_pause",
+    {
+      paused:
+        Boolean(
+          enabled
+        )
+    },
+    {
+      silent:true
+    }
+  );
+
+}
+
+function pauseForAdminAccess(){
+
+  if(
+    state!==
+      "playing"
+  ){
+    return;
+  }
+
+  /*
+    멀티 참가자가 로컬만 멈추면 호스트와 상태가 어긋난다.
+    멀티 전투 전체 일시정지는 호스트 관리자만 수행한다.
+  */
+  if(
+    multiplayer.active &&
+    !multiplayer.isHost
+  ){
+    return;
+  }
+
+  if(
+    !paused
+  ){
+    paused=
+      true;
+
+    adminPausedByPanel=
+      true;
+
+    setMultiplayerAdminPause(
+      true
+    );
+  }
+
+}
+
+function resumeAfterAdminClose(){
+
+  if(
+    !adminPausedByPanel
+  ){
+    return;
+  }
+
+  adminPausedByPanel=
+    false;
+
+  setMultiplayerAdminPause(
+    false
+  );
+
+  if(
+    state===
+      "playing" &&
+    ui.pauseMenu.style.display!==
+      "flex"
+  ){
+    paused=
+      false;
+  }
+
+}
+
+function refreshAdminPanelContext(){
+
+  const runActive=
+    adminRunActive();
+
+  const restricted=
+    runActive &&
+    multiplayer.active &&
+    !multiplayer.isHost;
+
+  adminOpenContext=
+    runActive
+      ?
+      "combat"
+      :
+      "menu";
+
+  const menuSection=
+    $("adminMenuSection");
+
+  const combatSection=
+    $("adminCombatSection");
+
+  const restrictedSection=
+    $("adminRestrictedSection");
+
+  if(
+    menuSection
+  ){
+    menuSection.style.display=
+      runActive
         ?
-        "block"
+        "none"
+        :
+        "grid";
+  }
+
+  if(
+    combatSection
+  ){
+    combatSection.style.display=
+      runActive &&
+      !restricted
+        ?
+        "grid"
         :
         "none";
+  }
+
+  if(
+    restrictedSection
+  ){
+    restrictedSection.classList.toggle(
+      "hidden",
+      !restricted
+    );
+  }
+
+  const status=
+    $("adminContextStatus");
+
+  if(
+    status
+  ){
+    status.textContent=
+      restricted
+        ?
+        "멀티플레이 참가자 · 전투 관리자 기능은 호스트만 사용할 수 있습니다."
+        :
+        runActive
+          ?
+          "전투 관리자 · 현재 전투에 필요한 기능만 표시 중 · 게임 일시정지"
+          :
+          "메뉴 관리자 · 영구 진행도와 프로필 기능만 표시 중";
+  }
+
+  const profileInput=
+    $("adminProfileLevelInput");
+
+  if(
+    profileInput
+  ){
+    profileInput.value=
+      getProfileStats().level;
+  }
+
+  const runLevelInput=
+    $("adminRunLevelInput");
+
+  if(
+    runLevelInput &&
+    player
+  ){
+    runLevelInput.value=
+      player.level||
+      1;
+  }
+
+}
+
+function openAdminPanel(){
+
+  pauseForAdminAccess();
+
+  refreshAdminPanelContext();
+
+  showOverlay(
+    ui.adminPanel
+  );
+
+}
+
+function closeAdminPanel(){
+
+  hideOverlay(
+    ui.adminPanel
+  );
+
+  resumeAfterAdminClose();
 
 }
 
 function openAdminLogin(){
 
+  pauseForAdminAccess();
+
   if(adminMode){
 
-    showOverlay(
-      ui.adminPanel
-    );
+    openAdminPanel();
 
     return;
 
@@ -7515,6 +9039,16 @@ function openAdminLogin(){
   showOverlay(
     ui.adminLogin
   );
+
+}
+
+function closeAdminLogin(){
+
+  hideOverlay(
+    ui.adminLogin
+  );
+
+  resumeAfterAdminClose();
 
 }
 
@@ -7544,9 +9078,7 @@ function loginAdmin(){
     ui.adminLogin
   );
 
-  showOverlay(
-    ui.adminPanel
-  );
+  openAdminPanel();
 
   showMessage(
     "ADMIN MODE"
@@ -7557,17 +9089,25 @@ function loginAdmin(){
 function adminRequireRun(){
 
   if(
-    !player ||
-    (
-      state!==
-        "playing" &&
-      state!==
-        "waveComplete"
-    )
+    !adminRunActive()
   ){
 
     showMessage(
       "게임 시작 필요"
+    );
+
+    return false;
+
+  }
+
+  if(
+    multiplayer.active &&
+    !multiplayer.isHost
+  ){
+
+    showMessage(
+      "호스트 전용 기능",
+      "멀티플레이 전투 관리자 기능은 방장만 사용할 수 있습니다."
     );
 
     return false;
@@ -7579,6 +9119,153 @@ function adminRequireRun(){
   return true;
 
 }
+
+function runNextXpForLevel(
+  level
+){
+
+  const target=
+    clamp(
+      Math.floor(
+        Number(
+          level
+        )||
+        1
+      ),
+      1,
+      9999
+    );
+
+  let nextXp=
+    60;
+
+  for(
+    let current=1;
+    current<
+      target;
+    current++
+  ){
+    nextXp=
+      Math.floor(
+        nextXp*
+        1.18+
+        15
+      );
+  }
+
+  return nextXp;
+
+}
+
+function setAdminProfileLevel(
+  level
+){
+
+  const target=
+    clamp(
+      Math.floor(
+        Number(
+          level
+        )||
+        1
+      ),
+      1,
+      9999
+    );
+
+  save.profileXp=
+    (
+      target-
+      1
+    )*
+    PROFILE_POINTS_PER_LEVEL;
+
+  persist();
+
+  refreshProfileSummary();
+  renderJobs();
+
+  const input=
+    $("adminProfileLevelInput");
+
+  if(
+    input
+  ){
+    input.value=
+      target;
+  }
+
+  showMessage(
+    "프로필 레벨 변경",
+    `LV. ${target}`
+  );
+
+}
+
+function setAdminRunLevel(
+  level
+){
+
+  if(
+    !adminRequireRun()
+  ){
+    return;
+  }
+
+  const target=
+    clamp(
+      Math.floor(
+        Number(
+          level
+        )||
+        1
+      ),
+      1,
+      9999
+    );
+
+  player.level=
+    target;
+
+  player.xp=
+    0;
+
+  player.nextXp=
+    runNextXpForLevel(
+      target
+    );
+
+  pendingLevelUps=
+    0;
+
+  hideOverlay(
+    ui.levelUp
+  );
+
+  const input=
+    $("adminRunLevelInput");
+
+  if(
+    input
+  ){
+    input.value=
+      target;
+  }
+
+  if(
+    multiplayer.active
+  ){
+    multiplayer.snapshotTimer=
+      0;
+  }
+
+  showMessage(
+    "전투 레벨 변경",
+    `LV. ${target}`
+  );
+
+}
+
 
 /* =========================================================
    무기
@@ -7639,14 +9326,7 @@ function getWeaponStats(
 
   const evolved=
     Boolean(
-      owner?.unlockedEvolutions?.[id] ??
-      (
-        owner?.local
-          ?
-          save.unlockedEvolutions[id]
-          :
-          false
-      )
+      owner?.unlockedEvolutions?.[id]
     );
 
   const result={
@@ -11560,7 +13240,7 @@ function useMelee(){
   camera.shake=Math.max(camera.shake,hitCount>0?7:4);
 }
 
-function updatePet(owner,dt){
+function updateSinglePet(owner,dt){
   if(!owner || owner.dead || !owner.petId) return;
 
   const pet=PETS[owner.petId] || PETS.drone;
@@ -11649,7 +13329,199 @@ function updatePet(owner,dt){
   owner.petFireTimer=1/Math.max(.1,pet.rate);
 }
 
-function drawPet(owner){
+
+function updatePet(
+  owner,
+  dt
+){
+
+  if(
+    !owner ||
+    owner.dead
+  ){
+    return;
+  }
+
+  const petIds=
+    getOwnerEquippedPets(
+      owner
+    );
+
+  if(
+    !petIds.length
+  ){
+    owner.petId=
+      null;
+
+    return;
+  }
+
+  if(
+    !owner.petStates ||
+    typeof owner.petStates!==
+      "object"
+  ){
+    owner.petStates=
+      {};
+  }
+
+  const original={
+    petId:
+      owner.petId,
+
+    petX:
+      owner.petX,
+
+    petY:
+      owner.petY,
+
+    petAngle:
+      owner.petAngle,
+
+    petFireTimer:
+      owner.petFireTimer,
+
+    petHealTimer:
+      owner.petHealTimer
+  };
+
+  for(
+    let index=0;
+    index<
+    petIds.length;
+    index++
+  ){
+    const petId=
+      petIds[
+        index
+      ];
+
+    let state=
+      owner.petStates[
+        petId
+      ];
+
+    if(
+      !state
+    ){
+      const angle=
+        index*
+        Math.PI*
+        2/
+        Math.max(
+          1,
+          petIds.length
+        );
+
+      state={
+        x:
+          owner.x+
+          Math.cos(
+            angle
+          )*
+          44,
+
+        y:
+          owner.y+
+          Math.sin(
+            angle
+          )*
+          32,
+
+        angle,
+
+        fireTimer:
+          index*
+          .08,
+
+        healTimer:
+          index*
+          .12
+      };
+
+      owner.petStates[
+        petId
+      ]=
+        state;
+    }
+
+    owner.petId=
+      petId;
+
+    owner.petX=
+      state.x;
+
+    owner.petY=
+      state.y;
+
+    owner.petAngle=
+      state.angle;
+
+    owner.petFireTimer=
+      state.fireTimer;
+
+    owner.petHealTimer=
+      state.healTimer;
+
+    updateSinglePet(
+      owner,
+      dt
+    );
+
+    state.x=
+      owner.petX;
+
+    state.y=
+      owner.petY;
+
+    state.angle=
+      owner.petAngle;
+
+    state.fireTimer=
+      owner.petFireTimer;
+
+    state.healTimer=
+      owner.petHealTimer;
+  }
+
+  const primary=
+    owner.petStates[
+      petIds[0]
+    ];
+
+  owner.petIds=
+    [
+      ...petIds
+    ];
+
+  owner.petId=
+    petIds[0] ||
+    original.petId ||
+    null;
+
+  owner.petX=
+    primary?.x ??
+    original.petX;
+
+  owner.petY=
+    primary?.y ??
+    original.petY;
+
+  owner.petAngle=
+    primary?.angle ??
+    original.petAngle;
+
+  owner.petFireTimer=
+    primary?.fireTimer ??
+    original.petFireTimer;
+
+  owner.petHealTimer=
+    primary?.healTimer ??
+    original.petHealTimer;
+
+}
+
+function drawSinglePet(owner){
   if(!owner || owner.dead || !owner.petId) return;
 
   const pet=PETS[owner.petId] || PETS.drone;
@@ -12823,64 +14695,235 @@ function syncShopEconomyUI(options={}){
 
 function renderPets(){
   if(!ui.petGrid || !player) return;
+
   ui.petGrid.innerHTML="";
 
-  for(const [id,pet] of Object.entries(PETS)){
-    const owned=save.ownedPets.includes(id);
-    const selected=player.petId===id;
-    const canAfford=money>=pet.cost;
+  const equipped=
+    getOwnerEquippedPets(
+      player
+    );
 
-    const card=document.createElement("div");
-    card.className="card pet-card"+(selected?" selected":"");
+  const slotLimit=
+    getPetSlotLimit();
 
-    const title=document.createElement("h3");
-    title.textContent=(selected?"✓ ":"")+pet.name;
+  for(
+    const [
+      id,
+      pet
+    ] of Object.entries(
+      PETS
+    )
+  ){
+    const owned=
+      Array.isArray(
+        player.ownedPets
+      ) &&
+      player.ownedPets.includes(
+        id
+      );
 
-    const desc=document.createElement("p");
+    const selected=
+      equipped.includes(
+        id
+      );
+
+    const canAfford=
+      money>=
+      pet.cost;
+
+    const card=
+      document.createElement(
+        "div"
+      );
+
+    card.className=
+      "card pet-card"+
+      (
+        selected
+          ?
+          " selected"
+          :
+          ""
+      );
+
+    const title=
+      document.createElement(
+        "h3"
+      );
+
+    title.textContent=
+      (
+        selected
+          ?
+          "✓ "
+          :
+          ""
+      )+
+      pet.name;
+
+    const desc=
+      document.createElement(
+        "p"
+      );
+
     const petStats=[];
+
     if(pet.damage) petStats.push(`피해 ${pet.damage}`);
     if(pet.rate) petStats.push(`작동 ${pet.rate}/s`);
     if(pet.range) petStats.push(`범위 ${pet.range}`);
     if(pet.heal) petStats.push(`회복 ${pet.heal}`);
     if(pet.pierce) petStats.push(`관통 ${pet.pierce}`);
     if(pet.shield) petStats.push("적탄 방어");
-    desc.innerHTML=`${pet.desc}<br><span class="pet-detail-note">${pet.details || ""}</span>${petStats.length?`<br><span class="catalog-stat">${petStats.join(" · ")}</span>`:""}`;
 
-    const button=document.createElement("button");
-    button.className=owned?"btn":"btn primary";
+    desc.innerHTML=
+      `${pet.desc}<br>`+
+      `<span class="pet-detail-note">${pet.details || ""}</span>`+
+      (
+        petStats.length
+          ?
+          `<br><span class="catalog-stat">${petStats.join(" · ")}</span>`
+          :
+          ""
+      );
 
-    if(owned){
-      button.textContent=selected?"동행 중":"선택";
-      button.disabled=selected;
-      button.onclick=()=>{
-        player.petId=id;
-        save.selectedPet=id;
-        persist();
-        notifyMultiplayerLoadoutChanged();
-        renderPets();
-        renderPetSelect();
-      };
+    const button=
+      document.createElement(
+        "button"
+      );
+
+    button.className=
+      owned
+        ?
+        "btn"
+        :
+        "btn primary";
+
+    if(
+      owned
+    ){
+      button.textContent=
+        selected
+          ?
+          "장착 해제"
+          :
+          (
+            equipped.length>=
+            slotLimit
+              ?
+              `슬롯 ${equipped.length}/${slotLimit}`
+              :
+              "장착"
+          );
+
+      button.disabled=
+        !selected &&
+        equipped.length>=
+        slotLimit;
+
+      button.onclick=
+        () => {
+
+          if(
+            !togglePlayerPetSelection(
+              player,
+              id
+            )
+          ){
+            return;
+          }
+
+          notifyMultiplayerLoadoutChanged();
+          renderPets();
+          renderPetSelect();
+
+        };
+
     }else{
-      button.textContent=canAfford?`${formatNumber(pet.cost)} 구매`:`${formatNumber(pet.cost-money)} 부족`;
-      button.disabled=!canAfford;
-      button.onclick=()=>{
-        if(money<pet.cost) return;
-        money-=pet.cost;
-        playSfx("buy");
-        save.ownedPets.push(id);
-        player.petId=id;
-        save.selectedPet=id;
-        persist();
-        notifyMultiplayerLoadoutChanged();
-        syncShopEconomyUI({
-          clearUpgradeResult:true
-        });
-        renderPetSelect();
-      };
+      button.textContent=
+        canAfford
+          ?
+          `${formatNumber(pet.cost)} 구매`
+          :
+          `${formatNumber(pet.cost-money)} 부족`;
+
+      button.disabled=
+        !canAfford;
+
+      button.onclick=
+        () => {
+
+          if(
+            money<
+            pet.cost
+          ){
+            return;
+          }
+
+          money -=
+            pet.cost;
+
+          playSfx(
+            "buy"
+          );
+
+          if(
+            !Array.isArray(
+              player.ownedPets
+            )
+          ){
+            player.ownedPets=[
+              "drone"
+            ];
+          }
+
+          if(
+            !player.ownedPets.includes(
+              id
+            )
+          ){
+            player.ownedPets.push(
+              id
+            );
+          }
+
+          /*
+            빈 슬롯이 있을 때만 자동 장착한다.
+            이미 슬롯이 가득 찼으면 보유만 하고 기존 조합은 유지한다.
+          */
+          if(
+            getOwnerEquippedPets(
+              player
+            ).length<
+            getPetSlotLimit()
+          ){
+            togglePlayerPetSelection(
+              player,
+              id
+            );
+          }
+
+          notifyMultiplayerLoadoutChanged();
+
+          syncShopEconomyUI(
+            {
+              clearUpgradeResult:true
+            }
+          );
+
+          renderPetSelect();
+
+        };
     }
 
-    card.append(title,desc,button);
-    ui.petGrid.append(card);
+    card.append(
+      title,
+      desc,
+      button
+    );
+
+    ui.petGrid.append(
+      card
+    );
   }
 }
 
@@ -13172,225 +15215,92 @@ function renderRoutes(){
 
 function renderWeapons(){
 
-  const grid =
-    $("weaponGrid");
-
-  grid.innerHTML =
-    "";
+  const grid=$("weaponGrid");
+  grid.innerHTML="";
 
   if(ui.shopMoney){
-    ui.shopMoney.textContent =
-      formatNumber(money);
+    ui.shopMoney.textContent=formatNumber(money);
   }
 
-  for(
-    const [
-      id,
-      weapon
-    ]
-    of Object.entries(
-      WEAPONS
-    )
-  ){
+  for(const [id,weapon] of Object.entries(WEAPONS)){
 
-    if(weapon.admin){
-      continue;
-    }
+    if(weapon.admin) continue;
+    if(weapon.fusion && !player.weaponSlots.includes(id)) continue;
 
-    if(weapon.fusion && !player.weaponSlots.includes(id)){
-      continue;
-    }
+    const owned=player.weaponSlots.includes(id);
+    const equipped=getWeaponId()===id;
+    const canAfford=money>=weapon.cost;
+    const evolved=Boolean(player.unlockedEvolutions?.[id]);
 
-    const owned =
-      player.weaponSlots.includes(
-        id
-      );
+    const card=document.createElement("div");
+    card.className="card";
 
-    const equipped =
-      getWeaponId() ===
-      id;
+    const title=document.createElement("h3");
+    title.textContent=evolved
+      ? (EVOLUTION_NAMES[id] || `${weapon.name} EX`)
+      : weapon.name;
 
-    const canAfford =
-      money >=
-      weapon.cost;
-
-    const evolved =
-      Boolean(
-        save.unlockedEvolutions[id]
-      );
-
-    const card =
-      document.createElement(
-        "div"
-      );
-
-    card.className =
-      "card";
-
-    const title =
-      document.createElement(
-        "h3"
-      );
-
-    title.textContent =
-      evolved
-        ?
-        (EVOLUTION_NAMES[id] || `${weapon.name} EX`)
-        :
-        weapon.name;
-
-    const description =
-      document.createElement(
-        "p"
-      );
-
-    const extraStats=[];
-    if((weapon.pellets||1)>1) extraStats.push(`산탄 ${weapon.pellets}발`);
-    if((weapon.pierce||0)>0) extraStats.push(`관통 ${weapon.pierce}`);
-    if((weapon.blast||0)>0) extraStats.push(`폭발 ${weapon.blast}`);
-    if((weapon.chain||0)>0) extraStats.push(`연쇄 ${weapon.chain}`);
-
-    description.innerHTML =
-      `<b>${weapon.category || "총기"}</b> · ${weapon.desc || "특수 설명 없음"}<br>` +
-      `<span class="catalog-stat">피해 ${weapon.damage} · 발사 ${weapon.rate}/s · 탄속 ${weapon.speed}${extraStats.length?` · ${extraStats.join(" · ")}`:""}</span>` +
+    /*
+      v73: 상점에서는 긴 무기 설명과 세부 스탯을 제거한다.
+      모든 설명과 비교 정보는 게임 설명의 무기 표에서 확인한다.
+    */
+    const status=document.createElement("p");
+    status.innerHTML=
+      `<b>${weapon.category || "총기"}</b>`+
       `<span class="weapon-price-state ${
-        owned
-          ?
-          "owned"
-          :
-          canAfford
-            ?
-            "can-buy"
-            :
-            "cannot-buy"
+        owned ? "owned" : canAfford ? "can-buy" : "cannot-buy"
       }">${
         owned
-          ?
-          equipped
-            ?
-            "현재 장착 중"
-            :
-            "보유 중"
-          :
-          canAfford
-            ?
-            `구매 가능 · 보유 ₩${formatNumber(money)} / 가격 ₩${formatNumber(weapon.cost)}`
-            :
-            `구매 불가 · ₩${formatNumber(weapon.cost - money)} 부족`
+          ? equipped ? "현재 장착 중" : "보유 중"
+          : canAfford
+            ? `구매 가능 · ₩${formatNumber(weapon.cost)}`
+            : `구매 불가 · ₩${formatNumber(weapon.cost-money)} 부족`
       }</span>`;
 
-    const button =
-      document.createElement(
-        "button"
-      );
-
-    button.className =
-      owned
-        ?
-        "btn"
-        :
-        "btn primary";
+    const button=document.createElement("button");
+    button.className=owned?"btn":"btn primary";
 
     if(owned){
-
-      button.textContent =
-        equipped
-          ?
-          "장착 중"
-          :
-          "장착";
-
-      button.disabled =
-        equipped;
-
+      button.textContent=equipped?"장착 중":"장착";
+      button.disabled=equipped;
     }else{
-
-      button.textContent =
-        `${formatNumber(weapon.cost)} 구매`;
-
-      /*
-        돈이 부족하면 실제로 비활성화되어
-        살 수 있는지 없는지가 바로 보인다.
-      */
-      button.disabled =
-        !canAfford;
-
+      button.textContent=`${formatNumber(weapon.cost)} 구매`;
+      button.disabled=!canAfford;
     }
 
-    button.onclick =
-      () => {
+    button.onclick=()=>{
 
-        if(owned){
-
-          player.activeSlot =
-            player.weaponSlots.indexOf(
-              id
-            );
-
-          notifyMultiplayerLoadoutChanged();
-
-          syncShopEconomyUI({
-            clearUpgradeResult:true
-          });
-          renderColors();
-
-          return;
-
-        }
-
-        if(
-          money <
-          weapon.cost
-        ){
-
-          showMessage(
-            "돈 부족",
-            `₩${formatNumber(weapon.cost - money)} 더 필요`
-          );
-
-          return;
-
-        }
-
-        money -=
-          weapon.cost;
-
-        playSfx("buy");
-
-        player.weaponSlots.push(
-          id
-        );
-
-        player.activeSlot =
-          player.weaponSlots.length -
-          1;
-
+      if(owned){
+        player.activeSlot=player.weaponSlots.indexOf(id);
         notifyMultiplayerLoadoutChanged();
-
-        showMessage(
-          `${weapon.name} 구매 완료`,
-          (weapon.desc || "새 무기를 장착했습니다.").split(/[.!?]/)[0].trim().slice(0,72)
-        );
-
-        syncShopEconomyUI({
-          clearUpgradeResult:true
-        });
+        syncShopEconomyUI({clearUpgradeResult:true});
         renderColors();
+        return;
+      }
 
-      };
+      if(money<weapon.cost){
+        showMessage("돈 부족",`₩${formatNumber(weapon.cost-money)} 더 필요`);
+        return;
+      }
 
-    card.append(
-      title,
-      description,
-      button
-    );
+      money-=weapon.cost;
+      playSfx("buy");
+      player.weaponSlots.push(id);
+      player.activeSlot=player.weaponSlots.length-1;
+      notifyMultiplayerLoadoutChanged();
 
-    grid.append(
-      card
-    );
+      showMessage(
+        `${weapon.name} 구매 완료`,
+        "새 무기를 장착했습니다. 자세한 능력은 게임 설명의 무기 표에서 확인할 수 있습니다."
+      );
 
+      syncShopEconomyUI({clearUpgradeResult:true});
+      renderColors();
+    };
+
+    card.append(title,status,button);
+    grid.append(card);
   }
-
 }
 
 function renderUpgrade(){
@@ -13469,7 +15379,7 @@ function renderUpgrade(){
   $("evolveButton").style.display =
     level >=
       5 &&
-    !save.unlockedEvolutions[id]
+    !player.unlockedEvolutions?.[id]
       ?
       "inline-block"
       :
@@ -13608,14 +15518,17 @@ function startRun(
   score=
     0;
 
+  const runPrestigeBonuses=
+    getPrestigeBonuses();
+
   money=
-    350;
+    runPrestigeBonuses.startMoney;
 
   runTime=
     0;
 
   evolutionCores=
-    0;
+    runPrestigeBonuses.startEvolutionCores;
 
   currentBoss=
     null;
@@ -13692,16 +15605,35 @@ function startRun(
   );
 
   player.gender=save.gender || "male";
-  player.petId=save.selectedPet || null;
-  player.meleeWeapon="wornSword" || "knife";
-  player.unlockedEvolutions=
-    {
-      ...(
-        save.unlockedEvolutions ||
-        {}
-      )
-    };
 
+  /*
+    v74 전투 로드아웃 초기화:
+    무기/강화/색상/진화/합체/펫/근접무기는 매 게임 새로 시작한다.
+  */
+  player.petIds=[
+    "drone"
+  ];
+
+  player.petId=
+    "drone";
+
+  player.ownedPets=[
+    "drone"
+  ];
+
+  player.petStates=
+    {};
+
+  player.meleeWeapon=
+    "wornSword";
+
+  player.ownedMelee=[
+    "wornSword"
+  ];
+
+  player.unlockedEvolutions={};
+
+  multiplayer.adminPaused=false;
   multiplayer.localLoadoutRevision=0;
   multiplayer.lastLoadoutAck=0;
   player._loadoutRevision=0;
@@ -13752,16 +15684,16 @@ function rankingSkipMessage(){
     return "멀티플레이는 현재 온라인 랭킹에서 제외됩니다.";
   }
 
-  if(runUsedAuto){
+  /*
+    관리자 테스트 기록은 별도의 고정 랭킹 ID로 저장한다.
+    따라서 관리자 모드를 사용한 판은 AUTO를 사용했더라도
+    일반 사용자 랭킹과 분리된 테스트 기록으로 등록할 수 있다.
+  */
+  if(runUsedAuto && !runAdminUsed){
     return "AUTO 사용으로 랭킹 제외";
   }
 
-  if(runAdminUsed){
-    return "관리자 기능 사용으로 랭킹 제외";
-  }
-
   return "";
-
 }
 
 
@@ -13824,9 +15756,20 @@ function rankingPayload(){
 
   const weaponId=getWeaponId();
 
+  const ADMIN_RANKING_PLAYER_ID="00000000-0000-4000-8000-000000000073";
+  const ADMIN_RANKING_NICKNAME="관리자(테스터)";
+
+  const adminRanking=Boolean(runAdminUsed);
+
   return{
-    playerId:save.playerId,
-    nickname:save.nickname,
+    playerId:adminRanking
+      ? ADMIN_RANKING_PLAYER_ID
+      : save.playerId,
+
+    nickname:adminRanking
+      ? ADMIN_RANKING_NICKNAME
+      : save.nickname,
+
     score:Math.max(0,Math.floor(score||0)),
     wave:Math.max(1,Math.floor(wave||1)),
     kills:Math.max(0,Math.floor(player?.kills||0)),
@@ -13838,14 +15781,11 @@ function rankingPayload(){
     durationMs:Math.max(0,Math.floor(runTime*1000)),
 
     /*
-      Supabase rankings Edge Function 호환용.
-      submitRanking()은 runUsedAuto가 true면 이 함수에 도달하기 전에
-      이미 전송을 중단한다. 따라서 실제 전송되는 정상 기록은
-      반드시 autoUsed:false를 명시한다.
+      관리자 판은 관리자 전용 테스트 ID로만 동기화된다.
+      일반 판은 기존 계정 ID와 닉네임을 그대로 사용한다.
     */
     autoUsed:false
   };
-
 }
 
 async function readRankingResponse(response){
@@ -13953,7 +15893,9 @@ async function submitRanking(options={}){
     };
   }
 
-  if(!save.nickname || save.nickname.length<2){
+  const payload=rankingPayload();
+
+  if(!payload.nickname || payload.nickname.length<2){
     throw new Error("랭킹 등록 실패 · 닉네임을 먼저 저장하세요.");
   }
 
@@ -13966,7 +15908,6 @@ async function submitRanking(options={}){
     );
   }
 
-  const payload=rankingPayload();
   let lastError=null;
 
   for(let attempt=0;attempt<2;attempt++){
@@ -14082,7 +16023,7 @@ async function loadRankings(mode){
         : "";
 
     const response=await rankingFetch(
-      `${RANKINGS_URL}?mode=${encodeURIComponent(mode)}${dailyDateQuery}&_=${Date.now()}`,
+      `${RANKINGS_URL}?mode=${encodeURIComponent(mode)}${dailyDateQuery}&limit=7&_=${Date.now()}`,
       {
         method:"GET",
         headers:{
@@ -14131,7 +16072,7 @@ async function loadRankings(mode){
     }
 
     rankings
-      .slice(0,10)
+      .slice(0,7)
       .forEach((rank,index)=>{
 
         const row=document.createElement("div");
@@ -14192,12 +16133,34 @@ async function performPrestige(){
     return false;
   }
 
+  const currentBonuses=
+    getPrestigeBonuses();
+
+  const nextBonuses=
+    getPrestigeBonuses(
+      {
+        prestige:
+          save.prestige+
+          1
+      }
+    );
+
   const accepted=confirm(
     `환생하시겠습니까?\n\n`+
     `비용: 💎 프리즘 ${formatNumber(req.cost)}\n`+
-    `현재 환생: ${save.prestige}회 → ${save.prestige+1}회\n`+
-    `영구 경험치 획득 배율: ×${getPrestigeXpMultiplier().toFixed(2)} → ×${(1+(save.prestige+1)*.15).toFixed(2)}\n\n`+
-    `플레이어 레벨 진행도는 1레벨부터 다시 시작하지만 누적 킬·플레이 횟수·최고 기록·해금 직업은 유지됩니다.`
+    `현재 환생: ${save.prestige}회 → ${save.prestige+1}회\n\n`+
+    `다음 환생 영구 보너스\n`+
+    `• 경험치 ×${nextBonuses.xpMultiplier.toFixed(2)}\n`+
+    `• 최대 체력 +${Math.round((nextBonuses.maxHpMultiplier-1)*100)}%\n`+
+    `• 공격력 +${Math.round((nextBonuses.damageMultiplier-1)*100)}%\n`+
+    `• 이동 속도 +${Math.round((nextBonuses.speedMultiplier-1)*100)}%\n`+
+    `• 시작 돈 ${formatNumber(nextBonuses.startMoney)}\n`+
+    `• 시작 보호막 +${nextBonuses.startShield}\n`+
+    `• 프리즘 보상 ×${nextBonuses.prismMultiplier.toFixed(2)}\n`+
+    `• 강화 성공률 +${Math.round(nextBonuses.upgradeBonus*100)}%p\n`+
+    `• 시작 진화 프리즘 ${nextBonuses.startEvolutionCores}개\n`+
+    `• 동시 장착 펫 ${nextBonuses.petSlots}마리\n\n`+
+    `프로필 레벨 진행도는 1레벨부터 다시 시작하지만 누적 킬·플레이 횟수·최고 기록·해금 직업과 영구 재화는 유지됩니다. 무기, 강화, 색상, 진화·합체, 펫, 근접무기는 원래부터 매 판 초기화되는 전투 장비이므로 환생 전후와 관계없이 다음 게임에 이어지지 않습니다.`
   );
 
   if(!accepted) return false;
@@ -14210,7 +16173,16 @@ async function performPrestige(){
   refreshProfileSummary();
   renderJobs();
 
-  showMessage(`환생 ★${save.prestige} 완료`,`영구 경험치 획득량 ×${getPrestigeXpMultiplier().toFixed(2)}`);
+  const completedBonuses=
+    getPrestigeBonuses();
+
+  renderPetSelect();
+
+  showMessage(
+    `환생 ★${save.prestige} 완료`,
+    `경험치 ×${completedBonuses.xpMultiplier.toFixed(2)} · 펫 ${completedBonuses.petSlots}칸 · 프리즘 ×${completedBonuses.prismMultiplier.toFixed(2)}`,
+    2.4
+  );
   return true;
 }
 
@@ -14310,7 +16282,7 @@ async function finishRun(){
     기존 프리즘 공식 유지.
   */
 
-  const earned=
+  const baseEarned=
     Math.max(
       1,
       Math.floor(
@@ -14323,6 +16295,15 @@ async function finishRun(){
       Math.floor(
         score/
         5000
+      )
+    );
+
+  const earned=
+    Math.max(
+      1,
+      Math.floor(
+        baseEarned*
+        getPrestigeBonuses().prismMultiplier
       )
     );
 
@@ -14592,10 +16573,15 @@ function updateMultiplayerConnection(
       input.firing ||
       autoMode;
 
+    const syncProfile=
+      getMultiplayerSyncProfile();
+
     const inputInterval=
       inputActive
-        ? MULTI_INPUT_ACTIVE_INTERVAL
-        : MULTI_INPUT_IDLE_INTERVAL;
+        ?
+        syncProfile.inputActive
+        :
+        syncProfile.inputIdle;
 
     if(
       multiplayer.inputTimer<=0
@@ -14638,6 +16624,7 @@ function updateMultiplayerConnection(
   */
   if(
     state==="playing" &&
+    !multiplayer.adminPaused &&
     multiplayer.lastSnapshotAt &&
     now-multiplayer.lastSnapshotAt>
       MULTI_SNAPSHOT_TIMEOUT
@@ -14722,15 +16709,22 @@ function update(
         multiplayer.jitterMs>95 ||
         multiplayer.sendFailures>=3;
 
+      const syncProfile=
+        getMultiplayerSyncProfile();
+
+      const congestionMultiplier=
+        congested
+          ?
+          1.45
+          :
+          1;
+
       if(
         multiplayer.snapshotTimer<=0
       ){
         multiplayer.snapshotTimer=
-          congested
-            ?
-            MULTI_FRAME_CONGESTED_INTERVAL
-            :
-            MULTI_FRAME_INTERVAL;
+          syncProfile.frame*
+          congestionMultiplier;
 
         sendWorldFrame();
       }
@@ -14739,12 +16733,8 @@ function update(
         multiplayer.projectileSyncTimer<=0
       ){
         multiplayer.projectileSyncTimer=
-          congested
-            ?
-            MULTI_PROJECTILE_SYNC_INTERVAL*
-            1.35
-            :
-            MULTI_PROJECTILE_SYNC_INTERVAL;
+          syncProfile.projectile*
+          congestionMultiplier;
 
         sendProjectileFrame();
       }
@@ -14753,12 +16743,8 @@ function update(
         multiplayer.fullSnapshotTimer<=0
       ){
         multiplayer.fullSnapshotTimer=
-          congested
-            ?
-            MULTI_FULL_SNAPSHOT_INTERVAL*
-            1.35
-            :
-            MULTI_FULL_SNAPSHOT_INTERVAL;
+          syncProfile.fullSnapshot*
+          congestionMultiplier;
 
         sendWorldSnapshot();
       }
@@ -14767,7 +16753,8 @@ function update(
         multiplayer.loadoutRosterTimer<=0
       ){
         multiplayer.loadoutRosterTimer=
-          MULTI_LOADOUT_ROSTER_INTERVAL;
+          syncProfile.loadoutRoster*
+          congestionMultiplier;
 
         sendLoadoutRoster();
       }
@@ -14804,7 +16791,7 @@ function updateHud(){
 
   ui.network.textContent=
     multiplayer.active
-      ? `${multiplayer.isHost ? "HOST" : "CLIENT"} · ${multiplayer.roomCode} · ${multiplayer.members.size || 1}/4 · ${multiplayer.connectionState || "연결"} · ${Math.round(multiplayer.latencyMs || 0)}ms`
+      ? `${multiplayer.isHost ? "HOST" : "CLIENT"} · ${multiplayer.roomCode} · ${multiplayer.members.size || 1}/${MULTIPLAYER_MAX_PLAYERS} · ${multiplayer.connectionState || "연결"} · ${Math.round(multiplayer.latencyMs || 0)}ms`
       : GRAPHICS_MODES[graphicsMode]?.name || "기본 모드";
 
   ui.wave.textContent=
@@ -14946,7 +16933,7 @@ function updateHud(){
   ){
 
     effectList.push(
-      "ADMIN · 랭킹 제외"
+      "ADMIN · 테스트 랭킹"
     );
 
   }
@@ -15227,6 +17214,189 @@ function drawCity(){
     ctx.fillStyle=neonSweep;
     ctx.fillRect(0,0,WIDTH,HEIGHT);
   }
+
+}
+
+
+function drawPet(
+  owner
+){
+
+  if(
+    !owner ||
+    owner.dead
+  ){
+    return;
+  }
+
+  const petIds=
+    getOwnerEquippedPets(
+      owner
+    );
+
+  if(
+    !petIds.length
+  ){
+    return;
+  }
+
+  const original={
+    petId:
+      owner.petId,
+
+    petX:
+      owner.petX,
+
+    petY:
+      owner.petY
+  };
+
+  const now=
+    performance.now()*
+    .001;
+
+  const seed=
+    (
+      stringHash(
+        String(
+          owner.id ||
+          "pet"
+        )
+      )%
+      1000
+    )/
+    1000*
+    Math.PI*
+    2;
+
+  for(
+    let index=0;
+    index<
+    petIds.length;
+    index++
+  ){
+    const petId=
+      petIds[
+        index
+      ];
+
+    const state=
+      owner.petStates?.[
+        petId
+      ];
+
+    let petX=
+      state?.x;
+
+    let petY=
+      state?.y;
+
+    /*
+      원격 클라이언트는 모든 펫 위치를 네트워크로 전송받지 않는다.
+      플레이어 위치를 기준으로 결정론적인 궤도를 그려
+      네트워크 트래픽 없이 여러 펫을 부드럽게 표시한다.
+    */
+    if(
+      !Number.isFinite(
+        petX
+      ) ||
+      !Number.isFinite(
+        petY
+      )
+    ){
+      if(
+        index===
+          0 &&
+        Number.isFinite(
+          owner.petX
+        ) &&
+        Number.isFinite(
+          owner.petY
+        ) &&
+        (
+          owner.petX!==
+            0 ||
+          owner.petY!==
+            0
+        )
+      ){
+        petX=
+          owner.petX;
+
+        petY=
+          owner.petY;
+
+      }else{
+        const angle=
+          now*
+          (
+            .72+
+            index*
+            .035
+          )+
+          seed+
+          index*
+          Math.PI*
+          2/
+          Math.max(
+            1,
+            petIds.length
+          );
+
+        const radiusX=
+          44+
+          (
+            index%
+            3
+          )*
+          8;
+
+        const radiusY=
+          30+
+          (
+            index%
+            2
+          )*
+          7;
+
+        petX=
+          owner.x+
+          Math.cos(
+            angle
+          )*
+          radiusX;
+
+        petY=
+          owner.y+
+          Math.sin(
+            angle
+          )*
+          radiusY;
+      }
+    }
+
+    owner.petId=
+      petId;
+
+    owner.petX=
+      petX;
+
+    owner.petY=
+      petY;
+
+    drawSinglePet(
+      owner
+    );
+  }
+
+  owner.petId=
+    original.petId;
+
+  owner.petX=
+    original.petX;
+
+  owner.petY=
+    original.petY;
 
 }
 
@@ -16417,22 +18587,72 @@ $("adminLoginButton").onclick=
   loginAdmin;
 
 $("adminLoginCloseButton").onclick=
-  () =>
-    hideOverlay(
-      ui.adminLogin
-    );
+  closeAdminLogin;
 
 $("adminPanelCloseButton").onclick=
-  () =>
-    hideOverlay(
-      ui.adminPanel
-    );
+  closeAdminPanel;
 
 $("adminFloatingButton").onclick=
-  () =>
-    showOverlay(
-      ui.adminPanel
+  openAdminPanel;
+
+$("adminProfileLevelApplyButton").onclick=
+  () => {
+
+    setAdminProfileLevel(
+      $("adminProfileLevelInput").value
     );
+
+  };
+
+$("adminProfileLevelPlusButton").onclick=
+  () => {
+
+    setAdminProfileLevel(
+      getProfileStats().level+
+      10
+    );
+
+  };
+
+$("adminRunLevelApplyButton").onclick=
+  () => {
+
+    setAdminRunLevel(
+      $("adminRunLevelInput").value
+    );
+
+  };
+
+$("adminRunLevelPlusButton").onclick=
+  () => {
+
+    setAdminRunLevel(
+      (
+        player?.level||
+        1
+      )+
+      10
+    );
+
+  };
+
+$("adminPetResetButton").onclick=
+  () => {
+
+    const accepted=
+      confirm(
+        "보유 펫과 장착 펫을 모두 초기화하고 정찰 드론 1마리만 남기시겠습니까?"
+      );
+
+    if(
+      !accepted
+    ){
+      return;
+    }
+
+    resetAllPetProgress();
+
+  };
 
 $("adminHealButton").onclick=
   () => {
@@ -16539,21 +18759,18 @@ $("adminMoneyButton").onclick=
 $("adminCoreButton").onclick=
   () => {
 
-    markAdminUsed();
-
     save.prism +=
       50;
 
     persist();
 
     renderJobs();
+    refreshProfileSummary();
 
   };
 
 $("adminUnlockJobsButton").onclick=
   () => {
-
-    markAdminUsed();
 
     save.ownedJobs=
       Object.keys(
@@ -16569,7 +18786,19 @@ $("adminUnlockJobsButton").onclick=
 $("adminUnlockEvolutionsButton").onclick=
   () => {
 
-    markAdminUsed();
+    if(
+      !adminRequireRun()
+    ){
+      return;
+    }
+
+    player.unlockedEvolutions=
+      {
+        ...(
+          player.unlockedEvolutions ||
+          {}
+        )
+      };
 
     for(
       const id
@@ -16583,14 +18812,19 @@ $("adminUnlockEvolutionsButton").onclick=
         "rainbow"
       ){
 
-        save.unlockedEvolutions[id]=
+        player.unlockedEvolutions[id]=
           true;
 
       }
 
     }
 
-    persist();
+    notifyMultiplayerLoadoutChanged();
+
+    showMessage(
+      "현재 판 모든 무기 진화 적용",
+      "다음 게임에는 유지되지 않습니다."
+    );
 
   };
 
@@ -16637,12 +18871,24 @@ $("adminMaxWeaponButton").onclick=
 
     }
 
+    const weaponId=
+      getWeaponId();
+
+    /*
+      현재 판의 player 객체만 수정한다.
+      save.weaponMastery나 다른 영구 저장 데이터는 절대 수정하지 않는다.
+    */
     player.weaponLevels[
-      getWeaponId()
+      weaponId
     ]=
       10;
 
     notifyMultiplayerLoadoutChanged();
+
+    showMessage(
+      "현재 무기 임시 +10",
+      "다음 새 게임에는 유지되지 않습니다."
+    );
 
   };
 
@@ -16680,9 +18926,7 @@ $("adminWaveButton").onclick=
       target-
       1;
 
-    hideOverlay(
-      ui.adminPanel
-    );
+    closeAdminPanel();
 
     startWave();
 
@@ -16702,7 +18946,11 @@ $("adminPlusWaveButton").onclick=
 $("adminWeatherButton").onclick=
   () => {
 
-    markAdminUsed();
+    if(
+      !adminRequireRun()
+    ){
+      return;
+    }
 
     weather=
       $("adminWeatherSelect").value;
@@ -16723,9 +18971,7 @@ $("adminDisableButton").onclick=
 
     updateAdminButton();
 
-    hideOverlay(
-      ui.adminPanel
-    );
+    closeAdminPanel();
 
   };
 
@@ -16813,7 +19059,9 @@ function sendRoomEvent(event,payload={},options={}){
 
   const throttledEvent=
     event==="input" ||
-    event==="snapshot";
+    event==="snapshot" ||
+    event==="world_frame" ||
+    event==="projectiles";
 
   if(
     throttledEvent &&
@@ -17170,18 +19418,52 @@ function sanitizeMultiplayerLoadout(
     }
   }
 
-  const petId=
-    payload?.petId &&
-    PETS[
-      payload.petId
-    ]
+  const incomingPetIds=
+    Array.isArray(
+      payload?.petIds
+    )
       ?
-      payload.petId
+      payload.petIds
       :
-      (
-        target?.petId ||
-        null
-      );
+      payload?.petId
+        ?
+        [
+          payload.petId
+        ]
+        :
+        Array.isArray(
+          target?.petIds
+        )
+          ?
+          target.petIds
+          :
+          target?.petId
+            ?
+            [
+              target.petId
+            ]
+            :
+            [];
+
+  const petIds=
+    [
+      ...new Set(
+        incomingPetIds.filter(
+          id =>
+            typeof id===
+              "string" &&
+            Boolean(
+              PETS[
+                id
+              ]
+            )
+        )
+      )
+    ];
+
+  const petId=
+    petIds[0] ||
+    null;
 
   const meleeWeapon=
     payload?.meleeWeapon &&
@@ -17249,6 +19531,7 @@ function sanitizeMultiplayerLoadout(
     weaponLevels,
     weaponColors,
     unlockedEvolutions,
+    petIds,
     petId,
     meleeWeapon,
     ownedMelee,
@@ -17317,8 +19600,22 @@ function applyMultiplayerLoadout(
       ...clean.unlockedEvolutions
     };
 
+  target.petIds=
+    [
+      ...clean.petIds
+    ];
+
   target.petId=
     clean.petId;
+
+  if(
+    !target.petStates ||
+    typeof target.petStates!==
+      "object"
+  ){
+    target.petStates=
+      {};
+  }
 
   target.meleeWeapon=
     clean.meleeWeapon;
@@ -17387,10 +19684,14 @@ function makeMultiplayerLoadoutPayload(){
       {
         ...(
           player.unlockedEvolutions ||
-          save.unlockedEvolutions ||
           {}
         )
       },
+
+    petIds:
+      getOwnerEquippedPets(
+        player
+      ),
 
     petId:
       player.petId ||
@@ -17514,7 +19815,6 @@ function notifyMultiplayerLoadoutChanged(){
   player.unlockedEvolutions=
     {
       ...(
-        save.unlockedEvolutions ||
         player.unlockedEvolutions ||
         {}
       )
@@ -17791,7 +20091,7 @@ function syncMembers(){
     }
   }
 
-  const list=
+  const orderedMembers=
     [
       ...uniqueMembers.values()
     ]
@@ -17815,11 +20115,55 @@ function syncMembers(){
               b.playerId
             )
           )
-      )
-      .slice(
-        0,
-        4
       );
+
+  const list=
+    orderedMembers.slice(
+      0,
+      MULTIPLAYER_MAX_PLAYERS
+    );
+
+  /*
+    DB/RPC 설정이 잘못되어 5번째 연결이 잠깐 들어오더라도
+    Presence 레벨에서 4명 제한을 한 번 더 강제한다.
+  */
+  if(
+    orderedMembers.length>
+      MULTIPLAYER_MAX_PLAYERS &&
+    !list.some(
+      member =>
+        member.playerId===
+          save.playerId
+    )
+  ){
+    showMessage(
+      "방 인원 초과",
+      "멀티플레이는 최대 4명까지 참가할 수 있습니다."
+    );
+
+    setTimeout(
+      async () => {
+
+        if(
+          multiplayer.active
+        ){
+          await leaveMultiplayer();
+
+          hideOverlay(
+            ui.lobby
+          );
+
+          showOverlay(
+            ui.multiMenu
+          );
+        }
+
+      },
+      0
+    );
+
+    return;
+  }
 
   multiplayer.members.clear();
 
@@ -17953,6 +20297,31 @@ function syncMembers(){
   if(
     hostChanged
   ){
+    /*
+      v71: 이전 호스트가 관리자 패널을 연 상태에서 이탈하면
+      admin_pause=false 패킷이 오지 않을 수 있다.
+      호스트 세대가 바뀌는 순간 동기화 관리자 일시정지를 해제해
+      남은 참가자가 영구 정지 상태에 갇히지 않게 한다.
+    */
+    if(
+      multiplayer.adminPaused
+    ){
+      multiplayer.adminPaused=
+        false;
+
+      if(
+        ui.pauseMenu.style.display!==
+          "flex" &&
+        ui.adminPanel.style.display!==
+          "flex" &&
+        ui.adminLogin.style.display!==
+          "flex"
+      ){
+        paused=
+          false;
+      }
+    }
+
     multiplayer.hostChangedAt=
       performance.now();
 
@@ -18025,6 +20394,7 @@ function renderLobby(){
       playerId:save.playerId,
       nickname:save.nickname,
       job:save.selectedJob,
+      prestige:save.prestige || 0,
       joinedAt:multiplayer.joinedAt,
       profileLevel:localProfile.level,
       bestWave:save.bestWave||0,
@@ -18047,7 +20417,8 @@ function renderLobby(){
     const meta=document.createElement("span");
     meta.className="lobby-player-meta";
     meta.textContent=
-      `${JOBS[member.job]?.name || member.job || "군인"} · 플레이 ${formatNumber(member.totalRuns||0)}회 · 누적 처치 ${formatNumber(member.totalKills||0)}`;
+      `${JOBS[member.job]?.name || member.job || "군인"} · 환생 ★${Math.max(0,Math.floor(Number(member.prestige)||0))}`+
+      ` · 플레이 ${formatNumber(member.totalRuns||0)}회 · 누적 처치 ${formatNumber(member.totalKills||0)}`;
 
     main.append(left,meta);
 
@@ -18062,7 +20433,7 @@ function renderLobby(){
   }
 
   ui.lobbyStatus.textContent=
-    `${multiplayer.publicRoom ? "공개 방" : "비공개 방"} · ${members.length}/4 · ${multiplayer.isHost ? "내가 방장" : "방장 대기 중"}`+
+    `${multiplayer.publicRoom ? "공개 방" : "비공개 방"} · ${members.length}/${MULTIPLAYER_MAX_PLAYERS} · ${multiplayer.isHost ? "내가 방장" : "방장 대기 중"}`+
     ` · 연결 ${multiplayer.connectionState||"안정"} · 지연 ${Math.round(multiplayer.latencyMs||0)}ms`+
     ` · 변동 ${Math.round(multiplayer.jitterMs||0)}ms`;
 
@@ -18593,6 +20964,50 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     multiplayer.teamUsedAuto=true;
   });
 
+  channel.on("broadcast",{event:"admin_used"},()=>{
+    multiplayer.teamAdminUsed=true;
+  });
+
+  channel.on("broadcast",{event:"admin_pause"},({payload})=>{
+    if(
+      !payload ||
+      !isCurrentHostPayload(
+        payload
+      ) ||
+      multiplayer.isHost
+    ){
+      return;
+    }
+
+    const shouldPause=
+      Boolean(
+        payload.paused
+      );
+
+    multiplayer.adminPaused=
+      shouldPause;
+
+    if(
+      shouldPause
+    ){
+      paused=
+        true;
+
+      showMessage(
+        "호스트 관리자 일시정지",
+        "호스트가 관리자 패널을 사용하는 동안 전투가 멈춥니다."
+      );
+
+    }else if(
+      ui.pauseMenu.style.display!==
+        "flex"
+    ){
+      paused=
+        false;
+    }
+
+  });
+
   channel.on("broadcast",{event:"start_game"},({payload})=>{
     if(!acceptCriticalPayload(payload)) return;
     if(!isCurrentHostPayload(payload)) return;
@@ -18744,7 +21159,21 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
             nickname:save.nickname,
             job:save.selectedJob,
             gender:save.gender,
-            petId:save.selectedPet,
+            prestige:Math.max(0,Math.floor(Number(save.prestige)||0)),
+            petIds:
+              player
+                ?
+                getOwnerEquippedPets(
+                  player
+                )
+                :
+                [
+                  "drone"
+                ],
+
+            petId:
+              player?.petId ||
+              "drone",
             joinedAt:multiplayer.joinedAt,
             profileLevel:profile.level,
             bestWave:save.bestWave||0,
@@ -18819,10 +21248,53 @@ function ensureMultiplayerPlayers(){
     if(id===save.playerId) continue;
 
     if(!players.has(id)){
-      const remote=createPlayer(id,member.nickname||"SURVIVOR",member.job||"soldier",false);
-      remote.gender=member.gender||"male";
-      remote.petId=member.petId||"drone";
-      players.set(id,remote);
+      const remote=createPlayer(
+        id,
+        member.nickname||"SURVIVOR",
+        member.job||"soldier",
+        false,
+        Number(
+          member.prestige
+        )||
+        0
+      );
+
+      remote.gender=
+        member.gender||
+        "male";
+
+      remote.petIds=
+        Array.isArray(
+          member.petIds
+        )
+          ?
+          member.petIds.filter(
+            petId =>
+              Boolean(
+                PETS[
+                  petId
+                ]
+              )
+          )
+          :
+          member.petId
+            ?
+            [
+              member.petId
+            ]
+            :
+            [
+              "drone"
+            ];
+
+      remote.petId=
+        remote.petIds[0]||
+        "drone";
+
+      players.set(
+        id,
+        remote
+      );
     }
   }
 
@@ -18849,6 +21321,8 @@ function networkPlayerFrame(
     nickname:p.nickname,
     job:p.job,
     gender:p.gender,
+    prestige:p.prestige || 0,
+    petIds:getOwnerEquippedPets(p),
     petId:p.petId,
 
     x:p.x,
@@ -19105,6 +21579,11 @@ function makeLoadoutRoster(){
               )
             },
 
+          petIds:
+            getOwnerEquippedPets(
+              p
+            ),
+
           petId:
             p.petId ||
             null,
@@ -19307,7 +21786,11 @@ function applyWorldFrame(
           data.nickname,
           data.job,
           data.id===
-            save.playerId
+            save.playerId,
+          Number(
+            data.prestige
+          ) ||
+          0
         );
 
       players.set(
@@ -19334,6 +21817,8 @@ function applyWorldFrame(
       "nickname",
       "job",
       "gender",
+      "prestige",
+      "petIds",
       "petId",
       "angle",
       "hp",
@@ -19687,6 +22172,8 @@ function makeSnapshot(){
       nickname:p.nickname,
       job:p.job,
       gender:p.gender,
+      prestige:p.prestige || 0,
+      petIds:getOwnerEquippedPets(p),
       petId:p.petId,
       x:p.x,
       y:p.y,
@@ -19751,7 +22238,13 @@ function applyWorldSnapshot(snapshot){
 
     let target=players.get(data.id);
     if(!target){
-      target=createPlayer(data.id,data.nickname,data.job,data.id===save.playerId);
+      target=createPlayer(
+        data.id,
+        data.nickname,
+        data.job,
+        data.id===save.playerId,
+        Number(data.prestige)||0
+      );
       players.set(data.id,target);
     }
 
@@ -19794,6 +22287,7 @@ function applyWorldSnapshot(snapshot){
         delete stateData.unlockedEvolutions;
         delete stateData.meleeWeapon;
         delete stateData.ownedMelee;
+        delete stateData.petIds;
         delete stateData.petId;
         delete stateData.loadoutRevision;
       }else{
@@ -19979,7 +22473,7 @@ async function createOnlineRoom(isPublic){
     p_nickname:save.nickname,
     p_job:save.selectedJob,
     p_is_public:Boolean(isPublic),
-    p_max_players:4
+    p_max_players:MULTIPLAYER_MAX_PLAYERS
   });
 
   if(error) throw error;
@@ -20284,29 +22778,63 @@ function renderDetailedHelpCatalog(){
   if(weaponCatalog){
     weaponCatalog.innerHTML="";
 
+    const table=document.createElement("table");
+    table.className="weapon-help-table";
+
+    const thead=document.createElement("thead");
+    const headRow=document.createElement("tr");
+
+    for(const label of ["무기","분류","피해","연사","탄속","특수","획득","설명"]){
+      const th=document.createElement("th");
+      th.textContent=label;
+      headRow.append(th);
+    }
+
+    thead.append(headRow);
+    table.append(thead);
+
+    const tbody=document.createElement("tbody");
+
     for(const [id,weapon] of Object.entries(WEAPONS)){
       if(weapon.admin) continue;
-      const tags=[];
-      if(weapon.fusion) tags.push("합체 무기");
-      if(weapon.replica) tags.push("초고가 복제품");
-      if((weapon.pellets||1)>1) tags.push(`산탄 ${weapon.pellets}`);
-      if((weapon.pierce||0)>0) tags.push(`관통 ${weapon.pierce}`);
-      if((weapon.blast||0)>0) tags.push(`폭발 ${weapon.blast}`);
-      if((weapon.chain||0)>0) tags.push(`연쇄 ${weapon.chain}`);
 
-      const price=weapon.fusion
-        ? "합체로 획득"
+      const special=[];
+      if((weapon.pellets||1)>1) special.push(`산탄 ${weapon.pellets}`);
+      if((weapon.pierce||0)>0) special.push(`관통 ${weapon.pierce}`);
+      if((weapon.blast||0)>0) special.push(`폭발 ${weapon.blast}`);
+      if((weapon.chain||0)>0) special.push(`연쇄 ${weapon.chain}`);
+      if(weapon.replica) special.push("복제품");
+
+      const obtain=weapon.fusion
+        ? "무기 합체"
         : weapon.cost===0
           ? "기본 지급"
-          : `가격 ₩${formatNumber(weapon.cost)}`;
+          : `₩${formatNumber(weapon.cost)}`;
 
-      appendCatalogCard(
-        weaponCatalog,
-        `${weapon.name} · ${weapon.category || "총기"}`,
-        weapon.desc || "설명 없음",
-        `피해 ${weapon.damage} · 발사 ${weapon.rate}/s · 탄속 ${weapon.speed} · ${price}${tags.length?` · ${tags.join(" · ")}`:""}`
-      );
+      const values=[
+        weapon.name,
+        weapon.category||"총기",
+        formatNumber(weapon.damage),
+        `${weapon.rate}/s`,
+        formatNumber(weapon.speed),
+        special.length?special.join(" · "):"기본형",
+        obtain,
+        weapon.desc||"설명 없음"
+      ];
+
+      const row=document.createElement("tr");
+
+      for(const value of values){
+        const td=document.createElement("td");
+        td.textContent=value;
+        row.append(td);
+      }
+
+      tbody.append(row);
     }
+
+    table.append(tbody);
+    weaponCatalog.append(table);
   }
 
   if(meleeCatalog){
@@ -20385,23 +22913,149 @@ function renderDetailedHelpCatalog(){
 
 function renderPetSelect(){
   if(!ui.petSelect) return;
-  ui.petSelect.innerHTML="";
 
-  const noneOption=document.createElement("option");
-  noneOption.value="none";
-  noneOption.textContent="펫 없음 · 시작 전에만 해제 가능";
-  noneOption.selected=!save.selectedPet;
-  ui.petSelect.append(noneOption);
+  normalizeSavedPetSelection();
 
-  for(const [id,pet] of Object.entries(PETS)){
-    if(!save.ownedPets.includes(id)) continue;
-    const option=document.createElement("option");
-    option.value=id;
-    option.textContent=`${pet.name} · ${pet.desc}`;
-    option.selected=id===save.selectedPet;
-    ui.petSelect.append(option);
+  const selected=
+    [
+      ...save.selectedPets
+    ];
+
+  const limit=
+    getPetSlotLimit();
+
+  ui.petSelect.innerHTML=
+    "";
+
+  const placeholder=
+    document.createElement(
+      "option"
+    );
+
+  placeholder.value=
+    "";
+
+  placeholder.textContent=
+    "아래 버튼으로 여러 펫을 장착하세요";
+
+  ui.petSelect.append(
+    placeholder
+  );
+
+  for(
+    const [
+      id,
+      pet
+    ] of Object.entries(
+      PETS
+    )
+  ){
+    if(
+      !save.ownedPets.includes(
+        id
+      )
+    ){
+      continue;
+    }
+
+    const option=
+      document.createElement(
+        "option"
+      );
+
+    option.value=
+      id;
+
+    option.textContent=
+      `${selected.includes(id) ? "✓ " : ""}${pet.name}`;
+
+    ui.petSelect.append(
+      option
+    );
+  }
+
+  ui.petSelect.value=
+    "";
+
+  if(
+    ui.petLoadoutSummary
+  ){
+    ui.petLoadoutSummary.textContent=
+      `장착 ${selected.length}/${limit} · 기본 2칸 + 환생 ${Math.max(0,save.prestige)}칸`;
+  }
+
+  if(
+    ui.petLoadoutButtons
+  ){
+    ui.petLoadoutButtons.innerHTML=
+      "";
+
+    for(
+      const id of
+      save.ownedPets
+    ){
+      const pet=
+        PETS[
+          id
+        ];
+
+      if(
+        !pet
+      ){
+        continue;
+      }
+
+      const active=
+        selected.includes(
+          id
+        );
+
+      const button=
+        document.createElement(
+          "button"
+        );
+
+      button.type=
+        "button";
+
+      button.className=
+        "btn"+
+        (
+          active
+            ?
+            " selected"
+            :
+            ""
+        );
+
+      button.textContent=
+        `${active ? "✓ " : ""}${pet.name}`;
+
+      button.disabled=
+        !active &&
+        selected.length>=
+        limit;
+
+      button.onclick=
+        () => {
+
+          if(
+            toggleSavedPetSelection(
+              id
+            )
+          ){
+            renderPetSelect();
+          }
+
+        };
+
+      ui.petLoadoutButtons.append(
+        button
+      );
+    }
   }
 }
+
 
 ui.genderSelect.onchange=()=>{
   save.gender=ui.genderSelect.value==="female"?"female":"male";
@@ -20413,8 +23067,18 @@ ui.graphicsSelect.onchange=()=>{
 };
 
 ui.petSelect.onchange=()=>{
-  save.selectedPet=ui.petSelect.value==="none" ? "" : ui.petSelect.value;
-  persist();
+  const id=
+    ui.petSelect.value;
+
+  if(
+    id
+  ){
+    toggleSavedPetSelection(
+      id
+    );
+
+    renderPetSelect();
+  }
 };
 
 function syncAudioSettingsUI(){
@@ -20728,12 +23392,16 @@ $("upgradeButton").onclick=
       cost;
 
     const chance=
-      UPGRADE_SUCCESS[
-        Math.min(
-          level,
-          9
-        )
-      ];
+      Math.min(
+        .98,
+        UPGRADE_SUCCESS[
+          Math.min(
+            level,
+            9
+          )
+        ]+
+        getPrestigeBonuses().upgradeBonus
+      );
 
     let resultMessage=
       "강화 실패 · 단계 유지";
@@ -20792,9 +23460,6 @@ $("evolveButton").onclick=
 
     playSfx("evolve");
 
-    save.unlockedEvolutions[id]=
-      true;
-
     player.unlockedEvolutions=
       {
         ...(
@@ -20806,7 +23471,11 @@ $("evolveButton").onclick=
           true
       };
 
-    persist();
+    /*
+      v74:
+      무기 진화는 현재 판 전용이다.
+      계정/로컬/클라우드 저장 데이터에는 기록하지 않는다.
+    */
     notifyMultiplayerLoadoutChanged();
 
     syncShopEconomyUI({
@@ -20872,6 +23541,20 @@ function togglePause(){
 
 function returnToMenu(){
 
+  /*
+    호스트가 관리자 일시정지 중 메뉴로 나가더라도
+    참가자에게 해제 신호를 먼저 보내 영구 정지를 방지한다.
+  */
+  if(
+    multiplayer.active &&
+    multiplayer.isHost &&
+    multiplayer.adminPaused
+  ){
+    setMultiplayerAdminPause(
+      false
+    );
+  }
+
   if(multiplayer.active){
     leaveMultiplayer();
   }
@@ -20887,6 +23570,20 @@ function returnToMenu(){
 
   input.firing=
     false;
+
+  adminPausedByPanel=
+    false;
+
+  multiplayer.adminPaused=
+    false;
+
+  hideOverlay(
+    ui.adminLogin
+  );
+
+  hideOverlay(
+    ui.adminPanel
+  );
 
   hideOverlay(
     ui.pauseMenu
@@ -22132,7 +24829,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v70</div>
+        <div class="eyebrow">FIELD ARCHIVE · v75</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -22147,7 +24844,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v70</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v75</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
@@ -23164,7 +25861,7 @@ function applyCustomAccountPayload(data){
   updateAccountIdentityUi();
 
   ui.genderSelect.value=save.gender||"male";
-  applyGraphicsMode(save.graphicsMode||"normal");
+  applyGraphicsMode(save.graphicsMode||"ultra");
   renderPetSelect();
   renderJobs();
   refreshProfileSummary();
@@ -23676,20 +26373,2802 @@ ui.genderSelect.value=
   save.gender ||
   "male";
 
-applyGraphicsMode(
-  save.graphicsMode ||
-  "normal"
+
+/* =========================================================
+   v73 · 통합 업데이트
+   - 계정별 관리자 버튼 해금
+   - 관리자 테스트 랭킹
+   - 일일 챌린지 보상 / 일일 보상 상자
+   - 낮/밤 환경 대비 / 자연스러운 안개
+   - 소폭 난이도 증가
+   - 초고퀄리티 기본 적용
+   - 확장 BGM / 볼륨 / 일시정지 설정
+========================================================= */
+
+const V73_GRAPHICS_DEFAULT_VERSION=73;
+const V73_AUDIO_DEFAULTS_VERSION=73;
+
+/* ---------- 저장 데이터 마이그레이션 ---------- */
+
+function v73NormalizeSaveData(){
+
+  if(!Array.isArray(save.adminUnlockedAccountIds)){
+    save.adminUnlockedAccountIds=[];
+  }
+
+  save.adminUnlockedAccountIds=[
+    ...new Set(
+      save.adminUnlockedAccountIds.filter(
+        id =>
+          typeof id==="string" &&
+          isValidUuid(id)
+      )
+    )
+  ];
+
+  save.dailyChallengeRewardDate=
+    typeof save.dailyChallengeRewardDate==="string"
+      ? save.dailyChallengeRewardDate
+      : "";
+
+  save.dailyChestDate=
+    typeof save.dailyChestDate==="string"
+      ? save.dailyChestDate
+      : "";
+
+  if(
+    Math.floor(
+      Number(save.graphicsDefaultVersion)||
+      0
+    )<
+    V73_GRAPHICS_DEFAULT_VERSION
+  ){
+    save.graphicsMode="ultra";
+    save.graphicsDefaultVersion=V73_GRAPHICS_DEFAULT_VERSION;
+  }
+
+  if(
+    Math.floor(
+      Number(save.audioDefaultsVersion)||
+      0
+    )<
+    V73_AUDIO_DEFAULTS_VERSION
+  ){
+    save.bgmVolume=Math.max(.52,Number(save.bgmVolume)||0);
+    save.sfxVolume=Math.max(.82,Number(save.sfxVolume)||0);
+    save.gunVolume=Math.max(.28,Number(save.gunVolume)||0);
+    save.audioDefaultsVersion=V73_AUDIO_DEFAULTS_VERSION;
+  }
+
+}
+
+v73NormalizeSaveData();
+persist({cloud:false});
+
+/* ---------- 클라우드 저장 확장 ---------- */
+
+const v73BaseCloudProfilePayload=cloudProfilePayload;
+
+cloudProfilePayload=function(){
+
+  const payload=v73BaseCloudProfilePayload();
+
+  return{
+    ...payload,
+
+    adminUnlockedAccountIds:[
+      ...save.adminUnlockedAccountIds
+    ],
+
+    dailyChallengeRewardDate:
+      save.dailyChallengeRewardDate||
+      "",
+
+    dailyChestDate:
+      save.dailyChestDate||
+      "",
+
+    graphicsDefaultVersion:
+      V73_GRAPHICS_DEFAULT_VERSION,
+
+    audioDefaultsVersion:
+      V73_AUDIO_DEFAULTS_VERSION,
+
+    graphicsMode:
+      save.graphicsMode||
+      "ultra",
+
+    bgmVolume:
+      clamp(
+        Number(save.bgmVolume??.52),
+        0,
+        1
+      ),
+
+    sfxVolume:
+      clamp(
+        Number(save.sfxVolume??.82),
+        0,
+        1
+      ),
+
+    gunVolume:
+      clamp(
+        Number(save.gunVolume??.28),
+        0,
+        1
+      )
+  };
+
+};
+
+const v73BaseApplyCloudProfile=applyCloudProfile;
+
+applyCloudProfile=function(profile){
+
+  const result=
+    v73BaseApplyCloudProfile(
+      profile
+    );
+
+  if(
+    Array.isArray(
+      profile?.adminUnlockedAccountIds
+    )
+  ){
+    save.adminUnlockedAccountIds=[
+      ...new Set(
+        profile.adminUnlockedAccountIds.filter(
+          id =>
+            typeof id==="string" &&
+            isValidUuid(id)
+        )
+      )
+    ];
+  }
+
+  if(
+    typeof profile?.dailyChallengeRewardDate===
+    "string"
+  ){
+    save.dailyChallengeRewardDate=
+      profile.dailyChallengeRewardDate;
+  }
+
+  if(
+    typeof profile?.dailyChestDate===
+    "string"
+  ){
+    save.dailyChestDate=
+      profile.dailyChestDate;
+  }
+
+  if(
+    Math.floor(
+      Number(profile?.graphicsDefaultVersion)||
+      0
+    )<
+    V73_GRAPHICS_DEFAULT_VERSION
+  ){
+    save.graphicsMode=
+      "ultra";
+  }
+
+  save.graphicsDefaultVersion=
+    V73_GRAPHICS_DEFAULT_VERSION;
+
+  if(
+    Math.floor(
+      Number(profile?.audioDefaultsVersion)||
+      0
+    )<
+    V73_AUDIO_DEFAULTS_VERSION
+  ){
+    save.bgmVolume=
+      Math.max(
+        .52,
+        Number(save.bgmVolume)||
+        0
+      );
+
+    save.sfxVolume=
+      Math.max(
+        .82,
+        Number(save.sfxVolume)||
+        0
+      );
+
+    save.gunVolume=
+      Math.max(
+        .28,
+        Number(save.gunVolume)||
+        0
+      );
+  }
+
+  save.audioDefaultsVersion=
+    V73_AUDIO_DEFAULTS_VERSION;
+
+  v73NormalizeSaveData();
+  persist({cloud:false});
+  updateAdminButton();
+  refreshDailyRewardUi();
+
+  return result;
+
+};
+
+/* ---------- 관리자 계정 해금 ---------- */
+
+function currentAdminAccountId(){
+
+  return isValidUuid(
+    currentAccountUser?.id
+  )
+    ?
+    currentAccountUser.id
+    :
+    "";
+
+}
+
+function isAdminAccessUnlockedForCurrentAccount(){
+
+  const id=
+    currentAdminAccountId();
+
+  return Boolean(
+    id &&
+    save.adminUnlockedAccountIds.includes(
+      id
+    )
+  );
+
+}
+
+function unlockAdminAccessForCurrentAccount(){
+
+  const id=
+    currentAdminAccountId();
+
+  if(!id){
+    return false;
+  }
+
+  if(
+    !save.adminUnlockedAccountIds.includes(
+      id
+    )
+  ){
+    save.adminUnlockedAccountIds.push(
+      id
+    );
+
+    persist();
+  }
+
+  return true;
+
+}
+
+updateAdminButton=function(){
+
+  const unlocked=
+    isAdminAccessUnlockedForCurrentAccount();
+
+  const menuButton=
+    $("adminMenuAccessButton");
+
+  if(menuButton){
+    menuButton.style.display=
+      unlocked
+        ?
+        "inline-flex"
+        :
+        "none";
+  }
+
+  const floating=
+    $("adminFloatingButton");
+
+  if(floating){
+    const runVisible=
+      state==="playing" ||
+      state==="waveComplete";
+
+    floating.style.display=
+      runVisible &&
+      (
+        unlocked ||
+        adminMode
+      )
+        ?
+        "block"
+        :
+        "none";
+  }
+
+};
+
+openAdminLogin=function(){
+
+  pauseForAdminAccess();
+
+  /*
+    v73:
+    계정에 버튼이 해금되어 있어도 관리자 패널을 열 때마다
+    반드시 비밀번호를 다시 입력해야 한다.
+  */
+  adminMode=false;
+
+  $("adminPasswordInput").value="";
+  $("adminLoginStatus").textContent="";
+
+  hideOverlay(
+    ui.adminPanel
+  );
+
+  showOverlay(
+    ui.adminLogin
+  );
+
+};
+
+loginAdmin=function(){
+
+  const password=
+    $("adminPasswordInput").value;
+
+  if(
+    password!==
+    DEV_PASSWORD
+  ){
+    $("adminLoginStatus").textContent=
+      "비밀번호가 틀렸습니다.";
+    return;
+  }
+
+  unlockAdminAccessForCurrentAccount();
+
+  adminMode=true;
+  updateAdminButton();
+
+  hideOverlay(
+    ui.adminLogin
+  );
+
+  openAdminPanel();
+
+  showMessage(
+    "ADMIN MODE",
+    isAdminAccessUnlockedForCurrentAccount()
+      ?
+      "이 계정에 관리자 버튼이 해금되었습니다. 다음에도 비밀번호 입력은 필요합니다."
+      :
+      "관리자 인증 완료"
+  );
+
+};
+
+closeAdminPanel=function(){
+
+  hideOverlay(
+    ui.adminPanel
+  );
+
+  adminMode=false;
+  updateAdminButton();
+
+  resumeAfterAdminClose();
+
+};
+
+$("adminLoginButton").onclick=
+  loginAdmin;
+
+$("adminPanelCloseButton").onclick=
+  closeAdminPanel;
+
+$("adminFloatingButton").onclick=
+  openAdminLogin;
+
+if(
+  $("adminMenuAccessButton")
+){
+  $("adminMenuAccessButton").onclick=
+    openAdminLogin;
+}
+
+/*
+  로그인/로그아웃/클라우드 반영 시 현재 계정의 버튼 상태를 갱신한다.
+*/
+const v73BaseUpdateAccountIdentityUi=
+  updateAccountIdentityUi;
+
+updateAccountIdentityUi=function(){
+
+  const result=
+    v73BaseUpdateAccountIdentityUi();
+
+  updateAdminButton();
+  refreshDailyRewardUi();
+
+  return result;
+
+};
+
+/* ---------- 일일 보상 ---------- */
+
+function v73TodayKey(){
+
+  if(
+    typeof v56KstDateKey===
+    "function"
+  ){
+    return v56KstDateKey();
+  }
+
+  return rankingDailyDateKey();
+
+}
+
+function v73DailyChallengeReward(){
+
+  const prestigeBonus=
+    getPrestigeBonuses()?.prismMultiplier||
+    1;
+
+  return{
+    prism:
+      Math.max(
+        20,
+        Math.floor(
+          20*
+          prestigeBonus
+        )
+      ),
+
+    profileXp:
+      200
+  };
+
+}
+
+function grantDailyChallengeReward(){
+
+  const today=
+    v73TodayKey();
+
+  if(
+    save.dailyChallengeRewardDate===
+    today
+  ){
+    return false;
+  }
+
+  const reward=
+    v73DailyChallengeReward();
+
+  save.prism=
+    Math.max(
+      0,
+      Number(save.prism)||
+      0
+    )+
+    reward.prism;
+
+  save.profileXp=
+    Math.max(
+      0,
+      Number(save.profileXp)||
+      0
+    )+
+    reward.profileXp;
+
+  save.dailyChallengeRewardDate=
+    today;
+
+  persist();
+  refreshProfileSummary();
+  renderJobs();
+  refreshDailyRewardUi();
+
+  playSfx("levelUp");
+
+  showMessage(
+    "일일 챌린지 보상 획득",
+    `프리즘 +${reward.prism} · 프로필 XP +${reward.profileXp}`
+  );
+
+  return true;
+
+}
+
+function getDailyChestReward(){
+
+  const today=
+    v73TodayKey();
+
+  const identity=
+    currentAccountUser?.id ||
+    save.localPlayerId ||
+    "local";
+
+  const randomSource=
+    seededRandom(
+      stringHash(
+        `LAST_WAVE_V74_DAILY_CHEST|${today}|${identity}`
+      )
+    );
+
+  let prism=
+    8+
+    Math.floor(
+      randomSource()*
+      11
+    );
+
+  let profileXp=
+    90+
+    Math.floor(
+      randomSource()*
+      131
+    );
+
+  const jackpot=
+    randomSource();
+
+  if(jackpot>.92){
+    prism+=12;
+    profileXp+=180;
+  }else if(jackpot>.72){
+    prism+=5;
+    profileXp+=70;
+  }
+
+  return{
+    prism,
+    profileXp,
+    jackpot:
+      jackpot>.92
+  };
+
+}
+
+function claimDailyChest(){
+
+  const today=
+    v73TodayKey();
+
+  if(
+    save.dailyChestDate===
+    today
+  ){
+    showMessage(
+      "오늘의 일일 보상 상자는 이미 열었습니다."
+    );
+
+    refreshDailyRewardUi();
+    return;
+  }
+
+  const reward=
+    getDailyChestReward();
+
+  save.prism=
+    Math.max(
+      0,
+      Number(save.prism)||
+      0
+    )+
+    reward.prism;
+
+  save.profileXp=
+    Math.max(
+      0,
+      Number(save.profileXp)||
+      0
+    )+
+    reward.profileXp;
+
+  save.dailyChestDate=
+    today;
+
+  persist();
+  refreshProfileSummary();
+  renderJobs();
+  refreshDailyRewardUi();
+
+  playSfx(
+    reward.jackpot
+      ?
+      "evolve"
+      :
+      "buy"
+  );
+
+  showMessage(
+    reward.jackpot
+      ?
+      "🎁 일일 보상 상자 · 대박!"
+      :
+      "🎁 일일 보상 상자",
+
+    `프리즘 +${reward.prism} · 프로필 XP +${reward.profileXp}`
+  );
+
+}
+
+function refreshDailyRewardUi(){
+
+  const today=
+    v73TodayKey();
+
+  const challengeClaimed=
+    save.dailyChallengeRewardDate===
+    today;
+
+  const chestClaimed=
+    save.dailyChestDate===
+    today;
+
+  const challengeCard=
+    $("dailyChallengeRewardCard");
+
+  const challengeStatus=
+    $("dailyChallengeRewardStatus");
+
+  if(challengeCard){
+    challengeCard.classList.toggle(
+      "claimed",
+      challengeClaimed
+    );
+  }
+
+  if(challengeStatus){
+    const reward=
+      v73DailyChallengeReward();
+
+    challengeStatus.textContent=
+      challengeClaimed
+        ?
+        `오늘 보상 수령 완료 · 프리즘 +${reward.prism} · 프로필 XP +${reward.profileXp}`
+        :
+        `오늘의 일일 도전을 완료하면 프리즘 +${reward.prism}, 프로필 XP +${reward.profileXp}를 자동 지급합니다.`;
+  }
+
+  const chestCard=
+    $("dailyChestCard");
+
+  const chestStatus=
+    $("dailyChestStatus");
+
+  const chestButton=
+    $("dailyChestButton");
+
+  if(chestCard){
+    chestCard.classList.toggle(
+      "claimed",
+      chestClaimed
+    );
+  }
+
+  if(chestStatus){
+    chestStatus.textContent=
+      chestClaimed
+        ?
+        "오늘의 상자를 열었습니다. 한국 시간 자정이 지나면 새 상자가 준비됩니다."
+        :
+        "오늘의 상자를 열 수 있습니다. 프리즘과 프로필 XP를 무작위로 획득합니다.";
+  }
+
+  if(chestButton){
+    chestButton.disabled=
+      chestClaimed;
+
+    chestButton.textContent=
+      chestClaimed
+        ?
+        "오늘 수령 완료"
+        :
+        "오늘의 상자 열기";
+  }
+
+}
+
+if(
+  $("dailyChestButton")
+){
+  $("dailyChestButton").onclick=
+    claimDailyChest;
+}
+
+const v73BaseV56RenderDailyPreview=
+  v56RenderDailyPreview;
+
+v56RenderDailyPreview=function(
+  announce=false
+){
+
+  v73BaseV56RenderDailyPreview(
+    announce
+  );
+
+  const card=
+    $("v56DailyCard");
+
+  if(card){
+    const reward=
+      v73DailyChallengeReward();
+
+    const info=
+      document.createElement(
+        "p"
+      );
+
+    info.innerHTML=
+      `<b>완료 보상:</b> 프리즘 +${reward.prism} · 프로필 XP +${reward.profileXp}`+
+      (
+        save.dailyChallengeRewardDate===
+        v73TodayKey()
+          ?
+          " · 오늘 수령 완료"
+          :
+          ""
+      );
+
+    card.append(
+      info
+    );
+  }
+
+  refreshDailyRewardUi();
+
+};
+
+const v73BaseV56UpdateSystems=
+  v56UpdateSystems;
+
+v56UpdateSystems=function(
+  dt
+){
+
+  const result=
+    v73BaseV56UpdateSystems(
+      dt
+    );
+
+  if(
+    gameMode==="daily" &&
+    v56State?.daily &&
+    v56State.dailyGoalCompleted &&
+    save.dailyChallengeRewardDate!==
+      v56State.daily.dateKey
+  ){
+    grantDailyChallengeReward();
+  }
+
+  return result;
+
+};
+
+/* ---------- v75 · v71 기준 중간 난이도 상승 + 낮/밤 적 수 ---------- */
+
+function getTimeEnemyCountMultiplier(){
+
+  switch(
+    timeOfDay
+  ){
+    case "dawn":
+      return .97;
+
+    case "morning":
+      return .94;
+
+    case "noon":
+      return .91;
+
+    case "evening":
+      return 1.05;
+
+    default:
+      return 1.18;
+  }
+
+}
+
+const v73BaseStartWave=
+  startWave;
+
+startWave=function(){
+
+  const result=
+    v73BaseStartWave();
+
+  if(
+    state==="playing"
+  ){
+    const countMultiplier=
+      1.12*
+      getTimeEnemyCountMultiplier();
+
+    spawnRemaining=
+      Math.min(
+        Math.max(
+          0,
+          MAX_ENEMIES-
+          5
+        ),
+        Math.max(
+          0,
+          Math.round(
+            spawnRemaining*
+            countMultiplier
+          )
+        )
+      );
+  }
+
+  return result;
+
+};
+
+const v73BaseSpawnEnemy=
+  spawnEnemy;
+
+spawnEnemy=function(){
+
+  const before=
+    enemies.length;
+
+  const result=
+    v73BaseSpawnEnemy();
+
+  for(
+    let index=before;
+    index<
+      enemies.length;
+    index++
+  ){
+    const enemy=
+      enemies[index];
+
+    if(
+      !enemy ||
+      enemy.boss ||
+      enemy.v73DifficultyApplied
+    ){
+      continue;
+    }
+
+    enemy.v73DifficultyApplied=
+      true;
+
+    enemy.maxHp *=
+      1.10;
+
+    enemy.hp *=
+      1.10;
+
+    enemy.speed *=
+      1.05;
+
+    enemy.damage *=
+      1.08;
+  }
+
+  return result;
+
+};
+
+const v73BaseSpawnBoss=
+  spawnBoss;
+
+spawnBoss=function(){
+
+  const before=
+    enemies.length;
+
+  const result=
+    v73BaseSpawnBoss();
+
+  for(
+    let index=before;
+    index<
+      enemies.length;
+    index++
+  ){
+    const enemy=
+      enemies[index];
+
+    if(
+      !enemy?.boss ||
+      enemy.v73DifficultyApplied
+    ){
+      continue;
+    }
+
+    enemy.v73DifficultyApplied=
+      true;
+
+    enemy.maxHp *=
+      1.09;
+
+    enemy.hp *=
+      1.09;
+
+    enemy.damage *=
+      1.08;
+
+    if(
+      Number.isFinite(
+        enemy.weakHp
+      )
+    ){
+      enemy.weakHp *=
+        1.09;
+    }
+  }
+
+  return result;
+
+};
+
+/* ---------- 낮/밤 배경 팔레트 ---------- */
+
+function getEnvironmentPalette(){
+
+  if(timeOfDay==="dawn"){
+    return{
+      tint:"#cc9d88",
+      alpha:.22,
+      blend:"screen"
+    };
+  }
+
+  if(timeOfDay==="morning"){
+    return{
+      tint:"#8fc8e2",
+      alpha:.42,
+      blend:"screen"
+    };
+  }
+
+  if(timeOfDay==="noon"){
+    return{
+      tint:"#b9def0",
+      alpha:.55,
+      blend:"screen"
+    };
+  }
+
+  if(timeOfDay==="evening"){
+    return{
+      tint:"#ad655c",
+      alpha:.24,
+      blend:"screen"
+    };
+  }
+
+  return{
+    tint:"#071226",
+    alpha:.68,
+    blend:"multiply"
+  };
+
+}
+
+const v73BaseDrawCity=
+  drawCity;
+
+drawCity=function(){
+
+  v73BaseDrawCity();
+
+  const palette=
+    getEnvironmentPalette();
+
+  ctx.save();
+  ctx.globalCompositeOperation=
+    palette.blend;
+
+  ctx.globalAlpha=
+    palette.alpha;
+
+  ctx.fillStyle=
+    palette.tint;
+
+  ctx.fillRect(
+    0,
+    0,
+    WIDTH,
+    HEIGHT
+  );
+
+  ctx.restore();
+
+  /*
+    낮에는 도로와 건물 전체에 약한 하늘빛을 더해
+    밤의 짙은 남청색과 즉시 구별되게 한다.
+  */
+  if(
+    timeOfDay==="morning" ||
+    timeOfDay==="noon"
+  ){
+    ctx.save();
+
+    ctx.globalCompositeOperation=
+      "screen";
+
+    ctx.globalAlpha=
+      timeOfDay==="noon"
+        ?
+        .13
+        :
+        .09;
+
+    ctx.fillStyle=
+      "#d9f3ff";
+
+    ctx.fillRect(
+      0,
+      0,
+      WIDTH,
+      HEIGHT
+    );
+
+    ctx.restore();
+  }
+
+};
+
+/* ---------- 자연스러운 안개 ---------- */
+
+function drawNaturalFog(){
+
+  const mode=
+    GRAPHICS_MODES[
+      graphicsMode
+    ] ||
+    GRAPHICS_MODES.normal;
+
+  const t=
+    performance.now()*
+    .000055;
+
+  const daytime=
+    timeOfDay==="morning" ||
+    timeOfDay==="noon";
+
+  const fogRgb=
+    daytime
+      ?
+      "190,210,218"
+      :
+      timeOfDay==="night"
+        ?
+        "100,119,139"
+        :
+        "156,171,181";
+
+  const baseAlpha=
+    daytime
+      ?
+      .13
+      :
+      timeOfDay==="night"
+        ?
+        .22
+        :
+        .17;
+
+  ctx.save();
+
+  const base=
+    ctx.createLinearGradient(
+      0,
+      0,
+      WIDTH,
+      HEIGHT
+    );
+
+  base.addColorStop(
+    0,
+    `rgba(${fogRgb},${baseAlpha*.72})`
+  );
+
+  base.addColorStop(
+    .45,
+    `rgba(${fogRgb},${baseAlpha})`
+  );
+
+  base.addColorStop(
+    1,
+    `rgba(${fogRgb},${baseAlpha*.66})`
+  );
+
+  ctx.fillStyle=
+    base;
+
+  ctx.fillRect(
+    0,
+    0,
+    WIDTH,
+    HEIGHT
+  );
+
+  const layerCount=
+    mode.detail>=7
+      ?
+      8
+      :
+      mode.detail>=4
+        ?
+        6
+        :
+        4;
+
+  for(
+    let i=0;
+    i<
+      layerCount;
+    i++
+  ){
+    const phase=
+      t*
+      (
+        .55+
+        i*
+        .08
+      )+
+      i*
+      1.71;
+
+    const x=
+      WIDTH*
+      (
+        .1+
+        (
+          i%
+          4
+        )*
+        .29
+      )+
+      Math.sin(
+        phase*
+        1.13
+      )*
+      WIDTH*
+      .22;
+
+    const y=
+      HEIGHT*
+      (
+        .18+
+        (
+          i%
+          3
+        )*
+        .32
+      )+
+      Math.cos(
+        phase*
+        .87
+      )*
+      HEIGHT*
+      .18;
+
+    const radius=
+      Math.max(
+        WIDTH,
+        HEIGHT
+      )*
+      (
+        .36+
+        (
+          i%
+          3
+        )*
+        .11
+      );
+
+    const cloud=
+      ctx.createRadialGradient(
+        x,
+        y,
+        0,
+        x,
+        y,
+        radius
+      );
+
+    const cloudAlpha=
+      baseAlpha*
+      (
+        .62+
+        (
+          i%
+          2
+        )*
+        .20
+      );
+
+    cloud.addColorStop(
+      0,
+      `rgba(${fogRgb},${cloudAlpha})`
+    );
+
+    cloud.addColorStop(
+      .35,
+      `rgba(${fogRgb},${cloudAlpha*.72})`
+    );
+
+    cloud.addColorStop(
+      .72,
+      `rgba(${fogRgb},${cloudAlpha*.26})`
+    );
+
+    cloud.addColorStop(
+      1,
+      `rgba(${fogRgb},0)`
+    );
+
+    ctx.fillStyle=
+      cloud;
+
+    ctx.fillRect(
+      0,
+      0,
+      WIDTH,
+      HEIGHT
+    );
+  }
+
+  ctx.restore();
+
+}
+
+const v73BaseDrawAtmosphere=
+  drawAtmosphere;
+
+drawAtmosphere=function(){
+
+  const actualWeather=
+    weather;
+
+  /*
+    기존 중앙 원형 시야/경계선을 그리지 않도록
+    기본 대기 렌더에는 fog를 잠시 clear로 전달한다.
+  */
+  if(
+    actualWeather===
+    "fog"
+  ){
+    weather=
+      "clear";
+  }
+
+  try{
+    v73BaseDrawAtmosphere();
+  }finally{
+    weather=
+      actualWeather;
+  }
+
+  if(
+    actualWeather===
+    "fog"
+  ){
+    drawNaturalFog();
+  }
+
+};
+
+/* ---------- 초고퀄리티 기본 ---------- */
+
+const v73BaseApplyGraphicsMode=
+  applyGraphicsMode;
+
+applyGraphicsMode=function(
+  mode
+){
+
+  const resolved=
+    GRAPHICS_MODES[
+      mode
+    ]
+      ?
+      mode
+      :
+      "ultra";
+
+  const result=
+    v73BaseApplyGraphicsMode(
+      resolved
+    );
+
+  const pauseSelect=
+    $("pauseGraphicsSelect");
+
+  if(pauseSelect){
+    pauseSelect.value=
+      graphicsMode;
+  }
+
+  return result;
+
+};
+
+/* ---------- 오디오 기본값 / 일시정지 설정 ---------- */
+
+const v73BaseUpdateAudioVolumes=
+  updateAudioVolumes;
+
+updateAudioVolumes=function(){
+
+  /*
+    기존 Gain 구조는 유지하되 v73 기본값만 높인다.
+  */
+  if(
+    save.bgmVolume===
+    undefined
+  ){
+    save.bgmVolume=
+      .52;
+  }
+
+  if(
+    save.sfxVolume===
+    undefined
+  ){
+    save.sfxVolume=
+      .82;
+  }
+
+  if(
+    save.gunVolume===
+    undefined
+  ){
+    save.gunVolume=
+      .28;
+  }
+
+  return v73BaseUpdateAudioVolumes();
+
+};
+
+syncAudioSettingsUI=function(){
+
+  const soundValue=
+    save.soundEnabled===
+    false
+      ?
+      "off"
+      :
+      "on";
+
+  const bgmValue=
+    Math.round(
+      clamp(
+        Number(
+          save.bgmVolume??
+          .52
+        ),
+        0,
+        1
+      )*
+      100
+    );
+
+  const sfxValue=
+    Math.round(
+      clamp(
+        Number(
+          save.sfxVolume??
+          .82
+        ),
+        0,
+        1
+      )*
+      100
+    );
+
+  const gunValue=
+    Math.round(
+      clamp(
+        Number(
+          save.gunVolume??
+          .28
+        ),
+        0,
+        1
+      )*
+      100
+    );
+
+  const pairs=[
+    [
+      ui.soundSelect,
+      soundValue
+    ],
+    [
+      $("pauseSoundSelect"),
+      soundValue
+    ],
+    [
+      ui.bgmVolume,
+      String(bgmValue)
+    ],
+    [
+      $("pauseBgmVolume"),
+      String(bgmValue)
+    ],
+    [
+      ui.sfxVolume,
+      String(sfxValue)
+    ],
+    [
+      $("pauseSfxVolume"),
+      String(sfxValue)
+    ],
+    [
+      ui.gunVolume,
+      String(gunValue)
+    ],
+    [
+      $("pauseGunVolume"),
+      String(gunValue)
+    ]
+  ];
+
+  for(
+    const [
+      element,
+      value
+    ] of pairs
+  ){
+    if(element){
+      element.value=
+        value;
+    }
+  }
+
+  const labels=[
+    [
+      ui.bgmVolumeText,
+      bgmValue
+    ],
+    [
+      $("pauseBgmVolumeText"),
+      bgmValue
+    ],
+    [
+      ui.sfxVolumeText,
+      sfxValue
+    ],
+    [
+      $("pauseSfxVolumeText"),
+      sfxValue
+    ],
+    [
+      ui.gunVolumeText,
+      gunValue
+    ],
+    [
+      $("pauseGunVolumeText"),
+      gunValue
+    ]
+  ];
+
+  for(
+    const [
+      label,
+      value
+    ] of labels
+  ){
+    if(label){
+      label.textContent=
+        `${value}%`;
+    }
+  }
+
+  if(
+    $("pauseGraphicsSelect")
+  ){
+    $("pauseGraphicsSelect").value=
+      graphicsMode;
+  }
+
+};
+
+function v73SetSoundEnabled(
+  enabled
+){
+
+  save.soundEnabled=
+    Boolean(
+      enabled
+    );
+
+  persist();
+
+  if(
+    save.soundEnabled
+  ){
+    unlockAudio();
+  }
+
+  updateAudioVolumes();
+  syncAudioSettingsUI();
+
+}
+
+function v73SetVolume(
+  key,
+  value
+){
+
+  save[key]=
+    clamp(
+      Number(
+        value
+      )/
+      100,
+      0,
+      1
+    );
+
+  persist();
+  updateAudioVolumes();
+  syncAudioSettingsUI();
+
+}
+
+if(
+  $("pauseGraphicsSelect")
+){
+  $("pauseGraphicsSelect").onchange=
+    () => {
+
+      applyGraphicsMode(
+        $("pauseGraphicsSelect").value
+      );
+
+    };
+}
+
+if(
+  $("pauseSoundSelect")
+){
+  $("pauseSoundSelect").onchange=
+    () => {
+
+      v73SetSoundEnabled(
+        $("pauseSoundSelect").value!==
+        "off"
+      );
+
+    };
+}
+
+if(
+  $("pauseBgmVolume")
+){
+  $("pauseBgmVolume").oninput=
+    () =>
+      v73SetVolume(
+        "bgmVolume",
+        $("pauseBgmVolume").value
+      );
+}
+
+if(
+  $("pauseSfxVolume")
+){
+  $("pauseSfxVolume").oninput=
+    () =>
+      v73SetVolume(
+        "sfxVolume",
+        $("pauseSfxVolume").value
+      );
+}
+
+if(
+  $("pauseGunVolume")
+){
+  $("pauseGunVolume").oninput=
+    () =>
+      v73SetVolume(
+        "gunVolume",
+        $("pauseGunVolume").value
+      );
+}
+
+/* ---------- 다양한 BGM ---------- */
+
+currentBgmTheme=function(){
+
+  if(
+    state===
+    "menu"
+  ){
+    return "menu";
+  }
+
+  if(
+    state===
+    "waveComplete"
+  ){
+    return "shop";
+  }
+
+  if(
+    currentBoss &&
+    !currentBoss.dead
+  ){
+    return "boss";
+  }
+
+  if(
+    timeOfDay===
+    "dawn"
+  ){
+    return "dawn";
+  }
+
+  if(
+    timeOfDay===
+    "morning" ||
+    timeOfDay===
+    "noon"
+  ){
+    return "day";
+  }
+
+  if(
+    timeOfDay===
+    "evening"
+  ){
+    return "evening";
+  }
+
+  return "night";
+
+};
+
+startBgm=function(){
+
+  if(
+    audioSystem.bgmTimer ||
+    !audioSystem.ctx
+  ){
+    return;
+  }
+
+  const themes={
+
+    menu:[
+      {root:110,notes:[0,7,12,14,12,7,5,7],beat:4,bass:55,pad:[0,7],noise:false},
+      {root:98,notes:[0,5,9,12,9,5,7,12],beat:4,bass:49,pad:[0,9],noise:false}
+    ],
+
+    shop:[
+      {root:123.47,notes:[0,4,7,11,7,4,2,7],beat:4,bass:61.7,pad:[0,4,7],noise:false},
+      {root:130.81,notes:[0,7,9,12,9,7,4,7],beat:4,bass:65.4,pad:[0,7],noise:false}
+    ],
+
+    dawn:[
+      {root:92.5,notes:[0,5,7,12,10,7,5,3],beat:4,bass:46.2,pad:[0,5],noise:false},
+      {root:98,notes:[0,3,7,10,12,10,7,3],beat:4,bass:49,pad:[0,7],noise:false}
+    ],
+
+    day:[
+      {root:87.31,notes:[0,4,7,12,9,7,4,2],beat:2,bass:43.65,pad:[0,7],noise:true},
+      {root:82.41,notes:[0,3,7,10,7,3,5,10],beat:2,bass:41.2,pad:[0,7],noise:true}
+    ],
+
+    evening:[
+      {root:77.78,notes:[0,3,7,12,10,7,5,3],beat:3,bass:38.89,pad:[0,7],noise:true},
+      {root:73.42,notes:[0,5,8,12,8,5,3,5],beat:3,bass:36.7,pad:[0,5],noise:true}
+    ],
+
+    night:[
+      {root:73.42,notes:[0,5,7,12,10,7,5,3],beat:4,bass:36.7,pad:[0,5],noise:false},
+      {root:69.3,notes:[0,3,6,10,8,6,3,1],beat:4,bass:34.65,pad:[0,6],noise:false}
+    ],
+
+    boss:[
+      {root:65.41,notes:[0,1,6,1,0,8,6,1],beat:2,bass:32.7,pad:[0,6],noise:true},
+      {root:58.27,notes:[0,6,1,8,0,6,10,1],beat:2,bass:29.14,pad:[0,1,6],noise:true}
+    ]
+
+  };
+
+  const tick=
+    () => {
+
+      if(
+        !audioSystem.unlocked ||
+        save.soundEnabled===
+        false
+      ){
+        return;
+      }
+
+      const theme=
+        currentBgmTheme();
+
+      audioSystem.theme=
+        theme;
+
+      const absoluteStep=
+        audioSystem.bgmStep++;
+
+      const step=
+        absoluteStep%
+        32;
+
+      const variants=
+        themes[theme]||
+        themes.day;
+
+      const cfg=
+        variants[
+          Math.floor(
+            absoluteStep/
+            64
+          )%
+          variants.length
+        ];
+
+      if(
+        step%
+        cfg.beat===
+        0
+      ){
+        const semitone=
+          cfg.notes[
+            (
+              step/
+              cfg.beat
+            )%
+            cfg.notes.length|
+            0
+          ];
+
+        const freq=
+          cfg.root*
+          Math.pow(
+            2,
+            semitone/
+            12
+          );
+
+        audioTone({
+          frequency:freq,
+          endFrequency:freq*.997,
+          duration:theme==="boss"?.24:.39,
+          volume:theme==="boss"?.040:.028,
+          type:
+            theme==="night"
+              ?
+              "sine"
+              :
+              "triangle",
+          destination:"music",
+          release:.32
+        });
+      }
+
+      if(
+        step%
+        8===
+        0
+      ){
+        audioTone({
+          frequency:cfg.bass,
+          endFrequency:cfg.bass*.92,
+          duration:theme==="boss"?.38:.52,
+          volume:theme==="boss"?.043:.025,
+          type:"sine",
+          destination:"music",
+          release:.27
+        });
+      }
+
+      if(
+        step%
+        16===
+        0 &&
+        audioSystem.activeVoices<
+        audioSystem.maxVoices-
+        4
+      ){
+        for(
+          const interval
+          of cfg.pad
+        ){
+          const freq=
+            cfg.root*
+            .5*
+            Math.pow(
+              2,
+              interval/
+              12
+            );
+
+          audioTone({
+            frequency:freq,
+            endFrequency:freq*1.002,
+            duration:1.55,
+            volume:theme==="boss"?.015:.011,
+            type:"sine",
+            destination:"music",
+            attack:.14,
+            release:.72,
+            detune:
+              interval===
+              0
+                ?
+                -4
+                :
+                4
+          });
+        }
+      }
+
+      if(
+        cfg.noise &&
+        step%
+        4===
+        2
+      ){
+        audioNoise({
+          duration:theme==="boss"?.065:.04,
+          volume:theme==="boss"?.012:.006,
+          destination:"music",
+          highpass:theme==="boss"?1700:3900,
+          lowpass:9000,
+          playbackRate:1.42
+        });
+      }
+
+      if(
+        theme==="boss" &&
+        step%
+        8===
+        6
+      ){
+        audioTone({
+          frequency:52,
+          endFrequency:32,
+          duration:.18,
+          volume:.036,
+          type:"sawtooth",
+          destination:"music",
+          release:.09
+        });
+      }
+
+      if(
+        (
+          weather==="rain" ||
+          weather==="heavyRain"
+        ) &&
+        step%
+        8===
+        4
+      ){
+        audioNoise({
+          duration:.18,
+          volume:
+            weather==="heavyRain"
+              ?
+              .0045
+              :
+              .0028,
+          destination:"music",
+          highpass:5000,
+          lowpass:12000,
+          playbackRate:1.25
+        });
+      }
+
+    };
+
+  audioSystem.bgmTimer=
+    setInterval(
+      tick,
+      250
+    );
+
+};
+
+/* ---------- 상태 전환 시 관리자 버튼 / 설정 동기화 ---------- */
+
+const v73BaseStartRun=
+  startRun;
+
+startRun=function(
+  mode
+){
+
+  const result=
+    v73BaseStartRun(
+      mode
+    );
+
+  updateAdminButton();
+
+  return result;
+
+};
+
+const v73QuitHandler=
+  $("quitButton")?.onclick;
+
+if(
+  $("quitButton") &&
+  v73QuitHandler
+){
+  $("quitButton").onclick=
+    (...args) => {
+
+      const result=
+        v73QuitHandler(
+          ...args
+        );
+
+      updateAdminButton();
+      refreshDailyRewardUi();
+
+      return result;
+
+    };
+}
+
+const v73RestartHandler=
+  $("restartButton")?.onclick;
+
+if(
+  $("restartButton") &&
+  v73RestartHandler
+){
+  $("restartButton").onclick=
+    (...args) => {
+
+      const result=
+        v73RestartHandler(
+          ...args
+        );
+
+      updateAdminButton();
+      refreshDailyRewardUi();
+
+      return result;
+
+    };
+}
+
+const v73PauseHandler=
+  $("pauseButton")?.onclick;
+
+if(
+  $("pauseButton") &&
+  v73PauseHandler
+){
+  $("pauseButton").onclick=
+    (...args) => {
+
+      syncAudioSettingsUI();
+
+      return v73PauseHandler(
+        ...args
+      );
+
+    };
+}
+
+
+/* =========================================================
+   v74 · 전투 로드아웃 완전 비영구화 + TOP 7 + 확장 무기
+========================================================= */
+
+const V74_TRANSIENT_SAVE_KEYS=[
+  "unlockedEvolutions",
+  "weaponMastery",
+  "selectedPet",
+  "selectedPets",
+  "ownedPets",
+  "petDataResetVersion"
+];
+
+function v74ResetTransientSaveState(){
+
+  /*
+    예전 버전에서 저장된 전투 장비 데이터가 남아 있어도
+    v74부터는 게임 시작 상태에 영향을 주지 않는다.
+  */
+  save.unlockedEvolutions={};
+  save.weaponMastery={};
+  save.selectedPet="drone";
+  save.selectedPets=["drone"];
+  save.ownedPets=["drone"];
+  save.petDataResetVersion=74;
+
+}
+
+const v74BasePersist=
+  persist;
+
+persist=function(
+  options={}
+){
+
+  /*
+    기존 코드가 legacy 필드를 실수로 수정하더라도
+    localStorage에는 절대 기록되지 않도록 저장 순간에 제거한다.
+  */
+  const backup={};
+
+  for(
+    const key of V74_TRANSIENT_SAVE_KEYS
+  ){
+    backup[key]=
+      save[key];
+
+    delete save[key];
+  }
+
+  try{
+    return v74BasePersist(
+      options
+    );
+  }finally{
+    for(
+      const key of V74_TRANSIENT_SAVE_KEYS
+    ){
+      save[key]=
+        backup[key];
+    }
+  }
+
+};
+
+const v74BaseCloudProfilePayload=
+  cloudProfilePayload;
+
+cloudProfilePayload=function(){
+
+  const payload=
+    v74BaseCloudProfilePayload();
+
+  for(
+    const key of V74_TRANSIENT_SAVE_KEYS
+  ){
+    delete payload[
+      key
+    ];
+  }
+
+  payload.version=
+    GAME_VERSION;
+
+  return payload;
+
+};
+
+const v74BaseApplyCloudProfile=
+  applyCloudProfile;
+
+applyCloudProfile=function(
+  profile
+){
+
+  const clean=
+    profile &&
+    typeof profile===
+      "object"
+      ?
+      JSON.parse(
+        JSON.stringify(
+          profile
+        )
+      )
+      :
+      profile;
+
+  if(
+    clean &&
+    typeof clean===
+      "object"
+  ){
+    for(
+      const key of V74_TRANSIENT_SAVE_KEYS
+    ){
+      delete clean[
+        key
+      ];
+    }
+  }
+
+  const result=
+    v74BaseApplyCloudProfile(
+      clean
+    );
+
+  v74ResetTransientSaveState();
+
+  persist(
+    {
+      cloud:false
+    }
+  );
+
+  return result;
+
+};
+
+/*
+  메뉴의 펫 선택은 영구 장착 기능이 아니므로
+  설명 전용으로 바꾼다.
+*/
+renderPetSelect=function(){
+
+  if(
+    !ui.petSelect
+  ){
+    return;
+  }
+
+  ui.petSelect.innerHTML="";
+
+  const option=
+    document.createElement(
+      "option"
+    );
+
+  option.value="";
+  option.textContent=
+    "펫은 매 게임 정찰 드론부터 시작합니다";
+
+  ui.petSelect.append(
+    option
+  );
+
+  ui.petSelect.value="";
+  ui.petSelect.disabled=
+    true;
+
+  if(
+    ui.petLoadoutSummary
+  ){
+    ui.petLoadoutSummary.textContent=
+      `매 판 초기화 · 기본 동시 장착 ${getPetSlotLimit()}칸 · 환생 1회마다 +1칸`;
+  }
+
+  if(
+    ui.petLoadoutButtons
+  ){
+    ui.petLoadoutButtons.innerHTML="";
+
+    const info=
+      document.createElement(
+        "p"
+      );
+
+    info.className=
+      "pet-detail-note";
+
+    info.textContent=
+      "펫 구매와 장착은 게임 안의 상점에서 진행하며 현재 판에서만 유지됩니다. 다음 게임은 다시 정찰 드론 1마리부터 시작합니다.";
+
+    ui.petLoadoutButtons.append(
+      info
+    );
+  }
+
+};
+
+toggleSavedPetSelection=function(){
+
+  showMessage(
+    "펫은 게임마다 초기화됩니다.",
+    "게임 안의 상점에서 현재 판에 사용할 펫을 구매하고 장착하세요."
+  );
+
+  return false;
+
+};
+
+resetAllPetProgress=function(
+  options={}
+){
+
+  if(
+    player
+  ){
+    player.ownedPets=[
+      "drone"
+    ];
+
+    player.petIds=[
+      "drone"
+    ];
+
+    player.petId=
+      "drone";
+
+    player.petStates={};
+
+    notifyMultiplayerLoadoutChanged();
+
+    if(
+      typeof renderPets===
+        "function"
+    ){
+      renderPets();
+    }
+  }
+
+  if(
+    options.showMessage!==
+      false
+  ){
+    showMessage(
+      "현재 판 펫 초기화 완료",
+      "정찰 드론 1마리 상태로 돌아갔습니다. 다음 게임에도 펫 진행은 이어지지 않습니다."
+    );
+  }
+
+};
+
+/*
+  매 게임 시작 직전에 legacy 전투 저장 상태를 비우고,
+  시작 후에도 실제 player 로드아웃을 다시 기본값으로 확정한다.
+*/
+const v74BaseStartRun=
+  startRun;
+
+startRun=function(
+  mode="normal"
+){
+
+  v74ResetTransientSaveState();
+
+  const result=
+    v74BaseStartRun(
+      mode
+    );
+
+  if(
+    player
+  ){
+    player.weaponSlots=[
+      "pistol"
+    ];
+
+    player.activeSlot=0;
+
+    player.weaponLevels={};
+
+    player.weaponColors={
+      pistol:"power"
+    };
+
+    player.unlockedEvolutions={};
+
+    player.ownedPets=[
+      "drone"
+    ];
+
+    player.petIds=[
+      "drone"
+    ];
+
+    player.petId=
+      "drone";
+
+    player.petStates={};
+
+    player.meleeWeapon=
+      "wornSword";
+
+    player.ownedMelee=[
+      "wornSword"
+    ];
+
+    player._loadoutRevision=0;
+
+    syncPrimaryPetFields(
+      player
+    );
+
+    notifyMultiplayerLoadoutChanged();
+  }
+
+  return result;
+
+};
+
+/*
+  게임 설명의 무기 표 위에 저장 규칙을 자세히 표시한다.
+*/
+const v74BaseRenderDetailedHelpCatalog=
+  renderDetailedHelpCatalog;
+
+renderDetailedHelpCatalog=function(){
+
+  v74BaseRenderDetailedHelpCatalog();
+
+  const weaponCatalog=
+    $("weaponHelpCatalog");
+
+  if(
+    weaponCatalog
+  ){
+    const notice=
+      document.createElement(
+        "div"
+      );
+
+    notice.className=
+      "catalog-card";
+
+    notice.innerHTML=
+      `<h4>전투 장비 저장 규칙 · 중요</h4>`+
+      `<p>Last Wave의 무기와 전투 장비는 한 번의 플레이 안에서 조합을 완성하는 로그라이크 방식입니다. `+
+      `게임에서 구매한 총기, 무기 강화 단계, 탄환 색상, 무기 진화, 합체 무기, 펫 구매·장착, 근접 무기 구매·장착은 현재 판에서만 유지됩니다.</p>`+
+      `<p class="catalog-stat">다음 게임을 시작하면 권총 +0 · 기본 백색(공격력) 색상 · 정찰 드론 1마리 · 낡은 칼 상태로 다시 시작합니다. `+
+      `영구 저장되는 것은 계정, 닉네임, 프로필 레벨, 환생, 재화, 직업 해금, 누적 기록, 일일 보상 수령 상태, 관리자 버튼 해금, 그래픽·오디오 설정입니다.</p>`;
+
+    weaponCatalog.prepend(
+      notice
+    );
+  }
+
+};
+
+v74ResetTransientSaveState();
+persist(
+  {
+    cloud:false
+  }
 );
 
-if(!Array.isArray(save.ownedPets)){
-  save.ownedPets=["drone"];
+
+
+
+/* =========================================================
+   v75 · 계정 없는 게스트 모드
+========================================================= */
+const GUEST_MODE_PREF_KEY="lastWaveGuestModeV75";
+const GUEST_PROFILE_KEY="lastWaveGuestProfileV75";
+const GUEST_NICKNAME_KEY="lastWaveGuestNicknameV75";
+const GUEST_PLAYER_ID_KEY="lastWaveGuestPlayerIdV75";
+
+let guestModeActive=localStorage.getItem(GUEST_MODE_PREF_KEY)==="1";
+let guestSnapshotTimer=0;
+
+function getGuestPlayerId(){
+  let id=localStorage.getItem(GUEST_PLAYER_ID_KEY)||"";
+  if(!isValidUuid(id)){
+    id=createId();
+    localStorage.setItem(GUEST_PLAYER_ID_KEY,id);
+  }
+  return id;
 }
-if(!save.ownedPets.includes("drone")){
-  save.ownedPets.unshift("drone");
+
+function readGuestProfileSnapshot(){
+  try{
+    const raw=localStorage.getItem(GUEST_PROFILE_KEY);
+    if(!raw) return null;
+    const parsed=JSON.parse(raw);
+    return parsed&&typeof parsed==="object"?parsed:null;
+  }catch(error){
+    console.warn("게스트 저장 데이터 읽기 실패",error);
+    return null;
+  }
 }
-if(save.selectedPet && !PETS[save.selectedPet]){
-  save.selectedPet="drone";
+
+function writeGuestProfileSnapshotNow(){
+  if(!guestModeActive) return;
+
+  try{
+    localStorage.setItem(
+      GUEST_PROFILE_KEY,
+      JSON.stringify({
+        version:75,
+        savedAt:Date.now(),
+        playerId:getGuestPlayerId(),
+        nickname:safeText(save.nickname||"",16),
+        profile:cloudProfilePayload()
+      })
+    );
+
+    if(save.nickname){
+      localStorage.setItem(GUEST_NICKNAME_KEY,save.nickname);
+    }
+  }catch(error){
+    console.warn("게스트 로컬 저장 실패",error);
+  }
 }
+
+function scheduleGuestProfileSnapshot(delay=180){
+  if(!guestModeActive) return;
+  clearTimeout(guestSnapshotTimer);
+  guestSnapshotTimer=setTimeout(()=>{
+    guestSnapshotTimer=0;
+    writeGuestProfileSnapshotNow();
+  },Math.max(0,Number(delay)||0));
+}
+
+function stopAccountCloudForGuest(){
+  clearInterval(cloudPullTimer);
+  clearTimeout(cloudSyncTimer);
+  releaseCloudLease();
+  cloudSyncReady=false;
+  cloudSyncBusy=false;
+  cloudSyncPending=false;
+  cloudSyncDirty=false;
+  cloudLastPayloadSignature="";
+  storeAccountToken("");
+  currentAccountUser=null;
+}
+
+function resetToFreshGuestProfile(){
+  const preservedSettings={
+    localPlayerId:save.localPlayerId,
+    graphicsMode:save.graphicsMode,
+    graphicsDefaultVersion:save.graphicsDefaultVersion,
+    soundEnabled:save.soundEnabled,
+    bgmVolume:save.bgmVolume,
+    sfxVolume:save.sfxVolume,
+    gunVolume:save.gunVolume,
+    audioDefaultsVersion:save.audioDefaultsVersion
+  };
+
+  const fresh=JSON.parse(JSON.stringify(defaultSave));
+
+  for(const key of Object.keys(save)){
+    delete save[key];
+  }
+
+  Object.assign(save,fresh,preservedSettings);
+
+  save.localPlayerId=isValidUuid(save.localPlayerId)?save.localPlayerId:createId();
+  save.playerId=getGuestPlayerId();
+  save.nickname="";
+
+  if(typeof v56EnsureSaveData==="function") v56EnsureSaveData();
+  if(typeof v73NormalizeSaveData==="function") v73NormalizeSaveData();
+  if(typeof v74ResetTransientSaveState==="function") v74ResetTransientSaveState();
+}
+
+function restoreGuestProfileSnapshot(){
+  const snapshot=readGuestProfileSnapshot();
+
+  if(snapshot?.profile&&typeof snapshot.profile==="object"){
+    try{
+      applyCloudProfile(snapshot.profile);
+    }catch(error){
+      console.warn("게스트 진행도 복원 실패",error);
+      resetToFreshGuestProfile();
+    }
+  }else{
+    /* 최초 게스트는 로그인 계정의 로컬 캐시를 복사하지 않고 독립된 새 프로필로 시작한다. */
+    resetToFreshGuestProfile();
+  }
+
+  const nickname=safeText(
+    snapshot?.nickname||
+    localStorage.getItem(GUEST_NICKNAME_KEY)||
+    "",
+    16
+  );
+
+  save.playerId=getGuestPlayerId();
+  save.nickname=nickname.length>=2?nickname:"";
+  persist({cloud:false});
+}
+
+function activateGuestMode(options={}){
+  if(guestModeActive&&!currentAccountUser?.id){
+    restoreGuestProfileSnapshot();
+    updateAccountIdentityUi();
+    if(!options.silent) showMessage("게스트 모드","이 기기의 게스트 진행도를 사용합니다.");
+    return true;
+  }
+
+  stopAccountCloudForGuest();
+  guestModeActive=true;
+  localStorage.setItem(GUEST_MODE_PREF_KEY,"1");
+  restoreGuestProfileSnapshot();
+  updateAccountIdentityUi();
+  updateAccountStatus("게스트 모드 · 진행도는 이 기기에만 저장됩니다.","ok");
+  scheduleGuestProfileSnapshot(0);
+
+  if(!options.silent){
+    showMessage("게스트 모드 시작","닉네임을 저장하면 랭킹과 멀티플레이를 사용할 수 있습니다.");
+  }
+
+  return true;
+}
+
+function deactivateGuestMode(options={}){
+  if(guestModeActive) writeGuestProfileSnapshotNow();
+
+  guestModeActive=false;
+  localStorage.removeItem(GUEST_MODE_PREF_KEY);
+  clearTimeout(guestSnapshotTimer);
+  guestSnapshotTimer=0;
+
+  save.playerId=save.localPlayerId;
+  save.nickname="";
+  persist({cloud:false});
+  updateAccountIdentityUi();
+  updateAccountStatus("게스트 모드 종료 · 계정으로 로그인하거나 다시 게스트 모드를 시작하세요.","offline");
+
+  if(!options.silent) showMessage("게스트 모드 종료");
+}
+
+function prepareForAccountLogin(){
+  if(!guestModeActive) return;
+  writeGuestProfileSnapshotNow();
+  guestModeActive=false;
+  localStorage.removeItem(GUEST_MODE_PREF_KEY);
+  clearTimeout(guestSnapshotTimer);
+  guestSnapshotTimer=0;
+}
+
+const v75BasePersist=persist;
+persist=function(options={}){
+  const result=v75BasePersist(options);
+  if(guestModeActive) scheduleGuestProfileSnapshot();
+  return result;
+};
+
+const v75BaseSetAccountButtonsBusy=setAccountButtonsBusy;
+setAccountButtonsBusy=function(busy){
+  const result=v75BaseSetAccountButtonsBusy(busy);
+  const button=$("guestModeButton");
+  if(button) button.disabled=Boolean(busy);
+  return result;
+};
+
+updateAccountIdentityUi=function(){
+  const loggedIn=Boolean(currentAccountUser?.id);
+  const guest=Boolean(guestModeActive&&!loggedIn);
+  const lockedNickname=Boolean(currentAccountUser?.nickname);
+  const guestButton=$("guestModeButton");
+  const guestStatus=$("guestModeStatus");
+
+  if(loggedIn){
+    if(ui.accountUsernameInput&&document.activeElement!==ui.accountUsernameInput){
+      ui.accountUsernameInput.value=currentAccountUser.username||"";
+    }
+
+    save.playerId=currentAccountUser.id;
+
+    if(lockedNickname){
+      save.nickname=currentAccountUser.nickname;
+      ui.nicknameInput.value=currentAccountUser.nickname;
+      ui.nicknameHud.textContent=currentAccountUser.nickname;
+      ui.nicknameStatus.textContent=`닉네임 고정됨: ${currentAccountUser.nickname} · 변경할 수 없습니다.`;
+    }else{
+      save.nickname="";
+      ui.nicknameInput.value="";
+      ui.nicknameHud.textContent="SURVIVOR";
+      ui.nicknameStatus.textContent="이 계정의 닉네임을 한 번 설정하세요. 설정 후에는 변경할 수 없습니다.";
+    }
+
+  }else if(guest){
+    save.playerId=getGuestPlayerId();
+    const guestNickname=safeText(
+      save.nickname||localStorage.getItem(GUEST_NICKNAME_KEY)||"",
+      16
+    );
+    save.nickname=guestNickname.length>=2?guestNickname:"";
+    ui.nicknameInput.value=save.nickname;
+    ui.nicknameHud.textContent=save.nickname||"GUEST";
+    ui.nicknameStatus.textContent=save.nickname
+      ? `게스트 닉네임: ${save.nickname} · 이 기기에만 저장됩니다. 언제든 변경할 수 있습니다.`
+      : "게스트 닉네임을 2~16자로 입력하고 저장하세요. 계정 없이 랭킹과 멀티플레이를 사용할 수 있습니다.";
+
+  }else{
+    save.playerId=save.localPlayerId;
+    save.nickname="";
+    ui.nicknameInput.value="";
+    ui.nicknameHud.textContent="SURVIVOR";
+    ui.nicknameStatus.textContent="계정으로 로그인하거나 게스트 모드를 시작하면 닉네임을 설정할 수 있습니다.";
+  }
+
+  ui.nicknameInput.readOnly=(!loggedIn&&!guest)||lockedNickname||IS_MOBILE;
+  $("nicknameSaveButton").disabled=(!loggedIn&&!guest)||lockedNickname;
+
+  if(ui.accountPasswordInput) ui.accountPasswordInput.value="";
+
+  if(guestButton){
+    guestButton.textContent=guest?"게스트 모드 종료":"게스트로 플레이";
+    guestButton.classList.toggle("active",guest);
+  }
+
+  if(guestStatus){
+    guestStatus.classList.toggle("active",guest);
+    guestStatus.textContent=loggedIn
+      ? "계정 모드 · 서버 저장과 다른 기기 이어하기를 사용할 수 있습니다."
+      : guest
+        ? "게스트 모드 활성화 · 이 기기에만 저장 · 솔로 랭킹/멀티플레이 사용 가능"
+        : "게스트 모드는 닉네임만 정하면 바로 시작할 수 있습니다.";
+  }
+
+  const syncButton=$("accountSyncButton");
+  const signOutButton=$("accountSignOutButton");
+  const deleteButton=$("accountDeleteButton");
+  if(syncButton) syncButton.disabled=!loggedIn;
+  if(signOutButton) signOutButton.disabled=!loggedIn;
+  if(deleteButton) deleteButton.disabled=!loggedIn;
+
+  persist({cloud:false});
+};
+
+const v75BaseApplyCustomAccountPayload=applyCustomAccountPayload;
+applyCustomAccountPayload=function(data){
+  prepareForAccountLogin();
+  const result=v75BaseApplyCustomAccountPayload(data);
+  updateAccountIdentityUi();
+  return result;
+};
+
+saveNickname=async function(){
+  if(guestModeActive&&!currentAccountUser?.id){
+    const nickname=safeText(ui.nicknameInput.value,16);
+    if(nickname.length<2){
+      ui.nicknameStatus.textContent="게스트 닉네임은 2~16자로 입력하세요.";
+      return false;
+    }
+
+    const previousNickname=save.nickname;
+    save.nickname=nickname;
+    save.playerId=getGuestPlayerId();
+    localStorage.setItem(GUEST_NICKNAME_KEY,nickname);
+    persist({cloud:false});
+    writeGuestProfileSnapshotNow();
+    updateAccountIdentityUi();
+    ui.nicknameStatus.textContent=`게스트 닉네임 저장 완료: ${nickname} · 현재 기기에만 저장됩니다.`;
+
+    if(previousNickname&&previousNickname!==nickname){
+      syncRankingNicknameChange(previousNickname,nickname).catch(()=>{});
+    }
+
+    return true;
+  }
+
+  if(!currentAccountUser?.id||!currentAccountToken){
+    ui.nicknameStatus.textContent="먼저 계정에 로그인하거나 게스트 모드를 시작하세요.";
+    return false;
+  }
+  if(currentAccountUser.nickname){
+    ui.nicknameStatus.textContent=`닉네임은 ${currentAccountUser.nickname}(으)로 고정되어 변경할 수 없습니다.`;
+    return false;
+  }
+
+  const nickname=safeText(ui.nicknameInput.value,16);
+  if(nickname.length<2){
+    ui.nicknameStatus.textContent="닉네임은 2~16자로 입력하세요.";
+    return false;
+  }
+
+  ui.nicknameStatus.textContent="닉네임 중복 확인 중...";
+  try{
+    const data=await accountRequest("setNickname",{nickname});
+    currentAccountUser.nickname=data.account.nickname;
+    save.nickname=data.account.nickname;
+    save.playerId=currentAccountUser.id;
+    persist({cloud:false});
+    updateAccountIdentityUi();
+    ui.nicknameStatus.textContent=`닉네임 설정 완료: ${save.nickname} · 이제 변경할 수 없습니다.`;
+    return true;
+  }catch(error){
+    if(error?.code==="NICKNAME_TAKEN"){
+      ui.nicknameStatus.textContent="이미 사용 중인 닉네임입니다. 다른 닉네임으로 다시 설정하세요.";
+      return false;
+    }
+    ui.nicknameStatus.textContent=`닉네임 설정 실패: ${friendlyAuthError(error,"닉네임 설정")}`;
+    return false;
+  }
+};
+
+const v75BaseOpenMobileTextPortal=openMobileTextPortal;
+openMobileTextPortal=function(target){
+  if(target?.id==="nicknameInput"){
+    if(!currentAccountUser&&!guestModeActive){
+      ui.nicknameStatus.textContent="먼저 계정에 로그인하거나 게스트 모드를 시작하세요.";
+      return;
+    }
+    if(currentAccountUser?.nickname){
+      ui.nicknameStatus.textContent="이 계정의 닉네임은 이미 고정되어 변경할 수 없습니다.";
+      return;
+    }
+  }
+  return v75BaseOpenMobileTextPortal(target);
+};
+
+initializeAccountSync=async function(){
+  syncAutoLoginToggleUi();
+  currentAccountToken=readStoredAccountToken();
+
+  if(!currentAccountToken){
+    currentAccountUser=null;
+    cloudSyncReady=false;
+
+    if(guestModeActive){
+      activateGuestMode({silent:true});
+      updateAccountStatus("게스트 모드 자동 복원 · 이 기기의 진행도를 사용합니다.","ok");
+    }else{
+      save.playerId=save.localPlayerId;
+      save.nickname="";
+      persist({cloud:false});
+      updateAccountIdentityUi();
+      updateAccountStatus("로그인하지 않음 · 계정 로그인 또는 게스트 모드를 선택하세요.","offline");
+    }
+    return;
+  }
+
+  updateAccountStatus("저장된 로그인 확인 중...","syncing");
+  try{
+    const data=await accountRequest("me");
+    applyCustomAccountPayload(data);
+    updateAccountStatus(`자동 로그인 완료 · ${accountDisplayName()}`,"ok");
+  }catch(error){
+    clearCustomAccountSession(`자동 로그인 실패: ${friendlyAuthError(error,"자동 로그인")} · 다시 로그인하세요.`);
+  }
+};
+
+const guestModeButton=$("guestModeButton");
+if(guestModeButton){
+  guestModeButton.addEventListener("click",async()=>{
+    if(accountActionBusy) return;
+
+    try{
+      if(guestModeActive&&!currentAccountUser){
+        deactivateGuestMode();
+        return;
+      }
+
+      if(currentAccountUser||currentAccountToken){
+        if(cloudSyncReady&&currentAccountUser&&currentAccountToken){
+          try{await syncCloudProfile({force:true});}catch(error){console.warn("게스트 전환 전 계정 동기화 지연",error);}
+        }
+        if(currentAccountToken){
+          try{await accountRequest("logout");}catch(error){console.warn("게스트 전환 전 원격 로그아웃 지연",error);}
+        }
+      }
+
+      activateGuestMode();
+    }catch(error){
+      updateAccountStatus(`게스트 모드 전환 실패: ${friendlyAuthError(error,"게스트 모드")}`,"error");
+    }
+  });
+}
+
+addEventListener("pagehide",()=>{
+  if(guestModeActive) writeGuestProfileSnapshotNow();
+});
+
+
+syncAudioSettingsUI();
+refreshDailyRewardUi();
+updateAdminButton();
+v56RenderDailyPreview();
+
+
+applyGraphicsMode(
+  save.graphicsMode ||
+  "ultra"
+);
+
+v74ResetTransientSaveState();
 renderPetSelect();
 renderDetailedHelpCatalog();
 refreshProfileSummary();
@@ -23860,6 +29339,137 @@ function frame(
 requestAnimationFrame(
   frame
 );
+
+
+
+/* =========================================================
+   v75 · 모든 팝업 상단 드래그 이동
+========================================================= */
+const popupDragState=new WeakMap();
+
+function findPopupPanel(container){
+  if(!container) return null;
+  if(container.classList?.contains("overlay")){
+    return Array.from(container.children).find(child=>child.classList?.contains("panel"))||null;
+  }
+  return container.querySelector?.(".mobile-account-card,.mobile-text-portal-card")||null;
+}
+
+function setPopupPanelOffset(panel,x,y){
+  if(!panel) return;
+  const safeX=Number.isFinite(x)?x:0;
+  const safeY=Number.isFinite(y)?y:0;
+  panel.dataset.dragX=String(safeX);
+  panel.dataset.dragY=String(safeY);
+  panel.style.transform=`translate3d(${safeX}px,${safeY}px,0)`;
+}
+
+function resetPopupPosition(container){
+  const panel=findPopupPanel(container);
+  if(panel) setPopupPanelOffset(panel,0,0);
+}
+
+function attachDraggablePopup(container){
+  if(!container||container.id==="menu"||container.dataset.dragReady==="1") return;
+
+  const panel=findPopupPanel(container);
+  if(!panel) return;
+
+  container.dataset.dragReady="1";
+  panel.classList.add("popup-draggable-panel");
+
+  const handle=document.createElement("div");
+  handle.className="popup-drag-handle";
+  handle.setAttribute("role","button");
+  handle.setAttribute("tabindex","0");
+  handle.setAttribute("aria-label","팝업 창 이동 · 두 번 누르면 위치 초기화");
+
+  const grip=document.createElement("span");
+  grip.className="popup-drag-grip";
+  handle.appendChild(grip);
+  panel.prepend(handle);
+
+  setPopupPanelOffset(panel,Number(panel.dataset.dragX)||0,Number(panel.dataset.dragY)||0);
+
+  let drag=null;
+
+  function finishDrag(event){
+    if(!drag) return;
+    if(event&&event.pointerId!==undefined&&event.pointerId!==drag.pointerId) return;
+    try{
+      if(handle.hasPointerCapture?.(drag.pointerId)) handle.releasePointerCapture(drag.pointerId);
+    }catch{}
+    drag=null;
+  }
+
+  handle.addEventListener("pointerdown",event=>{
+    if(event.button!==undefined&&event.button!==0) return;
+
+    const rect=panel.getBoundingClientRect();
+    drag={
+      pointerId:event.pointerId,
+      pointerX:event.clientX,
+      pointerY:event.clientY,
+      startX:Number(panel.dataset.dragX)||0,
+      startY:Number(panel.dataset.dragY)||0,
+      startRect:rect
+    };
+
+    try{handle.setPointerCapture(event.pointerId);}catch{}
+    event.preventDefault();
+  });
+
+  handle.addEventListener("pointermove",event=>{
+    if(!drag||event.pointerId!==drag.pointerId) return;
+
+    const rawX=event.clientX-drag.pointerX;
+    const rawY=event.clientY-drag.pointerY;
+    const visibleX=72;
+    const visibleY=42;
+
+    const minDeltaX=-drag.startRect.right+visibleX;
+    const maxDeltaX=innerWidth-visibleX-drag.startRect.left;
+    const minDeltaY=-drag.startRect.bottom+visibleY;
+    const maxDeltaY=innerHeight-visibleY-drag.startRect.top;
+
+    const deltaX=clamp(rawX,Math.min(minDeltaX,maxDeltaX),Math.max(minDeltaX,maxDeltaX));
+    const deltaY=clamp(rawY,Math.min(minDeltaY,maxDeltaY),Math.max(minDeltaY,maxDeltaY));
+
+    setPopupPanelOffset(panel,drag.startX+deltaX,drag.startY+deltaY);
+    event.preventDefault();
+  });
+
+  handle.addEventListener("pointerup",finishDrag);
+  handle.addEventListener("pointercancel",finishDrag);
+  handle.addEventListener("lostpointercapture",finishDrag);
+  handle.addEventListener("dblclick",()=>resetPopupPosition(container));
+  handle.addEventListener("keydown",event=>{
+    if(event.key==="Home"||event.key==="Enter"){
+      resetPopupPosition(container);
+      event.preventDefault();
+    }
+  });
+
+  popupDragState.set(container,{panel,handle});
+}
+
+function initializeDraggablePopups(){
+  for(const overlay of document.querySelectorAll(".overlay")) attachDraggablePopup(overlay);
+  attachDraggablePopup(document.getElementById("mobileAccountPortal"));
+  attachDraggablePopup(document.getElementById("mobileTextPortal"));
+}
+
+initializeDraggablePopups();
+
+addEventListener("resize",()=>{
+  /* WeakMap은 순회할 수 없으므로 DOM에서 현재 패널을 확인한다. */
+  for(const panel of document.querySelectorAll(".popup-draggable-panel")){
+    const rect=panel.getBoundingClientRect();
+    if(rect.right<40||rect.left>innerWidth-40||rect.bottom<40||rect.top>innerHeight-40){
+      setPopupPanelOffset(panel,0,0);
+    }
+  }
+});
 
 </script>
 </body>
