@@ -2045,6 +2045,9 @@ body.graphics-ultraPerformance #gameTitle,body.graphics-performance #gameTitle{a
 }
 body.mobile .popup-drag-handle{min-height:34px}
 
+
+/* v82 */
+.v82-wide-panel{max-width:min(1040px,94vw)!important;max-height:88vh;overflow:auto}.v82-currency-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0 16px}.v82-currency-bar>span{padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(4,14,20,.72)}.v82-feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0 20px}.v82-feature-grid.compact{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}.v82-feature-card{position:relative;overflow:hidden;min-height:175px;padding:12px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:linear-gradient(180deg,rgba(17,34,43,.96),rgba(4,12,18,.96))}.v82-feature-card.locked{opacity:.62;filter:saturate(.55)}.v82-feature-card.selected{outline:2px solid rgba(98,231,255,.7);box-shadow:0 0 24px rgba(98,231,255,.16)}.v82-feature-art,.v82-card-art{width:100%;height:88px;border-radius:12px;background-position:center;background-repeat:no-repeat;background-size:cover;border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 0 30px rgba(0,0,0,.35)}.v82-card-art{height:72px;margin:0 0 9px}button.v82-iconized:not(.switch){display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:54px}button.v82-iconized:not(.switch)::after{content:"";width:30px;height:22px;background-image:var(--v82-icon);background-position:center;background-repeat:no-repeat;background-size:contain;opacity:.92;filter:drop-shadow(0 2px 4px rgba(0,0,0,.42))}.start-btn.v82-iconized::after{width:54px!important;height:34px!important}.v82-event-hud{position:absolute;right:calc(var(--safe-r) + 14px);bottom:calc(var(--safe-b) + 126px);z-index:25;display:none;align-items:center;gap:10px;width:min(360px,76vw);padding:10px 12px;border:1px solid rgba(255,255,255,.16);border-radius:15px;background:rgba(4,11,18,.86);backdrop-filter:blur(9px);pointer-events:auto}.v82-event-hud.show{display:flex}.v82-event-hud-icon{width:52px;height:52px;flex:0 0 52px;border-radius:11px;background-position:center;background-size:cover}.v82-event-hud span{display:block;margin-top:3px;font-size:12px;opacity:.82}.v82-spectator-hud{position:absolute;left:50%;top:calc(var(--safe-t) + 90px);transform:translateX(-50%);z-index:28;display:none;padding:10px 14px;border-radius:15px;background:rgba(5,13,20,.88);border:1px solid rgba(113,224,255,.3);text-align:center}.v82-spectator-hud.show{display:block}.v82-spectator-hud .btn{min-width:70px;margin:6px 3px 0}.v82-master-progress{height:7px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.08)}.v82-master-progress>i{display:block;height:100%;background:linear-gradient(90deg,#65e7ff,#69ff9d)}.v82-talent-level{display:inline-block;margin:4px 0 8px;padding:3px 8px;border-radius:999px;background:rgba(105,226,255,.12);color:#8be9ff;font-size:12px}.v82-achievement-reward{font-size:12px;color:#ffd879}.v82-skin-swatch{display:flex;gap:5px;margin:6px 0 10px}.v82-skin-swatch i{width:26px;height:10px;border-radius:999px}@media(max-width:700px){.v82-feature-grid{grid-template-columns:1fr}.v82-event-hud{right:8px;bottom:calc(var(--safe-b) + 104px);width:min(330px,88vw)}}
 </style>
 
 
@@ -2210,7 +2213,7 @@ body.mobile .popup-drag-handle{min-height:34px}
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v81</span>
+      <span id="gameVersion" class="game-version">v82</span>
     </div>
 
     <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22bg%22%20cx%3D%2250%25%22%20cy%3D%2242%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23123949%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220.58%22%20stop-color%3D%22%2308151d%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2302070a%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22wave%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2372e6ff%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235aff9b%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%0A%20%20%3Crect%20width%3D%22256%22%20height%3D%22256%22%20rx%3D%2254%22%20fill%3D%22url%28%23bg%29%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22126%22%20r%3D%2283%22%20fill%3D%22none%22%20stroke%3D%22%236be5ff%22%20stroke-opacity%3D%22.18%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22126%22%20r%3D%2260%22%20fill%3D%22none%22%20stroke%3D%22%2363ff9d%22%20stroke-opacity%3D%22.12%22%20stroke-width%3D%225%22%2F%3E%0A%0A%20%20%3C%21--%20%EA%B0%90%EC%97%BC%20%EA%B2%BD%EA%B3%A0%20%ED%91%9C%EC%8B%9D%20--%3E%0A%20%20%3Cpath%20d%3D%22M128%2052c-14%200-26%2011-26%2025%200%208%204%2015%2010%2020l-19%2034c-3%206-1%2013%205%2016%206%203%2013%201%2016-5l14-25%2014%2025c3%206%2010%208%2016%205%206-3%208-10%205-16l-19-34c6-5%2010-12%2010-20%200-14-12-25-26-25z%22%0A%20%20%20%20%20%20%20%20fill%3D%22%23ff5872%22%20fill-opacity%3D%22.93%22%2F%3E%0A%0A%20%20%3C%21--%20%ED%8C%8C%EB%8F%99%20--%3E%0A%20%20%3Cpath%20d%3D%22M35%20169c22-26%2043-27%2064-2%2021%2026%2042%2026%2063%200%2021-25%2041-24%2059%201%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23wave%29%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M48%20194c18-16%2034-16%2050%200%2017%2016%2033%2016%2050%200%2017-16%2034-16%2054%200%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%237ceaff%22%20stroke-opacity%3D%22.58%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%0A%0A%20%20%3C%21--%20%EC%A4%91%EC%95%99%20LW%20--%3E%0A%20%20%3Ctext%20x%3D%22128%22%20y%3D%22118%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2244%22%20font-weight%3D%22900%22%0A%20%20%20%20%20%20%20%20fill%3D%22%23f3fbff%22%20stroke%3D%22%23051016%22%20stroke-width%3D%224%22%20paint-order%3D%22stroke%22%3ELW%3C%2Ftext%3E%0A%3C%2Fsvg%3E" alt=""></span>Last Wave</h1>
@@ -2377,6 +2380,24 @@ body.mobile .popup-drag-handle{min-height:34px}
         <input id="gunVolume" type="range" min="0" max="100" step="1" value="28">
         <span id="gunVolumeText" class="audio-value">28%</span>
       </div>
+
+      <div class="setting-card">
+        <label for="v82DifficultySelect">난이도</label>
+        <select id="v82DifficultySelect">
+          <option value="survivor">생존자</option>
+          <option value="nightmare">악몽</option>
+          <option value="apocalypse">종말</option>
+          <option value="extinction">멸종</option>
+        </select>
+        <span id="v82DifficultyDesc" class="audio-value"></span>
+      </div>
+    </div>
+
+    <div id="v82CurrencyBar" class="v82-currency-bar">
+      <span>🪙 <b id="v82CreditsText">0</b></span>
+      <span>💎 <b id="v82PrismText">0</b></span>
+      <span>🧿 <b id="v82RelicsText">0</b></span>
+      <span>🌿 <b id="v82TalentTokensText">0</b></span>
     </div>
 
     <div class="menu-buttons">
@@ -2397,9 +2418,11 @@ body.mobile .popup-drag-handle{min-height:34px}
         온라인 랭킹
       </button>
 
-      <button id="helpButton" class="btn" type="button">
-        게임 설명
-      </button>
+      <button id="helpButton" class="btn" type="button">게임 설명</button>
+      <button id="v82AchievementsButton" class="btn" type="button">업적</button>
+      <button id="v82MetaShopButton" class="btn gold-btn" type="button">스킨 · 재화 상점</button>
+      <button id="v82TalentButton" class="btn" type="button">직업 특성 트리</button>
+      <button id="v82MasteryButton" class="btn" type="button">무기 숙련도</button>
 
       <button id="adminMenuAccessButton" class="btn" type="button">
         관리자 모드
@@ -2452,6 +2475,14 @@ body.mobile .popup-drag-handle{min-height:34px}
   </div>
 
 </div>
+
+
+<div id="v82AchievementsOverlay" class="overlay" aria-hidden="true"><div class="panel hero v82-wide-panel"><div class="eyebrow">SURVIVOR RECORDS</div><h2>업적</h2><div id="v82AchievementSummary" class="v82-currency-bar"></div><div id="v82AchievementGrid" class="v82-feature-grid"></div><div class="actions"><button id="v82AchievementsClose" class="btn">닫기</button></div></div></div>
+<div id="v82MetaShopOverlay" class="overlay" aria-hidden="true"><div class="panel hero v82-wide-panel"><div class="eyebrow">SURVIVOR EXCHANGE</div><h2>스킨 · 재화 상점</h2><div id="v82ShopCurrencies" class="v82-currency-bar"></div><div class="section-title">생존자 스킨</div><div id="v82SkinGrid" class="v82-feature-grid"></div><div class="section-title">영구 능력</div><div id="v82PermanentUpgradeGrid" class="v82-feature-grid"></div><div class="section-title">재화 교환</div><div id="v82ExchangeGrid" class="v82-feature-grid compact"></div><div class="actions"><button id="v82MetaShopClose" class="btn">닫기</button></div></div></div>
+<div id="v82TalentOverlay" class="overlay" aria-hidden="true"><div class="panel hero v82-wide-panel"><div class="eyebrow">JOB SPECIALIZATION</div><h2>직업 특성 트리</h2><p id="v82TalentHeader"></p><div id="v82TalentGrid" class="v82-feature-grid"></div><div class="actions"><button id="v82TalentClose" class="btn">닫기</button></div></div></div>
+<div id="v82MasteryOverlay" class="overlay" aria-hidden="true"><div class="panel hero v82-wide-panel"><div class="eyebrow">WEAPON ARCHIVE</div><h2>무기 숙련도</h2><p>무기 숙련도는 기록과 보상만 영구 저장됩니다.</p><div id="v82MasteryGrid" class="v82-feature-grid"></div><div class="actions"><button id="v82MasteryClose" class="btn">닫기</button></div></div></div>
+<div id="v82EventHud" class="v82-event-hud"><div id="v82EventIcon" class="v82-event-hud-icon"></div><div><b id="v82EventTitle">작전 이벤트</b><span id="v82EventText"></span></div></div>
+<div id="v82SpectatorHud" class="v82-spectator-hud" aria-hidden="true"><b>관전 모드</b><span id="v82SpectatorName">생존자</span><div><button id="v82SpectatorPrev" class="btn">이전</button><button id="v82SpectatorNext" class="btn">다음</button></div></div>
 
 <div id="multiMenu" class="overlay">
 
@@ -3159,7 +3190,6 @@ body.mobile .popup-drag-handle{min-height:34px}
       계정이 없어도 사용할 수 있습니다.
       이 닉네임과 게스트 진행도는 <b>현재 기기에만 저장</b>됩니다.
       게스트 상태에서도 솔로 플레이, 랭킹 등록, 멀티플레이를 사용할 수 있습니다.
-      이상한 이름은 쓰지 마세요.(실명O,닉네임O,다른 사람을 비난하거나 아무도 알아볼수없는 이상한 닉네임XXXX)
     </p>
 
     <input
@@ -3538,7 +3568,7 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v81";
+const GAME_VERSION="v82";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -4062,6 +4092,20 @@ const defaultSave={
 
   prism:0,
 
+  credits:0,
+  relics:0,
+  talentTokens:0,
+  achievementsV82:{},
+  weaponMasteryV82:{},
+  jobTalentsV82:{},
+  ownedSkinsV82:["default"],
+  selectedSkinV82:"default",
+  permanentUpgradesV82:{},
+  selectedDifficultyV82:"nightmare",
+  difficultyBestV82:{},
+  bossKillsV82:0,
+  eventsCompletedV82:0,
+
   profileXp:0,
 
   localPlayerId:"",
@@ -4499,6 +4543,19 @@ function cloudProfilePayload(){
     version:GAME_VERSION,
     nickname:save.nickname,
     prism:Math.max(0,Math.floor(Number(save.prism)||0)),
+    credits:Math.max(0,Math.floor(Number(save.credits)||0)),
+    relics:Math.max(0,Math.floor(Number(save.relics)||0)),
+    talentTokens:Math.max(0,Math.floor(Number(save.talentTokens)||0)),
+    achievementsV82:{...(save.achievementsV82||{})},
+    weaponMasteryV82:{...(save.weaponMasteryV82||{})},
+    jobTalentsV82:{...(save.jobTalentsV82||{})},
+    ownedSkinsV82:Array.isArray(save.ownedSkinsV82)?[...new Set(save.ownedSkinsV82)]:["default"],
+    selectedSkinV82:save.selectedSkinV82||"default",
+    permanentUpgradesV82:{...(save.permanentUpgradesV82||{})},
+    selectedDifficultyV82:save.selectedDifficultyV82||"nightmare",
+    difficultyBestV82:{...(save.difficultyBestV82||{})},
+    bossKillsV82:Math.max(0,Math.floor(Number(save.bossKillsV82)||0)),
+    eventsCompletedV82:Math.max(0,Math.floor(Number(save.eventsCompletedV82)||0)),
     profileXp:Math.max(0,Number(save.profileXp)||0),
     bestWave:Math.max(0,Math.floor(Number(save.bestWave)||0)),
     bestScore:Math.max(0,Math.floor(Number(save.bestScore)||0)),
@@ -4539,7 +4596,10 @@ function cloudProfileSignature(profile){
 function applyCloudProfile(profile){
   if(!profile||typeof profile!=="object") return false;
   const allowed=[
-    "nickname","prism","profileXp","bestWave","bestScore","totalRuns","totalKills",
+    "nickname","prism","credits","relics","talentTokens","achievementsV82","weaponMasteryV82",
+    "jobTalentsV82","ownedSkinsV82","selectedSkinV82","permanentUpgradesV82",
+    "selectedDifficultyV82","difficultyBestV82","bossKillsV82","eventsCompletedV82",
+    "profileXp","bestWave","bestScore","totalRuns","totalKills",
     "prestige","ownedJobs","selectedJob","unlockedEvolutions","weaponMastery",
     "ultimateBranches","gender","graphicsMode","selectedPet","selectedPets","ownedPets","petDataResetVersion",
     "soundEnabled","bgmVolume","sfxVolume","gunVolume"
@@ -16738,7 +16798,7 @@ async function loadRankings(mode){
 
     if(rankings.length===0){
       const empty=document.createElement("p");
-      empty.textContent="실수로 지움. ㅋㅋ";
+      empty.textContent="아직 등록된 랭킹 기록이 없습니다.";
       ui.rankingList.append(empty);
       return;
     }
@@ -20288,6 +20348,17 @@ function sanitizeMultiplayerLoadout(
     ownedPets,
     meleeWeapon,
     ownedMelee,
+    v82Skin:typeof payload?.v82Skin==="string"?payload.v82Skin:(target?.v82Skin||"default"),
+    v82CombatSnapshot:payload?.v82CombatSnapshot&&typeof payload.v82CombatSnapshot==="object"?{
+      hpMult:clamp(Number(payload.v82CombatSnapshot.hpMult)||1,.5,3),
+      damageMult:clamp(Number(payload.v82CombatSnapshot.damageMult)||1,.5,3),
+      speedMult:clamp(Number(payload.v82CombatSnapshot.speedMult)||1,.5,3),
+      armorBonus:clamp(Number(payload.v82CombatSnapshot.armorBonus)||0,0,.7),
+      regenBonus:clamp(Number(payload.v82CombatSnapshot.regenBonus)||0,0,20),
+      shieldBonus:clamp(Number(payload.v82CombatSnapshot.shieldBonus)||0,0,500),
+      rateBonus:clamp(Number(payload.v82CombatSnapshot.rateBonus)||0,0,2),
+      critBonus:clamp(Number(payload.v82CombatSnapshot.critBonus)||0,0,.75)
+    }:(target?.v82CombatSnapshot||null),
     loadoutRevision:
       revision
   };
@@ -20409,6 +20480,13 @@ function applyMultiplayerLoadout(
       ...clean.ownedMelee
     ];
 
+  target.v82Skin=clean.v82Skin||"default";
+  if(clean.v82CombatSnapshot&&!target._v82CombatSnapshotApplied){
+    target.v82CombatSnapshot={...clean.v82CombatSnapshot};
+    if(typeof v82ApplyCombatSnapshot==="function") v82ApplyCombatSnapshot(target,target.v82CombatSnapshot);
+    target._v82CombatSnapshotApplied=true;
+  }
+
   target._loadoutRevision=
     Math.max(
       currentRevision,
@@ -20529,7 +20607,9 @@ function makeMultiplayerLoadoutPayload(){
             "wornSword"
           ]
         )
-      ]
+      ],
+    v82Skin:player.v82Skin||save.selectedSkinV82||"default",
+    v82CombatSnapshot:player.v82CombatSnapshot?{...player.v82CombatSnapshot}:(typeof v82BuildCombatSnapshot==="function"?v82BuildCombatSnapshot(player.job):null)
   };
 
 }
@@ -26390,7 +26470,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v81</div>
+        <div class="eyebrow">FIELD ARCHIVE · v82</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -26405,7 +26485,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v81</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v82</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
@@ -31121,22 +31201,10 @@ function frame(
 
   }
 
-  if(player){
-
-    camera.x=
-      lerp(
-        camera.x,
-        player.x,
-        .11
-      );
-
-    camera.y=
-      lerp(
-        camera.y,
-        player.y,
-        .11
-      );
-
+  const v82CameraTarget=(typeof v82GetCameraTarget==="function")?v82GetCameraTarget():player;
+  if(v82CameraTarget){
+    camera.x=lerp(camera.x,v82CameraTarget.x,.11);
+    camera.y=lerp(camera.y,v82CameraTarget.y,.11);
   }
 
   try{
@@ -31885,5 +31953,57 @@ addEventListener(
 
 
 </script>
+
+<script>
+const V82_DIFFICULTIES={survivor:{name:"생존자",desc:"적 능력과 수량 감소",hp:.78,damage:.78,speed:.94,count:.84,reward:.78},nightmare:{name:"악몽",desc:"v81 기본 고난도",hp:1,damage:1,speed:1,count:1,reward:1},apocalypse:{name:"종말",desc:"적 체력 +35% · 공격력 +30% · 수량 +20%",hp:1.35,damage:1.3,speed:1.08,count:1.2,reward:1.35},extinction:{name:"멸종",desc:"극한 난이도 · 체력 +85% · 공격력 +70%",hp:1.85,damage:1.7,speed:1.16,count:1.35,reward:1.8}};
+const V82_SKINS={default:{name:"기본 생존자",desc:"직업별 기본 복장",currency:"credits",cost:0,colors:["#4b6254","#79d8ff"]},ember:{name:"잿불 구조대",desc:"붉은 잔광 스킨",currency:"credits",cost:2800,colors:["#ff6d52","#ffca63"]},toxic:{name:"독성 연구원",desc:"녹색 생체 오라",currency:"credits",cost:4200,colors:["#55ef83","#baff63"]},frost:{name:"빙결 정찰대",desc:"청백색 파동",currency:"prism",cost:4,colors:["#63dfff","#d5f7ff"]},void:{name:"보이드 워커",desc:"보랏빛 공간 잔상",currency:"prism",cost:8,colors:["#a979ff","#ff81db"]},royal:{name:"왕실 근위대",desc:"금빛 방어 링",currency:"relics",cost:3,colors:["#ffd76b","#ff5d72"]},neon:{name:"네온 러너",desc:"청록·분홍 네온",currency:"relics",cost:5,colors:["#4ff8ff","#ff5bd2"]},bloodmoon:{name:"블러드문 생존자",desc:"적색 월식 오라",currency:"relics",cost:8,colors:["#ff3d55","#5d1025"]}};
+const V82_PERMANENT_UPGRADES={vitality:{name:"생존 본능",desc:"최대 체력 +3% / 랭크",max:8,currency:"credits",baseCost:1500},arsenal:{name:"전투 교범",desc:"공격력 +1.5% / 랭크",max:8,currency:"credits",baseCost:2000},mobility:{name:"기동 훈련",desc:"이동속도 +1.5% / 랭크",max:8,currency:"credits",baseCost:1800},guardian:{name:"응급 보호막",desc:"시작 보호막 +5 / 랭크",max:8,currency:"prism",baseCost:2},fortune:{name:"보급 감각",desc:"시작 공용 돈 +100 / 랭크",max:8,currency:"relics",baseCost:1}};
+const V82_JOB_TALENT_NAMES={soldier:[["화력 집중","공격력 +4%","damageMult",.04],["전투 방탄","최대 체력 +6%","hpMult",.06],["정밀 사격","치명타 +2%","critBonus",.02]],student:[["빠른 학습","공격력 +3%","damageMult",.03],["전력 질주","이동속도 +5%","speedMult",.05],["아드레날린","연사 +4%","rateBonus",.04]],scientist:[["촉매 증폭","공격력 +4%","damageMult",.04],["생체 보호막","보호막 +10","shieldBonus",10],["고속 분석","연사 +5%","rateBonus",.05]],courier:[["극한 속도","이동속도 +6%","speedMult",.06],["경량 장비","연사 +4%","rateBonus",.04],["전투 집중","공격력 +3%","damageMult",.03]],guard:[["이동 요새","최대 체력 +8%","hpMult",.08],["중장갑","방어율 +2%","armorBonus",.02],["보호막 전개","보호막 +15","shieldBonus",15]],medic:[["전장 응급처치","재생 +0.45","regenBonus",.45],["회복 체질","최대 체력 +7%","hpMult",.07],["안정된 손","공격력 +3%","damageMult",.03]],engineer:[["오버클럭","연사 +6%","rateBonus",.06],["강화 외골격","최대 체력 +5%","hpMult",.05],["정밀 교정","치명타 +2%","critBonus",.02]],firefighter:[["내열 장비","최대 체력 +8%","hpMult",.08],["강제 돌파","공격력 +4%","damageMult",.04],["구조 돌진","이동속도 +4%","speedMult",.04]]};
+const V82_EVENTS=[{id:"armored",name:"강철 감염체",desc:"적 체력 +35% · 크레딧 보상 증가",icon:"shield",hp:1.35,credit:1.6},{id:"frenzy",name:"광란의 밤",desc:"적 속도와 공격력 증가",icon:"skull",speed:1.22,damage:1.28,credit:1.35},{id:"swarm",name:"대규모 군집",desc:"적 수 +30%",icon:"horde",count:1.3,credit:1.35},{id:"eliteHunt",name:"엘리트 사냥",desc:"일부 감염체가 엘리트로 변이",icon:"target",eliteChance:.28,credit:1.55},{id:"supply",name:"긴급 보급 작전",desc:"공용 돈 즉시 보급",icon:"crate",money:1200,clearCredits:180},{id:"recovery",name:"구조 신호",desc:"팀 체력과 보호막 회복",icon:"medic",heal:.35,shield:20},{id:"bloodMoon",name:"블러드문",desc:"적 수·공격력 증가 · 유물 발견 가능",icon:"moon",count:1.18,damage:1.22,relicChance:.06,credit:1.45},{id:"bounty",name:"현상금 작전",desc:"크레딧 보상 2배",icon:"coin",credit:2}];
+let v82CurrentEvent=null,v82PreviousEvent=null,v82RunStats=null,v82SpectateTargetId="",v82EventHudTimer=0;
+function v82EnsureSave(){save.credits=Math.max(0,Math.floor(Number(save.credits)||0));save.relics=Math.max(0,Math.floor(Number(save.relics)||0));save.talentTokens=Math.max(0,Math.floor(Number(save.talentTokens)||0));save.achievementsV82=save.achievementsV82&&typeof save.achievementsV82==="object"?save.achievementsV82:{};save.weaponMasteryV82=save.weaponMasteryV82&&typeof save.weaponMasteryV82==="object"?save.weaponMasteryV82:{};save.jobTalentsV82=save.jobTalentsV82&&typeof save.jobTalentsV82==="object"?save.jobTalentsV82:{};save.ownedSkinsV82=Array.isArray(save.ownedSkinsV82)?[...new Set(save.ownedSkinsV82)]:["default"];if(!save.ownedSkinsV82.includes("default"))save.ownedSkinsV82.unshift("default");save.selectedSkinV82=V82_SKINS[save.selectedSkinV82]&&save.ownedSkinsV82.includes(save.selectedSkinV82)?save.selectedSkinV82:"default";save.permanentUpgradesV82=save.permanentUpgradesV82&&typeof save.permanentUpgradesV82==="object"?save.permanentUpgradesV82:{};save.selectedDifficultyV82=V82_DIFFICULTIES[save.selectedDifficultyV82]?save.selectedDifficultyV82:"nightmare";save.difficultyBestV82=save.difficultyBestV82&&typeof save.difficultyBestV82==="object"?save.difficultyBestV82:{};save.bossKillsV82=Math.max(0,Math.floor(Number(save.bossKillsV82)||0));save.eventsCompletedV82=Math.max(0,Math.floor(Number(save.eventsCompletedV82)||0))}
+function v82Esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+function v82IconSvg(key,label="",colors=["#64e0ff","#69ff9d"]){const a=colors[0]||"#64e0ff",b=colors[1]||"#69ff9d",L=v82Esc(String(label||key).slice(0,3).toUpperCase());const m={play:'<path d="M75 48 154 96 75 144Z" fill="url(#g)"/>',multi:'<circle cx="65" cy="70" r="24" fill="url(#g)"/><circle cx="127" cy="70" r="24" fill="url(#g)"/><path d="M28 153c6-34 27-49 55-42 12-8 31-8 43 0 28-7 49 8 55 42" fill="none" stroke="url(#g)" stroke-width="16"/>',trophy:'<path d="M55 40h82v36c0 44-18 67-41 67S55 120 55 76Z" fill="url(#g)"/>',skull:'<path d="M96 28c-40 0-65 27-65 62 0 25 11 39 29 49v28h72v-28c18-10 29-24 29-49 0-35-25-62-65-62Z" fill="url(#g)"/><circle cx="70" cy="91" r="13" fill="#071017"/><circle cx="121" cy="91" r="13" fill="#071017"/>',shield:'<path d="M96 23 153 44v48c0 38-23 66-57 82-34-16-57-44-57-82V44Z" fill="url(#g)"/>',crate:'<rect x="32" y="45" width="128" height="112" rx="12" fill="url(#g)"/><path d="M32 82h128M70 45v112M122 45v112" stroke="#071017" stroke-width="10" opacity=".55"/>',target:'<circle cx="96" cy="96" r="61" fill="none" stroke="url(#g)" stroke-width="14"/><circle cx="96" cy="96" r="28" fill="none" stroke="'+b+'" stroke-width="10"/>',coin:'<circle cx="96" cy="96" r="65" fill="url(#g)"/><path d="M112 63H84c-16 0-24 9-24 20 0 31 72 9 72 39 0 12-10 21-27 21H76" fill="none" stroke="#071017" stroke-width="10"/>',moon:'<path d="M128 30c-47 7-72 64-42 103 20 27 57 34 86 17-45 4-70-48-44-120Z" fill="url(#g)"/>',medic:'<rect x="38" y="38" width="116" height="116" rx="28" fill="url(#g)"/><path d="M85 58h22v27h27v22h-27v27H85v-27H58V85h27Z" fill="#fff"/>',horde:'<circle cx="52" cy="80" r="25" fill="'+a+'"/><circle cx="96" cy="62" r="29" fill="url(#g)"/><circle cx="141" cy="82" r="25" fill="'+b+'"/><path d="M18 157c4-35 25-50 53-44 13-10 37-10 50 0 28-6 49 9 53 44" fill="none" stroke="url(#g)" stroke-width="15"/>',gun:'<path d="M24 79h104l35 22-35 22H93l-14 36H48l8-36H24Z" fill="url(#g)"/><rect x="71" y="65" width="55" height="18" rx="7" fill="'+b+'"/>',tree:'<circle cx="96" cy="45" r="20" fill="url(#g)"/><circle cx="52" cy="105" r="18" fill="'+a+'"/><circle cx="140" cy="105" r="18" fill="'+b+'"/><path d="M96 65v22M96 87 52 105M96 87l44 18" stroke="url(#g)" stroke-width="9"/>',store:'<path d="M38 73h116l-10 91H48Z" fill="url(#g)"/><path d="M65 73c0-30 13-44 31-44s31 14 31 44" fill="none" stroke="'+b+'" stroke-width="12"/>',medal:'<circle cx="96" cy="112" r="48" fill="url(#g)"/><path d="m63 24 33 46 33-46 14 58H49Z" fill="'+b+'"/>',star:'<path d="m96 22 21 44 49 7-35 34 8 49-43-23-43 23 8-49-35-34 49-7Z" fill="url(#g)"/>',book:'<path d="M32 42h56c19 0 25 12 25 25v91c-7-11-16-15-28-15H32ZM160 42h-56c-19 0-25 12-25 25v91c7-11 16-15 28-15h53Z" fill="url(#g)"/>',close:'<path d="m47 47 98 98M145 47 47 145" stroke="url(#g)" stroke-width="18" stroke-linecap="round"/>'};const motif=m[key]||'<circle cx="96" cy="96" r="64" fill="url(#g)"/><text x="96" y="111" text-anchor="middle" font-family="Arial" font-size="39" font-weight="900" fill="#061017">'+L+'</text>';return "data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+a+'"/><stop offset="1" stop-color="'+b+'"/></linearGradient></defs><rect width="192" height="192" rx="34" fill="#071017"/>'+motif+'</svg>')}
+function v82ButtonIcon(t){if(/시작|플레이/.test(t))return"play";if(/멀티|방|참가/.test(t))return"multi";if(/랭킹/.test(t))return"trophy";if(/업적/.test(t))return"medal";if(/상점|구매|교환|보급/.test(t))return"store";if(/특성/.test(t))return"tree";if(/숙련|무기|강화|장착|진화/.test(t))return"gun";if(/난이도/.test(t))return"skull";if(/설명|도감/.test(t))return"book";if(/닫기|취소|뒤로|나가기/.test(t))return"close";if(/관리자|무적/.test(t))return"shield";if(/환생|프리즘|보상|상자/.test(t))return"star";if(/회복|치료|소생/.test(t))return"medic";return"target"}
+function v82DecorateButtons(root=document){for(const b of root.querySelectorAll("button:not(.switch)")){if(b.dataset.v82IconReady==="1")continue;b.dataset.v82IconReady="1";b.classList.add("v82-iconized");b.style.setProperty("--v82-icon",'url("'+v82IconSvg(v82ButtonIcon(b.textContent),b.textContent)+'")')}}
+function v82DecorateCards(c,kind="target"){if(!c)return;for(const card of c.querySelectorAll(".card,.job-card")){if(card.querySelector(":scope > .v82-card-art"))continue;const art=document.createElement("div");art.className="v82-card-art";art.style.backgroundImage='url("'+v82IconSvg(kind,card.querySelector("h3")?.textContent||"")+'")';card.prepend(art)}}
+function v82RefreshCurrencyUi(){const m={v82CreditsText:formatNumber(save.credits),v82PrismText:formatNumber(save.prism),v82RelicsText:formatNumber(save.relics),v82TalentTokensText:formatNumber(save.talentTokens)};for(const[id,v]of Object.entries(m)){const e=document.getElementById(id);if(e)e.textContent=v}const line='<span>🪙 '+formatNumber(save.credits)+'</span><span>💎 '+formatNumber(save.prism)+'</span><span>🧿 '+formatNumber(save.relics)+'</span><span>🌿 '+formatNumber(save.talentTokens)+'</span>';for(const id of["v82ShopCurrencies","v82AchievementSummary"]){const e=document.getElementById(id);if(e)e.innerHTML=line}}
+function v82CurrencyName(k){return{credits:"크레딧",prism:"프리즘",relics:"유물",talentTokens:"특성 토큰"}[k]||k}function v82Pay(k,c){if(Number(save[k]||0)<c)return false;save[k]-=c;return true}function v82MasteryLevel(xp){return Math.min(25,Math.floor(Math.sqrt(Math.max(0,Number(xp)||0)/10)))}function v82CountMastered(level){return Object.values(save.weaponMasteryV82||{}).filter(x=>v82MasteryLevel(x)>=level).length}
+const V82_ACHIEVEMENTS=[{id:"first",name:"첫 번째 감염체",desc:"누적 1킬",target:1,get:()=>save.totalKills,reward:{credits:300}},{id:"wave10",name:"도시 외곽 돌파",desc:"웨이브 10",target:10,get:()=>Math.max(save.bestWave,wave),reward:{credits:1200,prism:1}},{id:"wave30",name:"끝나지 않는 밤",desc:"웨이브 30",target:30,get:()=>Math.max(save.bestWave,wave),reward:{credits:4000,prism:3,relics:1}},{id:"kills1000",name:"천 명의 밤",desc:"누적 1,000킬",target:1000,get:()=>save.totalKills,reward:{credits:5000,prism:3}},{id:"boss10",name:"거인 사냥꾼",desc:"보스 10킬",target:10,get:()=>save.bossKillsV82,reward:{relics:3,talentTokens:2}},{id:"events25",name:"현장 요원",desc:"작전 이벤트 25회",target:25,get:()=>save.eventsCompletedV82,reward:{credits:4500,relics:2}},{id:"master5",name:"무기 전문가",desc:"5개 무기 숙련도 5",target:5,get:()=>v82CountMastered(5),reward:{prism:5,talentTokens:2}},{id:"skin5",name:"생존자의 옷장",desc:"스킨 5개 보유",target:5,get:()=>save.ownedSkinsV82.length,reward:{relics:2}},{id:"apoc20",name:"종말의 증인",desc:"종말 난이도 W20",target:20,get:()=>Number(save.difficultyBestV82.apocalypse||0),reward:{credits:7000,relics:4,talentTokens:3}},{id:"prestige3",name:"다시 태어난 생존자",desc:"환생 3회",target:3,get:()=>save.prestige,reward:{relics:5,talentTokens:4}}];
+function v82RewardText(r={}){return[["credits","🪙"],["prism","💎"],["relics","🧿"],["talentTokens","🌿"]].filter(([k])=>r[k]).map(([k,i])=>i+" "+formatNumber(r[k])).join(" · ")}function v82Grant(r={}){for(const k of["credits","prism","relics","talentTokens"])save[k]=(Number(save[k])||0)+Math.max(0,Math.floor(Number(r[k])||0))}
+function v82CheckAchievements(){let changed=false;for(const a of V82_ACHIEVEMENTS){if(save.achievementsV82[a.id])continue;if(Number(a.get())<a.target)continue;save.achievementsV82[a.id]=Date.now();v82Grant(a.reward);changed=true;showMessage("업적 달성 · "+a.name,v82RewardText(a.reward))}if(changed){persist({cloudDelay:1200});v82RefreshCurrencyUi()}}
+function v82AddMastery(id,amount){if(!id||!WEAPONS[id]||WEAPONS[id].admin)return;const before=v82MasteryLevel(save.weaponMasteryV82[id]||0);save.weaponMasteryV82[id]=(Number(save.weaponMasteryV82[id])||0)+amount;const after=v82MasteryLevel(save.weaponMasteryV82[id]);if(after>before&&[5,10,20].includes(after)){const reward=after===5?500:after===10?1200:3000;save.credits+=reward;showMessage(WEAPONS[id].name+" 숙련도 "+after,"숙련 보상 🪙 "+formatNumber(reward))}}
+function v82BuildCombatSnapshot(job=save.selectedJob){const p=save.permanentUpgradesV82||{},s={hpMult:1+(Number(p.vitality)||0)*.03,damageMult:1+(Number(p.arsenal)||0)*.015,speedMult:1+(Number(p.mobility)||0)*.015,armorBonus:0,regenBonus:0,shieldBonus:(Number(p.guardian)||0)*5,rateBonus:0,critBonus:0},levels=save.jobTalentsV82?.[job]||{};for(const[tIndex,t]of (V82_JOB_TALENT_NAMES[job]||[]).entries()){const id="t"+tIndex,l=clamp(Math.floor(Number(levels[id])||0),0,3),key=t[2],v=t[3]*l;if(["hpMult","damageMult","speedMult"].includes(key))s[key]+=v;else s[key]=(s[key]||0)+v}return s}
+function v82ApplyCombatSnapshot(o,s){if(!o||!s||o._v82CombatStatsApplied)return;o._v82CombatStatsApplied=true;const old=o.maxHp;o.maxHp*=s.hpMult||1;o.hp+=Math.max(0,o.maxHp-old);o.damageMult*=s.damageMult||1;o.speed*=s.speedMult||1;o.armor=clamp((o.armor||0)+(s.armorBonus||0),0,.8);o.regen=(o.regen||0)+(s.regenBonus||0);o.maxShield=(o.maxShield||0)+(s.shieldBonus||0);o.shield=(o.shield||0)+(s.shieldBonus||0);o.buffs.rate=(o.buffs.rate||0)+(s.rateBonus||0);o.buffs.crit=(o.buffs.crit||0)+(s.critBonus||0)}
+function v82GetDifficulty(){return V82_DIFFICULTIES[save.selectedDifficultyV82]||V82_DIFFICULTIES.nightmare}function v82CurrentRewardMultiplier(){return(v82GetDifficulty().reward||1)*(v82CurrentEvent?.credit||1)}
+function v82ShowEvent(e){const h=document.getElementById("v82EventHud");if(!h||!e)return;document.getElementById("v82EventIcon").style.backgroundImage='url("'+v82IconSvg(e.icon||"target",e.name)+'")';document.getElementById("v82EventTitle").textContent=e.name;document.getElementById("v82EventText").textContent=e.desc;h.classList.add("show");v82EventHudTimer=7}
+function v82CompletePreviousEvent(){if(!v82PreviousEvent)return;save.eventsCompletedV82++;if(v82PreviousEvent.clearCredits)save.credits+=Math.round(v82PreviousEvent.clearCredits*v82GetDifficulty().reward);v82PreviousEvent=null}
+function v82ChooseWaveEvent(){v82CurrentEvent=null;if(wave<3||wave%3!==0)return;const e=V82_EVENTS[Math.floor(runRandom()*V82_EVENTS.length)];v82CurrentEvent={...e,wave};v82PreviousEvent=v82CurrentEvent;if(e.money){money+=Math.round(e.money+wave*30);if(multiplayer.active&&multiplayer.isHost&&typeof broadcastSharedMoney==="function")broadcastSharedMoney("v82_event")};if(e.heal||e.shield)for(const m of players.values()){if(!m||m.dead)continue;if(e.heal)m.hp=Math.min(m.maxHp,m.hp+m.maxHp*e.heal);if(e.shield){m.shield=(m.shield||0)+e.shield;m.maxShield=Math.max(m.maxShield||0,m.shield)}}if(e.count)spawnRemaining=Math.min(MAX_ENEMIES-5,Math.round(spawnRemaining*e.count));v82ShowEvent(e);showMessage(e.name,e.desc)}
+function v82ApplyEventEnemy(e){if(!e||!v82CurrentEvent)return;const x=v82CurrentEvent;if(x.hp){e.maxHp*=x.hp;e.hp*=x.hp}if(x.speed)e.speed*=x.speed;if(x.damage)e.damage*=x.damage;if(x.eliteChance&&!e.boss&&runRandom()<x.eliteChance&&!e.elite){e.elite=true;e.maxHp*=1.5;e.hp*=1.5;e.damage*=1.18;e.speed*=1.06}}
+function v82ApplyDifficultyEnemy(e){if(!e||e.v82DifficultyApplied)return;e.v82DifficultyApplied=true;const d=v82GetDifficulty();e.maxHp*=d.hp;e.hp*=d.hp;e.damage*=d.damage;e.speed*=d.speed;if(e.boss&&Number.isFinite(e.weakHp))e.weakHp*=d.hp}
+function v82BossPhaseUpdate(b,t,dt){if(!b||b.dead)return;const r=b.hp/Math.max(1,b.maxHp),p=r<=.3?3:r<=.65?2:1;if(b.v82Phase!==p){b.v82Phase=p;b.v82PatternTimer=.4;if(p>1){showMessage(b.name+" · PHASE "+p,p===3?"최종 광폭화 단계":"새로운 공격 패턴");camera.shake=Math.max(camera.shake,13);addParticle({type:"shockwave",x:b.x,y:b.y,radius:p===3?260:210,color:p===3?"#ff3f61":"#d069ff",width:14,life:.8,maxLife:.8});if(p===3&&(!multiplayer.active||multiplayer.isHost))for(let i=0;i<2&&enemies.length<MAX_ENEMIES;i++)spawnEnemy()}}b.v82PatternTimer=(Number(b.v82PatternTimer)||0)-dt;if(p<2||b.v82PatternTimer>0||!t)return;const cap=typeof getActiveEnemyBulletCap==="function"?getActiveEnemyBulletCap():MAX_ENEMY_BULLETS,count=Math.min(p===3?10:6,Math.max(0,cap-enemyBullets.length)),off=performance.now()*.0007;for(let i=0;i<count;i++){const a=off+i/Math.max(1,count)*Math.PI*2;enemyBullets.push({x:b.x,y:b.y,vx:Math.cos(a)*(p===3?310:250),vy:Math.sin(a)*(p===3?310:250),damage:b.damage*(p===3?.52:.42),radius:p===3?7:6,life:4})}b.v82PatternTimer=p===3?2:3}
+function v82Skin(o){return V82_SKINS[o?.v82Skin||((o?.local)?save.selectedSkinV82:"default")]||V82_SKINS.default}function v82DrawSkinAura(o){if(!o||o.dead)return;const s=v82Skin(o);if(s===V82_SKINS.default)return;const p=project(o.x,o.y),t=performance.now()*.002;ctx.save();ctx.globalAlpha=.5;ctx.strokeStyle=s.colors[0];ctx.lineWidth=3;ctx.shadowBlur=15;ctx.shadowColor=s.colors[1];ctx.beginPath();ctx.arc(p.x,p.y,24+Math.sin(t+o.id.length)*3,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=.18;ctx.fillStyle=s.colors[1];ctx.beginPath();ctx.arc(p.x,p.y,20,0,Math.PI*2);ctx.fill();ctx.restore()}
+function v82Living(){return[...players.values()].filter(m=>m&&!m.dead&&!m.downed)}function v82CycleSpectator(dir=1){const a=v82Living();if(!a.length){v82SpectateTargetId="";return}let i=a.findIndex(m=>m.id===v82SpectateTargetId);i=i<0?0:(i+dir+a.length)%a.length;v82SpectateTargetId=a[i].id}function v82GetCameraTarget(){if(!player)return null;if(!multiplayer.active||(!player.dead&&!player.downed)){v82SpectateTargetId="";return player}const a=v82Living();if(!a.length)return player;let t=a.find(m=>m.id===v82SpectateTargetId);if(!t){t=a[0];v82SpectateTargetId=t.id}return t}function v82UpdateSpectatorHud(){const h=document.getElementById("v82SpectatorHud");if(!h)return;const active=!!(multiplayer.active&&player&&(player.dead||player.downed)&&v82Living().length);h.classList.toggle("show",active);if(active)document.getElementById("v82SpectatorName").textContent=v82GetCameraTarget()?.nickname||"생존자"}
+function v82CommitRunRewards(){if(!v82RunStats||v82RunStats.committed)return;v82RunStats.committed=true;v82CompletePreviousEvent();save.credits+=Math.round(v82RunStats.credits*v82GetDifficulty().reward);save.relics+=v82RunStats.relics;save.talentTokens+=v82RunStats.talentTokens;save.difficultyBestV82[save.selectedDifficultyV82]=Math.max(Number(save.difficultyBestV82[save.selectedDifficultyV82]||0),wave);persist({cloudDelay:1200});v82RefreshCurrencyUi();v82CheckAchievements()}
+function v82RenderAchievements(){const g=document.getElementById("v82AchievementGrid");g.innerHTML="";for(const a of V82_ACHIEVEMENTS){const v=Math.min(Number(a.get())||0,a.target),un=!!save.achievementsV82[a.id],c=document.createElement("div");c.className="v82-feature-card "+(un?"selected":"locked");c.innerHTML='<div class="v82-feature-art" style="background-image:url(\''+v82IconSvg(un?"medal":"target",a.name)+'\')"></div><h3>'+(un?"✓ ":"")+v82Esc(a.name)+'</h3><p>'+v82Esc(a.desc)+'</p><div class="v82-master-progress"><i style="width:'+clamp(v/a.target*100,0,100)+'%"></i></div><p>'+formatNumber(v)+' / '+formatNumber(a.target)+'</p><p class="v82-achievement-reward">'+v82RewardText(a.reward)+'</p>';g.append(c)}v82RefreshCurrencyUi()}
+function v82RenderSkins(){const g=document.getElementById("v82SkinGrid");g.innerHTML="";for(const[id,s]of Object.entries(V82_SKINS)){const owned=save.ownedSkinsV82.includes(id),selected=save.selectedSkinV82===id,c=document.createElement("div"),b=document.createElement("button");c.className="v82-feature-card "+(selected?"selected":"");b.className=owned?"btn":"btn primary";b.textContent=selected?"사용 중":owned?"사용":"구매";b.disabled=selected;b.onclick=()=>{if(owned){save.selectedSkinV82=id;if(player){player.v82Skin=id;notifyMultiplayerLoadoutChanged()}persist();v82RenderSkins();return}if(!v82Pay(s.currency,s.cost)){showMessage(v82CurrencyName(s.currency)+" 부족");return}save.ownedSkinsV82.push(id);save.selectedSkinV82=id;persist();v82RenderSkins();v82RefreshCurrencyUi();v82CheckAchievements()};c.innerHTML='<div class="v82-feature-art" style="background-image:url(\''+v82IconSvg("star",s.name,s.colors)+'\')"></div><h3>'+v82Esc(s.name)+'</h3><p>'+v82Esc(s.desc)+'</p><div class="v82-skin-swatch"><i style="background:'+s.colors[0]+'"></i><i style="background:'+s.colors[1]+'"></i></div><p>'+(owned?"보유 중":v82CurrencyName(s.currency)+" "+formatNumber(s.cost))+'</p>';c.append(b);g.append(c)}v82DecorateButtons(g)}
+function v82RenderPermanent(){const g=document.getElementById("v82PermanentUpgradeGrid");g.innerHTML="";for(const[id,u]of Object.entries(V82_PERMANENT_UPGRADES)){const lv=clamp(Math.floor(Number(save.permanentUpgradesV82[id])||0),0,u.max),cost=u.baseCost*(lv+1),c=document.createElement("div"),b=document.createElement("button");c.className="v82-feature-card";b.className="btn primary";b.textContent=lv>=u.max?"최대 랭크":v82CurrencyName(u.currency)+" "+formatNumber(cost)+" 강화";b.disabled=lv>=u.max;b.onclick=()=>{if(!v82Pay(u.currency,cost)){showMessage(v82CurrencyName(u.currency)+" 부족");return}save.permanentUpgradesV82[id]=lv+1;persist();v82RenderPermanent();v82RefreshCurrencyUi()};c.innerHTML='<div class="v82-feature-art" style="background-image:url(\''+v82IconSvg(id==="vitality"?"medic":id==="guardian"?"shield":id==="fortune"?"coin":"target",u.name)+'\')"></div><h3>'+u.name+'</h3><p>'+u.desc+'</p><span class="v82-talent-level">랭크 '+lv+'/'+u.max+'</span>';c.append(b);g.append(c)}v82DecorateButtons(g)}
+function v82RenderExchange(){const g=document.getElementById("v82ExchangeGrid");g.innerHTML="";for(const o of[{n:"프리즘 정제",d:"크레딧 2,500 → 프리즘 1",f:"credits",c:2500,t:"prism",a:1},{n:"유물 복원",d:"프리즘 6 → 유물 1",f:"prism",c:6,t:"relics",a:1},{n:"전술 연구",d:"유물 2 → 특성 토큰 1",f:"relics",c:2,t:"talentTokens",a:1}]){const c=document.createElement("div"),b=document.createElement("button");c.className="v82-feature-card";b.className="btn";b.textContent="교환";b.onclick=()=>{if(!v82Pay(o.f,o.c)){showMessage(v82CurrencyName(o.f)+" 부족");return}save[o.t]=(Number(save[o.t])||0)+o.a;persist();v82RenderMetaShop()};c.innerHTML='<div class="v82-feature-art" style="background-image:url(\''+v82IconSvg("coin",o.n)+'\')"></div><h3>'+o.n+'</h3><p>'+o.d+'</p>';c.append(b);g.append(c)}v82DecorateButtons(g)}
+function v82RenderMetaShop(){v82RenderSkins();v82RenderPermanent();v82RenderExchange();v82RefreshCurrencyUi()}
+function v82RenderTalents(){const g=document.getElementById("v82TalentGrid"),job=save.selectedJob,list=V82_JOB_TALENT_NAMES[job]||[];document.getElementById("v82TalentHeader").textContent=(JOBS[job]?.name||job)+" · 토큰 "+formatNumber(save.talentTokens);g.innerHTML="";save.jobTalentsV82[job]=save.jobTalentsV82[job]||{};list.forEach((t,i)=>{const id="t"+i,lv=clamp(Math.floor(Number(save.jobTalentsV82[job][id])||0),0,3),cost=lv+1,c=document.createElement("div"),b=document.createElement("button");c.className="v82-feature-card";b.className="btn primary";b.textContent=lv>=3?"완성":"토큰 "+cost+" 사용";b.disabled=lv>=3;b.onclick=()=>{if(save.talentTokens<cost){showMessage("특성 토큰 부족");return}save.talentTokens-=cost;save.jobTalentsV82[job][id]=lv+1;persist();v82RenderTalents();v82RefreshCurrencyUi()};c.innerHTML='<div class="v82-feature-art" style="background-image:url(\''+v82IconSvg("tree",t[0])+'\')"></div><h3>'+t[0]+'</h3><p>'+t[1]+'</p><span class="v82-talent-level">레벨 '+lv+'/3</span>';c.append(b);g.append(c)});v82DecorateButtons(g)}
+function v82RenderMastery(){const g=document.getElementById("v82MasteryGrid");g.innerHTML="";for(const[id,w]of Object.entries(WEAPONS)){if(w.admin)continue;const xp=Number(save.weaponMasteryV82[id]||0),lv=v82MasteryLevel(xp),next=(lv+1)*(lv+1)*10,prev=lv*lv*10,pct=lv>=25?100:clamp((xp-prev)/Math.max(1,next-prev)*100,0,100),c=document.createElement("div");c.className="v82-feature-card";c.innerHTML='<div class="v82-feature-art" style="background-image:url(\''+v82IconSvg("gun",w.name,lv>=10?["#ffd66d","#ff7c72"]:["#68e7ff","#7dffad"])+'\')"></div><h3>'+v82Esc(w.name)+'</h3><p>'+(w.category||"총기")+' · 숙련도 '+lv+'</p><div class="v82-master-progress"><i style="width:'+pct+'%"></i></div><p>XP '+formatNumber(Math.floor(xp))+(lv<25?" / "+formatNumber(next):" · MAX")+'</p>';g.append(c)}}
+function v82RenderDifficulty(){const s=document.getElementById("v82DifficultySelect"),d=document.getElementById("v82DifficultyDesc");if(!s||!d)return;s.value=save.selectedDifficultyV82;d.textContent=v82GetDifficulty().desc}
+function v82Open(id,render){render?.();const o=document.getElementById(id);showOverlay(o);if(typeof attachDraggablePopup==="function")attachDraggablePopup(o);v82DecorateButtons(o)}function v82Close(id){const o=document.getElementById(id);if(o)hideOverlay(o)}
+function v82CommitRunRewards(){if(!v82RunStats||v82RunStats.committed)return;v82RunStats.committed=true;v82CompletePreviousEvent();save.credits+=Math.round(v82RunStats.credits*v82GetDifficulty().reward);save.relics+=v82RunStats.relics;save.talentTokens+=v82RunStats.talentTokens;save.difficultyBestV82[save.selectedDifficultyV82]=Math.max(Number(save.difficultyBestV82[save.selectedDifficultyV82]||0),wave);persist({cloudDelay:1200});v82RefreshCurrencyUi();v82CheckAchievements()}
+v82EnsureSave();
+const v82BaseStartRun=startRun;startRun=function(mode){v82CurrentEvent=null;v82PreviousEvent=null;v82RunStats={credits:0,relics:0,talentTokens:0,committed:false};const r=v82BaseStartRun(mode);setTimeout(()=>{if(!player)return;player.v82Skin=save.selectedSkinV82;player.v82CombatSnapshot=v82BuildCombatSnapshot(player.job);v82ApplyCombatSnapshot(player,player.v82CombatSnapshot);const f=Number(save.permanentUpgradesV82.fortune)||0;if(f){money+=f*100;if(multiplayer.active&&multiplayer.isHost&&typeof broadcastSharedMoney==="function")broadcastSharedMoney("v82_start")};if(multiplayer.active)notifyMultiplayerLoadoutChanged()},0);return r};
+const v82BaseStartWave=startWave;startWave=function(){v82CompletePreviousEvent();const r=v82BaseStartWave();if(state==="playing"){spawnRemaining=Math.min(MAX_ENEMIES-5,Math.round(spawnRemaining*v82GetDifficulty().count));v82ChooseWaveEvent();save.difficultyBestV82[save.selectedDifficultyV82]=Math.max(Number(save.difficultyBestV82[save.selectedDifficultyV82]||0),wave);v82CheckAchievements()}return r};
+const v82BaseSpawnEnemy=spawnEnemy;spawnEnemy=function(){const n=enemies.length,r=v82BaseSpawnEnemy();for(let i=n;i<enemies.length;i++){v82ApplyDifficultyEnemy(enemies[i]);v82ApplyEventEnemy(enemies[i])}return r};const v82BaseSpawnBoss=spawnBoss;spawnBoss=function(){const n=enemies.length,r=v82BaseSpawnBoss();for(let i=n;i<enemies.length;i++){v82ApplyDifficultyEnemy(enemies[i]);v82ApplyEventEnemy(enemies[i]);if(enemies[i]?.boss){enemies[i].v82Phase=1;enemies[i].v82PatternTimer=2.5}}return r};const v82BaseUpdateBoss=updateBoss;updateBoss=function(b,t,dt,nx,ny,range){const r=v82BaseUpdateBoss(b,t,dt,nx,ny,range);v82BossPhaseUpdate(b,t,dt);return r};
+const v82BaseKillEnemy=killEnemy;killEnemy=function(e,o){const valid=e&&!e.dead,boss=!!(valid&&e.boss),elite=!!(valid&&e.elite),wid=o?getWeaponId(o):"",r=v82BaseKillEnemy(e,o);if(valid&&o?.local){v82AddMastery(wid,boss?18:elite?5:1);if(v82RunStats){v82RunStats.credits+=Math.round((boss?60:elite?10:2)*((v82CurrentEvent?.credit)||1));if(boss){v82RunStats.relics++;v82RunStats.talentTokens++;save.bossKillsV82++}if(v82CurrentEvent?.relicChance&&runRandom()<v82CurrentEvent.relicChance)v82RunStats.relics++}if((o.kills||0)%30===0)persist({cloudDelay:5000});v82CheckAchievements()}return r};
+const v82BaseFinishRun=finishRun;finishRun=function(){v82CommitRunRewards();return v82BaseFinishRun()};const v82BaseReturnToMenu=returnToMenu;returnToMenu=function(){v82CommitRunRewards();const r=v82BaseReturnToMenu();v82RefreshCurrencyUi();v82CheckAchievements();return r};const v82BaseDrawPlayer=drawPlayer;drawPlayer=function(o){v82DrawSkinAura(o);return v82BaseDrawPlayer(o)};const v82BaseDraw=draw;draw=function(){const r=v82BaseDraw();v82UpdateSpectatorHud();return r};const v82BaseUpdate=update;update=function(dt){const r=v82BaseUpdate(dt);if(v82EventHudTimer>0&&(v82EventHudTimer-=dt)<=0)document.getElementById("v82EventHud")?.classList.remove("show");return r};
+const v82BaseRenderWeapons=renderWeapons;renderWeapons=function(){const r=v82BaseRenderWeapons();v82DecorateCards(document.getElementById("weaponGrid"),"gun");v82DecorateButtons(document.getElementById("weaponGrid")||document);return r};const v82BaseRenderJobs=renderJobs;renderJobs=function(){const r=v82BaseRenderJobs();v82DecorateCards(document.getElementById("jobGrid"),"tree");v82DecorateButtons(document.getElementById("jobGrid")||document);return r};if(typeof renderPets==="function"){const b=renderPets;renderPets=function(){const r=b();v82DecorateCards(document.getElementById("petGrid"),"target");v82DecorateButtons(document.getElementById("petGrid")||document);return r}}const v82BaseRefresh=refreshProfileSummary;refreshProfileSummary=function(){const r=v82BaseRefresh();v82RefreshCurrencyUi();return r};const v82BaseOpenLevelUp=openLevelUp;openLevelUp=function(){const r=v82BaseOpenLevelUp();setTimeout(()=>v82DecorateButtons(document.getElementById("levelUp")||document),0);return r};
+document.getElementById("v82AchievementsButton")?.addEventListener("click",()=>{v82CheckAchievements();v82Open("v82AchievementsOverlay",v82RenderAchievements)});document.getElementById("v82MetaShopButton")?.addEventListener("click",()=>v82Open("v82MetaShopOverlay",()=>{v82RenderSkins();v82RenderPermanent();v82RenderExchange();v82RefreshCurrencyUi()}));document.getElementById("v82TalentButton")?.addEventListener("click",()=>v82Open("v82TalentOverlay",v82RenderTalents));document.getElementById("v82MasteryButton")?.addEventListener("click",()=>v82Open("v82MasteryOverlay",v82RenderMastery));for(const[id,close]of[["v82AchievementsClose","v82AchievementsOverlay"],["v82MetaShopClose","v82MetaShopOverlay"],["v82TalentClose","v82TalentOverlay"],["v82MasteryClose","v82MasteryOverlay"]])document.getElementById(id)?.addEventListener("click",()=>v82Close(close));document.getElementById("v82SpectatorPrev")?.addEventListener("click",()=>v82CycleSpectator(-1));document.getElementById("v82SpectatorNext")?.addEventListener("click",()=>v82CycleSpectator(1));document.getElementById("v82DifficultySelect")?.addEventListener("change",e=>{if(V82_DIFFICULTIES[e.target.value]){save.selectedDifficultyV82=e.target.value;persist();v82RenderDifficulty()}});for(const id of["v82AchievementsOverlay","v82MetaShopOverlay","v82TalentOverlay","v82MasteryOverlay"]){const o=document.getElementById(id);if(o&&typeof attachDraggablePopup==="function")attachDraggablePopup(o)}if(typeof attachMovableGameUi==="function"){attachMovableGameUi(document.getElementById("v82EventHud"));attachMovableGameUi(document.getElementById("v82SpectatorHud"))}v82RenderDifficulty();v82RefreshCurrencyUi();v82CheckAchievements();v82DecorateButtons();v82DecorateCards(document.getElementById("jobGrid"),"tree");
+</script>
+
 </body>
 </html>
