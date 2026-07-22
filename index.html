@@ -2234,7 +2234,7 @@ button.v82-iconized:not(.switch){
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v85</span>
+      <span id="gameVersion" class="game-version">v86</span>
     </div>
 
     <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22bg%22%20cx%3D%2250%25%22%20cy%3D%2242%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23123949%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220.58%22%20stop-color%3D%22%2308151d%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2302070a%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22wave%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2372e6ff%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235aff9b%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%0A%20%20%3Crect%20width%3D%22256%22%20height%3D%22256%22%20rx%3D%2254%22%20fill%3D%22url%28%23bg%29%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22126%22%20r%3D%2283%22%20fill%3D%22none%22%20stroke%3D%22%236be5ff%22%20stroke-opacity%3D%22.18%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22126%22%20r%3D%2260%22%20fill%3D%22none%22%20stroke%3D%22%2363ff9d%22%20stroke-opacity%3D%22.12%22%20stroke-width%3D%225%22%2F%3E%0A%0A%20%20%3C%21--%20%EA%B0%90%EC%97%BC%20%EA%B2%BD%EA%B3%A0%20%ED%91%9C%EC%8B%9D%20--%3E%0A%20%20%3Cpath%20d%3D%22M128%2052c-14%200-26%2011-26%2025%200%208%204%2015%2010%2020l-19%2034c-3%206-1%2013%205%2016%206%203%2013%201%2016-5l14-25%2014%2025c3%206%2010%208%2016%205%206-3%208-10%205-16l-19-34c6-5%2010-12%2010-20%200-14-12-25-26-25z%22%0A%20%20%20%20%20%20%20%20fill%3D%22%23ff5872%22%20fill-opacity%3D%22.93%22%2F%3E%0A%0A%20%20%3C%21--%20%ED%8C%8C%EB%8F%99%20--%3E%0A%20%20%3Cpath%20d%3D%22M35%20169c22-26%2043-27%2064-2%2021%2026%2042%2026%2063%200%2021-25%2041-24%2059%201%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23wave%29%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M48%20194c18-16%2034-16%2050%200%2017%2016%2033%2016%2050%200%2017-16%2034-16%2054%200%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%237ceaff%22%20stroke-opacity%3D%22.58%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%0A%0A%20%20%3C%21--%20%EC%A4%91%EC%95%99%20LW%20--%3E%0A%20%20%3Ctext%20x%3D%22128%22%20y%3D%22118%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2244%22%20font-weight%3D%22900%22%0A%20%20%20%20%20%20%20%20fill%3D%22%23f3fbff%22%20stroke%3D%22%23051016%22%20stroke-width%3D%224%22%20paint-order%3D%22stroke%22%3ELW%3C%2Ftext%3E%0A%3C%2Fsvg%3E" alt=""></span>Last Wave</h1>
@@ -3685,7 +3685,7 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v85";
+const GAME_VERSION="v86";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -7914,6 +7914,44 @@ function getActiveEnemyBulletCap(){
 
 }
 
+
+function getActiveEnemyCap(){
+
+  if(
+    !multiplayer?.active
+  ){
+    return MAX_ENEMIES;
+  }
+
+  const count=
+    getMultiplayerPlayerCount();
+
+  if(count>=4){
+    return IS_MOBILE
+      ?
+      52
+      :
+      82;
+  }
+
+  if(count===3){
+    return IS_MOBILE
+      ?
+      60
+      :
+      96;
+  }
+
+  return IS_MOBILE
+    ?
+    70
+    :
+    112;
+
+}
+
+
+
 let lastRuntimeError=
   null;
 
@@ -8012,35 +8050,35 @@ const MULTIPLAYER_MAX_PLAYERS=
 const MULTI_SYNC_PROFILES={
 
   /*
-    v85:
-    같은 종류 패킷을 겹쳐 보내지 않는 전송 병합과 함께
-    Realtime 부하를 한 단계 더 낮춘 안정성 우선 프로필.
+    v86:
+    적은 작은 순환 청크로 전송하고 플레이어 상태는 더 자주 갱신한다.
+    전체 JSON 크기는 줄이면서 움직임 체감 지연을 낮춘다.
   */
   2:{
-    inputActive:.36,
-    inputIdle:1.30,
-    frame:.40,
-    projectile:1.10,
-    fullSnapshot:8.00,
-    loadoutRoster:20.00
+    inputActive:.30,
+    inputIdle:1.20,
+    frame:.30,
+    projectile:1.35,
+    fullSnapshot:12.00,
+    loadoutRoster:30.00
   },
 
   3:{
-    inputActive:.50,
-    inputIdle:1.80,
-    frame:.58,
-    projectile:1.40,
-    fullSnapshot:10.00,
-    loadoutRoster:24.00
+    inputActive:.40,
+    inputIdle:1.55,
+    frame:.40,
+    projectile:1.70,
+    fullSnapshot:15.00,
+    loadoutRoster:34.00
   },
 
   4:{
-    inputActive:.68,
-    inputIdle:2.20,
-    frame:.78,
-    projectile:1.80,
-    fullSnapshot:12.00,
-    loadoutRoster:28.00
+    inputActive:.52,
+    inputIdle:1.90,
+    frame:.52,
+    projectile:2.10,
+    fullSnapshot:18.00,
+    loadoutRoster:38.00
   }
 
 };
@@ -8096,10 +8134,10 @@ const MULTI_RECONNECT_BASE_DELAY=2200;
 const MULTI_RECONNECT_MAX_DELAY=22000;
 
 const NETWORK_MAX_BULLETS=
-  IS_MOBILE ? 34 : 52;
+  IS_MOBILE ? 14 : 22;
 
 const NETWORK_MAX_ENEMY_BULLETS=
-  IS_MOBILE ? 28 : 44;
+  IS_MOBILE ? 18 : 28;
 
 const multiplayer={
 
@@ -8167,6 +8205,10 @@ const multiplayer={
   packetTimeoutStrikes:0,
   lastSnapshotTimeoutCheckAt:0,
   lastPacketTimeoutCheckAt:0,
+
+  /* v86 · 적 상태 델타 전송 */
+  enemyFrameCursor:0,
+  pendingRemovedEnemyIds:new Set(),
 
   lastInputSignature:"",
   lastInputSentAt:0,
@@ -9837,7 +9879,7 @@ function addParticle(
         :
         multiplayerCount===2
           ?
-          .58
+          .38
           :
           1;
 
@@ -12369,13 +12411,13 @@ function spawnEnemy(){
   const scale=
     1+
     wave*
-    .062+
+    .054+
     Math.max(
       0,
       wave-
-      60
+      70
     )*
-    .026;
+    .020;
 
   const enemy={
 
@@ -12411,9 +12453,9 @@ function spawnEnemy(){
       (
         1+
         Math.min(
-          .82,
+          .66,
           wave*
-          .0055
+          .0046
         )
       ),
 
@@ -12422,7 +12464,7 @@ function spawnEnemy(){
       (
         1+
         wave*
-        .024
+        .020
       ),
 
     color:
@@ -12464,16 +12506,16 @@ function spawnEnemy(){
   ){
 
     enemy.maxHp *=
-      1.75;
+      1.55;
 
     enemy.hp=
       enemy.maxHp;
 
     enemy.speed *=
-      1.08;
+      1.04;
 
     enemy.damage *=
-      1.30;
+      1.20;
 
   }
 
@@ -15846,6 +15888,7 @@ function fuseWeapon(recipe){
     clearUpgradeResult:true
   });
   renderColors();
+  renderFusions();
 }
 
 function renderMelee(){
@@ -16306,6 +16349,13 @@ function renderColors(){
 
         notifyMultiplayerLoadoutChanged();
         renderColors();
+
+        /*
+          v86:
+          합체 조건은 현재 무기 색상을 사용하므로
+          색상 선택 직후 같은 상점 턴에서 즉시 다시 계산한다.
+        */
+        renderFusions();
 
       };
 
@@ -17557,10 +17607,10 @@ function update(
 
     spawnTimer-=dt;
 
-    if(spawnRemaining>0 && spawnTimer<=0 && enemies.length<MAX_ENEMIES){
+    if(spawnRemaining>0 && spawnTimer<=0 && enemies.length<getActiveEnemyCap()){
       spawnEnemy();
       spawnRemaining--;
-      spawnTimer=eliteWave?.31:.47;
+      spawnTimer=eliteWave?.40:.60;
     }
 
     for(const enemy of enemies){
@@ -22130,6 +22180,8 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
     multiplayer.loadoutRosterTimer=0;
     multiplayer.sendFailures=0;
     multiplayer.inFlightEvents.clear();
+    multiplayer.enemyFrameCursor=0;
+    multiplayer.pendingRemovedEnemyIds.clear();
     multiplayer.snapshotTimeoutStrikes=0;
     multiplayer.packetTimeoutStrikes=0;
     multiplayer.lastSnapshotTimeoutCheckAt=0;
@@ -23058,6 +23110,8 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
           multiplayer.lastSnapshotTimeoutCheckAt=0;
           multiplayer.lastPacketTimeoutCheckAt=0;
           multiplayer.inFlightEvents.clear();
+          multiplayer.enemyFrameCursor=0;
+          multiplayer.pendingRemovedEnemyIds.clear();
           multiplayer.lastSnapshotAt=performance.now();
           markMultiplayerPacket();
           syncMembers();
@@ -23281,24 +23335,178 @@ function getNetworkEnemyFrameCap(){
   if(count>=4){
     return IS_MOBILE
       ?
-      80
+      24
       :
-      125;
+      34;
   }
 
   if(count===3){
     return IS_MOBILE
       ?
-      95
+      28
       :
-      150;
+      40;
   }
 
   return IS_MOBILE
     ?
-    110
+    32
     :
-    180;
+    48;
+
+}
+
+
+function getNetworkEnemyFrameChunk(){
+
+  const alive=
+    enemies.filter(
+      enemy =>
+        enemy &&
+        !enemy.dead
+    );
+
+  const cap=
+    getNetworkEnemyFrameCap();
+
+  if(
+    alive.length<=
+    cap
+  ){
+    multiplayer.enemyFrameCursor=
+      0;
+
+    return alive;
+  }
+
+  const priority=[];
+  const regular=[];
+
+  for(
+    const enemy
+    of alive
+  ){
+    let important=
+      Boolean(
+        enemy.boss ||
+        enemy.elite
+      );
+
+    if(!important){
+      for(
+        const member
+        of players.values()
+      ){
+        if(
+          !member ||
+          member.dead
+        ){
+          continue;
+        }
+
+        const dx=
+          enemy.x-
+          member.x;
+
+        const dy=
+          enemy.y-
+          member.y;
+
+        if(
+          dx*dx+
+          dy*dy<
+            720*
+            720
+        ){
+          important=
+            true;
+
+          break;
+        }
+      }
+    }
+
+    if(important){
+      priority.push(
+        enemy
+      );
+    }else{
+      regular.push(
+        enemy
+      );
+    }
+  }
+
+  const result=
+    priority.slice(
+      0,
+      cap
+    );
+
+  const remaining=
+    Math.max(
+      0,
+      cap-
+      result.length
+    );
+
+  if(
+    remaining>0 &&
+    regular.length
+  ){
+    let cursor=
+      multiplayer.enemyFrameCursor%
+      regular.length;
+
+    for(
+      let i=0;
+      i<remaining &&
+      i<regular.length;
+      i++
+    ){
+      result.push(
+        regular[
+          (
+            cursor+
+            i
+          )%
+          regular.length
+        ]
+      );
+    }
+
+    multiplayer.enemyFrameCursor=
+      (
+        cursor+
+        remaining
+      )%
+      regular.length;
+  }
+
+  return result;
+
+}
+
+function consumeRemovedEnemyIds(){
+
+  const ids=
+    [
+      ...multiplayer.pendingRemovedEnemyIds
+    ].slice(
+      0,
+      80
+    );
+
+  for(
+    const id
+    of ids
+  ){
+    multiplayer.pendingRemovedEnemyIds.delete(
+      id
+    );
+  }
+
+  return ids;
 
 }
 
@@ -23324,18 +23532,13 @@ function makeWorldFrame(){
       ),
 
     enemies:
-      enemies
-        .filter(
-          enemy =>
-            !enemy.dead
-        )
-        .slice(
-          0,
-          getNetworkEnemyFrameCap()
-        )
+      getNetworkEnemyFrameChunk()
         .map(
           networkEnemyFrame
-        )
+        ),
+
+    removedEnemyIds:
+      consumeRemovedEnemyIds()
   };
 
 }
@@ -23704,8 +23907,8 @@ function applyWorldFrame(
       [];
 
   for(
-    const data of
-    incomingPlayers
+    const data
+    of incomingPlayers
   ){
     if(
       !data?.id
@@ -23778,8 +23981,8 @@ function applyWorldFrame(
     ];
 
     for(
-      const key of
-      dynamicKeys
+      const key
+      of dynamicKeys
     ){
       if(
         Object.prototype.hasOwnProperty.call(
@@ -23787,12 +23990,8 @@ function applyWorldFrame(
           key
         )
       ){
-        target[
-          key
-        ]=
-          data[
-            key
-          ];
+        target[key]=
+          data[key];
       }
     }
 
@@ -23816,37 +24015,20 @@ function applyWorldFrame(
         targetY
       )
     ){
-      if(
-        isLocal
-      ){
+      if(isLocal){
         const error=
           Math.hypot(
-            (
-              target.x ||
-              0
-            )-
-            targetX,
-            (
-              target.y ||
-              0
-            )-
-            targetY
+            (target.x||0)-targetX,
+            (target.y||0)-targetY
           );
 
-        if(
-          error>
-            190
-        ){
+        if(error>190){
           target.x=
             targetX;
 
           target.y=
             targetY;
-
-        }else if(
-          error>
-            24
-        ){
+        }else if(error>24){
           target.x=
             lerp(
               target.x,
@@ -23861,7 +24043,6 @@ function applyWorldFrame(
               .20
             );
         }
-
       }else{
         target._netTargetX=
           targetX;
@@ -23886,9 +24067,7 @@ function applyWorldFrame(
       }
     }
 
-    if(
-      isLocal
-    ){
+    if(isLocal){
       player=
         target;
 
@@ -23896,7 +24075,12 @@ function applyWorldFrame(
     }
   }
 
-  const previousEnemies=
+  /*
+    v86:
+    작은 적 청크만 받으므로 기존 적 배열을 매 프레임 통째로 교체하지 않는다.
+    받은 적만 갱신하고, 호스트가 보낸 removedEnemyIds만 즉시 삭제한다.
+  */
+  const enemyMap=
     new Map(
       enemies
         .filter(
@@ -23913,18 +24097,46 @@ function applyWorldFrame(
         )
     );
 
-  const nextEnemies=[];
+  const removedIds=
+    Array.isArray(
+      frame.removedEnemyIds
+    )
+      ?
+      frame.removedEnemyIds
+      :
+      [];
 
   for(
-    const data of
+    const id
+    of removedIds
+  ){
+    enemyMap.delete(
+      id
+    );
+  }
+
+  const now=
+    performance.now();
+
+  const incomingEnemies=
     Array.isArray(
       frame.enemies
     )
       ?
       frame.enemies
       :
-      []
+      [];
+
+  for(
+    const data
+    of incomingEnemies
   ){
+    if(
+      !data?.id
+    ){
+      continue;
+    }
+
     const targetX=
       Number(
         data.x
@@ -23936,24 +24148,29 @@ function applyWorldFrame(
       );
 
     let enemy=
-      previousEnemies.get(
+      enemyMap.get(
         data.id
       );
 
-    if(
-      !enemy
-    ){
+    if(!enemy){
       enemy={
-        ...data
+        ...data,
+        x:targetX,
+        y:targetY
       };
+
+      enemyMap.set(
+        data.id,
+        enemy
+      );
     }
 
     for(
       const [
         key,
         value
-      ] of
-      Object.entries(
+      ]
+      of Object.entries(
         data
       )
     ){
@@ -23961,9 +24178,7 @@ function applyWorldFrame(
         key!=="x" &&
         key!=="y"
       ){
-        enemy[
-          key
-        ]=
+        enemy[key]=
           value;
       }
     }
@@ -23998,17 +24213,43 @@ function applyWorldFrame(
       }
     }
 
-    nextEnemies.push(
-      enemy
-    );
+    enemy._netLastSeenAt=
+      now;
   }
 
   enemies.length=
     0;
 
-  enemies.push(
-    ...nextEnemies
-  );
+  for(
+    const enemy
+    of enemyMap.values()
+  ){
+    if(
+      enemy.dead
+    ){
+      continue;
+    }
+
+    /*
+      삭제 패킷이 일시적으로 유실되어도 오래된 유령 적이 남지 않게 한다.
+      전체 snapshot이 더 정확한 상태를 주기적으로 복구한다.
+    */
+    if(
+      Number.isFinite(
+        enemy._netLastSeenAt
+      ) &&
+      now-
+      enemy._netLastSeenAt>
+        9000 &&
+      !enemy.boss
+    ){
+      continue;
+    }
+
+    enemies.push(
+      enemy
+    );
+  }
 
 }
 
@@ -24146,7 +24387,7 @@ function makeSnapshot(){
     // 적은 호스트 승계 시 AI를 계속 돌릴 수 있도록 상세 상태를 저주기로 보존한다.
     enemies:enemies
       .filter(enemy=>!enemy.dead)
-      .slice(0,MAX_ENEMIES)
+      .slice(0,getActiveEnemyCap())
       .map(networkEnemySnapshot)
   };
 }
@@ -24398,6 +24639,18 @@ function updateClientNetworkVisuals(dt){
     if(Number.isFinite(bullet.vx)) bullet.x+=bullet.vx*dt;
     if(Number.isFinite(bullet.vy)) bullet.y+=bullet.vy*dt;
     if(Number.isFinite(bullet.life)) bullet.life-=dt;
+  }
+
+  for(let i=bullets.length-1;i>=0;i--){
+    if(Number.isFinite(bullets[i].life)&&bullets[i].life<=0){
+      bullets.splice(i,1);
+    }
+  }
+
+  for(let i=enemyBullets.length-1;i>=0;i--){
+    if(Number.isFinite(enemyBullets[i].life)&&enemyBullets[i].life<=0){
+      enemyBullets.splice(i,1);
+    }
   }
 }
 
@@ -26786,7 +27039,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FIELD ARCHIVE · v85</div>
+        <div class="eyebrow">FIELD ARCHIVE · v86</div>
         <h2>적 도감</h2>
         <p>처치한 적과 발견한 엘리트 변이가 영구 기록됩니다.</p>
         <div id="v56CodexGrid" class="v56-codex-grid"></div>
@@ -26801,7 +27054,7 @@ function v56EnsureUi(){
     overlay.className="overlay";
     overlay.innerHTML=`
       <div class="panel">
-        <div class="eyebrow">FORBIDDEN OFFER · v85</div>
+        <div class="eyebrow">FORBIDDEN OFFER · v86</div>
         <h2>저주받은 거래</h2>
         <p>강력한 힘에는 반드시 대가가 따릅니다. 하나를 선택하거나 거절할 수 있습니다.</p>
         <div id="v56CurseGrid" class="v56-curse-grid"></div>
@@ -27092,7 +27345,7 @@ function v56VariantDeath(enemy){
   }
 
   if(enemy.v56Variant==="splitter" && !enemy.v56SplitChild){
-    for(let i=0;i<2 && enemies.length<MAX_ENEMIES;i++){
+    for(let i=0;i<2 && enemies.length<getActiveEnemyCap();i++){
       const child={
         ...enemy,
         id:createId(),
@@ -27476,7 +27729,7 @@ startWave=function(){
   if(v56SystemsEnabled()){
     const modifiers=v56CurrentModifiers();
     spawnRemaining=Math.min(
-      Math.max(0,MAX_ENEMIES-5),
+      Math.max(0,getActiveEnemyCap()-5),
       Math.max(0,Math.round(spawnRemaining*modifiers.enemyCount))
     );
 
@@ -29152,13 +29405,13 @@ function getV79LateWaveRamp(){
 
   return 1+
     Math.min(
-      1.02,
+      .78,
       Math.max(
         0,
         wave-
-        6
+        8
       )*
-      .020
+      .015
     );
 
 }
@@ -29180,11 +29433,11 @@ startWave=function(){
     */
     const countMultiplier=
       (
-        1.36+
+        1.18+
         Math.min(
-          .26,
+          .20,
           wave*
-          .0055
+          .0042
         )
       )*
       getTimeEnemyCountMultiplier();
@@ -29193,7 +29446,7 @@ startWave=function(){
       Math.min(
         Math.max(
           0,
-          MAX_ENEMIES-
+          getActiveEnemyCap()-
           5
         ),
         Math.max(
@@ -29245,23 +29498,23 @@ spawnEnemy=function(){
       true;
 
     enemy.maxHp *=
-      1.42*
+      1.22*
       lateWaveRamp;
 
     enemy.hp *=
-      1.42*
+      1.22*
       lateWaveRamp;
 
     enemy.speed *=
-      1.15+
+      1.08+
       Math.min(
-        .16,
+        .12,
         wave*
-        .0028
+        .0022
       );
 
     enemy.damage *=
-      1.32*
+      1.18*
       (
         1+
         Math.min(
@@ -29310,23 +29563,23 @@ spawnBoss=function(){
       true;
 
     enemy.maxHp *=
-      1.62*
+      1.38*
       lateWaveRamp;
 
     enemy.hp *=
-      1.62*
+      1.38*
       lateWaveRamp;
 
     enemy.speed *=
-      1.15+
+      1.09+
       Math.min(
-        .14,
+        .10,
         wave*
-        .0023
+        .0019
       );
 
     enemy.damage *=
-      1.42*
+      1.25*
       (
         1+
         Math.min(
@@ -32271,7 +32524,7 @@ addEventListener(
 </script>
 
 <script>
-const V82_DIFFICULTIES={survivor:{name:"생존자",desc:"적 능력과 수량 감소",hp:.76,damage:.76,speed:.93,count:.82,reward:.78},nightmare:{name:"악몽",desc:"v85 기본 고난도",hp:.97,damage:.97,speed:.99,count:.97,reward:1},apocalypse:{name:"종말",desc:"적 체력 +30% · 공격력 +26% · 수량 +17%",hp:1.30,damage:1.26,speed:1.06,count:1.17,reward:1.35},extinction:{name:"멸종",desc:"극한 난이도 · 체력 +78% · 공격력 +62%",hp:1.78,damage:1.62,speed:1.13,count:1.30,reward:1.8}};
+const V82_DIFFICULTIES={survivor:{name:"생존자",desc:"적 능력과 수량 크게 감소",hp:.66,damage:.68,speed:.90,count:.72,reward:.78},nightmare:{name:"악몽",desc:"v86 기본 난이도",hp:.88,damage:.88,speed:.96,count:.86,reward:1},apocalypse:{name:"종말",desc:"적 체력 +12% · 공격력 +10% · 수량 +8%",hp:1.12,damage:1.10,speed:1.02,count:1.08,reward:1.35},extinction:{name:"멸종",desc:"고난도 · 체력 +48% · 공격력 +40%",hp:1.48,damage:1.40,speed:1.08,count:1.18,reward:1.8}};
 const V82_SKINS={default:{name:"기본 생존자",desc:"직업별 기본 복장",currency:"credits",cost:0,colors:["#4b6254","#79d8ff"]},ember:{name:"잿불 구조대",desc:"붉은 잔광 스킨",currency:"credits",cost:2800,colors:["#ff6d52","#ffca63"]},toxic:{name:"독성 연구원",desc:"녹색 생체 오라",currency:"credits",cost:4200,colors:["#55ef83","#baff63"]},frost:{name:"빙결 정찰대",desc:"청백색 파동",currency:"prism",cost:4,colors:["#63dfff","#d5f7ff"]},void:{name:"보이드 워커",desc:"보랏빛 공간 잔상",currency:"prism",cost:8,colors:["#a979ff","#ff81db"]},royal:{name:"왕실 근위대",desc:"금빛 방어 링",currency:"relics",cost:3,colors:["#ffd76b","#ff5d72"]},neon:{name:"네온 러너",desc:"청록·분홍 네온",currency:"relics",cost:5,colors:["#4ff8ff","#ff5bd2"]},bloodmoon:{name:"블러드문 생존자",desc:"적색 월식 오라",currency:"relics",cost:8,colors:["#ff3d55","#5d1025"]}};
 const V82_PERMANENT_UPGRADES={vitality:{name:"생존 본능",desc:"최대 체력 +3% / 랭크",max:8,currency:"credits",baseCost:1500},arsenal:{name:"전투 교범",desc:"공격력 +1.5% / 랭크",max:8,currency:"credits",baseCost:2000},mobility:{name:"기동 훈련",desc:"이동속도 +1.5% / 랭크",max:8,currency:"credits",baseCost:1800},guardian:{name:"응급 보호막",desc:"시작 보호막 +5 / 랭크",max:8,currency:"prism",baseCost:2},fortune:{name:"보급 감각",desc:"시작 공용 돈 +100 / 랭크",max:8,currency:"relics",baseCost:1}};
 const V82_JOB_TALENT_NAMES={soldier:[["화력 집중","공격력 +4%","damageMult",.04],["전투 방탄","최대 체력 +6%","hpMult",.06],["정밀 사격","치명타 +2%","critBonus",.02]],student:[["빠른 학습","공격력 +3%","damageMult",.03],["전력 질주","이동속도 +5%","speedMult",.05],["아드레날린","연사 +4%","rateBonus",.04]],scientist:[["촉매 증폭","공격력 +4%","damageMult",.04],["생체 보호막","보호막 +10","shieldBonus",10],["고속 분석","연사 +5%","rateBonus",.05]],courier:[["극한 속도","이동속도 +6%","speedMult",.06],["경량 장비","연사 +4%","rateBonus",.04],["전투 집중","공격력 +3%","damageMult",.03]],guard:[["이동 요새","최대 체력 +8%","hpMult",.08],["중장갑","방어율 +2%","armorBonus",.02],["보호막 전개","보호막 +15","shieldBonus",15]],medic:[["전장 응급처치","재생 +0.45","regenBonus",.45],["회복 체질","최대 체력 +7%","hpMult",.07],["안정된 손","공격력 +3%","damageMult",.03]],engineer:[["오버클럭","연사 +6%","rateBonus",.06],["강화 외골격","최대 체력 +5%","hpMult",.05],["정밀 교정","치명타 +2%","critBonus",.02]],firefighter:[["내열 장비","최대 체력 +8%","hpMult",.08],["강제 돌파","공격력 +4%","damageMult",.04],["구조 돌진","이동속도 +4%","speedMult",.04]]};
@@ -32294,10 +32547,10 @@ function v82ApplyCombatSnapshot(o,s){if(!o||!s||o._v82CombatStatsApplied)return;
 function v82GetDifficulty(){return V82_DIFFICULTIES[save.selectedDifficultyV82]||V82_DIFFICULTIES.nightmare}function v82CurrentRewardMultiplier(){return(v82GetDifficulty().reward||1)*(v82CurrentEvent?.credit||1)}
 function v82ShowEvent(e){const h=document.getElementById("v82EventHud");if(!h||!e)return;document.getElementById("v82EventIcon").style.backgroundImage='url("'+v82IconSvg(e.icon||"target",e.name)+'")';document.getElementById("v82EventTitle").textContent=e.name;document.getElementById("v82EventText").textContent=e.desc;h.classList.add("show");v82EventHudTimer=7}
 function v82CompletePreviousEvent(){if(!v82PreviousEvent)return;save.eventsCompletedV82++;if(v82PreviousEvent.clearCredits)save.credits+=Math.round(v82PreviousEvent.clearCredits*v82GetDifficulty().reward);v82PreviousEvent=null}
-function v82ChooseWaveEvent(){v82CurrentEvent=null;if(wave<3||wave%3!==0)return;const e=V82_EVENTS[Math.floor(runRandom()*V82_EVENTS.length)];v82CurrentEvent={...e,wave};v82PreviousEvent=v82CurrentEvent;if(e.money){money+=Math.round(e.money+wave*30);if(multiplayer.active&&multiplayer.isHost&&typeof broadcastSharedMoney==="function")broadcastSharedMoney("v82_event")};if(e.heal||e.shield)for(const m of players.values()){if(!m||m.dead)continue;if(e.heal)m.hp=Math.min(m.maxHp,m.hp+m.maxHp*e.heal);if(e.shield){m.shield=(m.shield||0)+e.shield;m.maxShield=Math.max(m.maxShield||0,m.shield)}}if(e.count)spawnRemaining=Math.min(MAX_ENEMIES-5,Math.round(spawnRemaining*e.count));v82ShowEvent(e);showMessage(e.name,e.desc)}
+function v82ChooseWaveEvent(){v82CurrentEvent=null;if(wave<3||wave%3!==0)return;const e=V82_EVENTS[Math.floor(runRandom()*V82_EVENTS.length)];v82CurrentEvent={...e,wave};v82PreviousEvent=v82CurrentEvent;if(e.money){money+=Math.round(e.money+wave*30);if(multiplayer.active&&multiplayer.isHost&&typeof broadcastSharedMoney==="function")broadcastSharedMoney("v82_event")};if(e.heal||e.shield)for(const m of players.values()){if(!m||m.dead)continue;if(e.heal)m.hp=Math.min(m.maxHp,m.hp+m.maxHp*e.heal);if(e.shield){m.shield=(m.shield||0)+e.shield;m.maxShield=Math.max(m.maxShield||0,m.shield)}}if(e.count)spawnRemaining=Math.min(getActiveEnemyCap()-5,Math.round(spawnRemaining*e.count));v82ShowEvent(e);showMessage(e.name,e.desc)}
 function v82ApplyEventEnemy(e){if(!e||!v82CurrentEvent)return;const x=v82CurrentEvent;if(x.hp){e.maxHp*=x.hp;e.hp*=x.hp}if(x.speed)e.speed*=x.speed;if(x.damage)e.damage*=x.damage;if(x.eliteChance&&!e.boss&&runRandom()<x.eliteChance&&!e.elite){e.elite=true;e.maxHp*=1.5;e.hp*=1.5;e.damage*=1.18;e.speed*=1.06}}
 function v82ApplyDifficultyEnemy(e){if(!e||e.v82DifficultyApplied)return;e.v82DifficultyApplied=true;const d=v82GetDifficulty();e.maxHp*=d.hp;e.hp*=d.hp;e.damage*=d.damage;e.speed*=d.speed;if(e.boss&&Number.isFinite(e.weakHp))e.weakHp*=d.hp}
-function v82BossPhaseUpdate(b,t,dt){if(!b||b.dead)return;const r=b.hp/Math.max(1,b.maxHp),p=r<=.3?3:r<=.65?2:1;if(b.v82Phase!==p){b.v82Phase=p;b.v82PatternTimer=.4;if(p>1){showMessage(b.name+" · PHASE "+p,p===3?"최종 광폭화 단계":"새로운 공격 패턴");camera.shake=Math.max(camera.shake,13);addParticle({type:"shockwave",x:b.x,y:b.y,radius:p===3?260:210,color:p===3?"#ff3f61":"#d069ff",width:14,life:.8,maxLife:.8});if(p===3&&(!multiplayer.active||multiplayer.isHost))for(let i=0;i<2&&enemies.length<MAX_ENEMIES;i++)spawnEnemy()}}b.v82PatternTimer=(Number(b.v82PatternTimer)||0)-dt;if(p<2||b.v82PatternTimer>0||!t)return;const cap=typeof getActiveEnemyBulletCap==="function"?getActiveEnemyBulletCap():MAX_ENEMY_BULLETS,count=Math.min(p===3?10:6,Math.max(0,cap-enemyBullets.length)),off=performance.now()*.0007;for(let i=0;i<count;i++){const a=off+i/Math.max(1,count)*Math.PI*2;enemyBullets.push({x:b.x,y:b.y,vx:Math.cos(a)*(p===3?310:250),vy:Math.sin(a)*(p===3?310:250),damage:b.damage*(p===3?.52:.42),radius:p===3?7:6,life:4})}b.v82PatternTimer=p===3?2:3}
+function v82BossPhaseUpdate(b,t,dt){if(!b||b.dead)return;const r=b.hp/Math.max(1,b.maxHp),p=r<=.3?3:r<=.65?2:1;if(b.v82Phase!==p){b.v82Phase=p;b.v82PatternTimer=.4;if(p>1){showMessage(b.name+" · PHASE "+p,p===3?"최종 광폭화 단계":"새로운 공격 패턴");camera.shake=Math.max(camera.shake,13);addParticle({type:"shockwave",x:b.x,y:b.y,radius:p===3?260:210,color:p===3?"#ff3f61":"#d069ff",width:14,life:.8,maxLife:.8});if(p===3&&(!multiplayer.active||multiplayer.isHost))for(let i=0;i<2&&enemies.length<getActiveEnemyCap();i++)spawnEnemy()}}b.v82PatternTimer=(Number(b.v82PatternTimer)||0)-dt;if(p<2||b.v82PatternTimer>0||!t)return;const cap=typeof getActiveEnemyBulletCap==="function"?getActiveEnemyBulletCap():MAX_ENEMY_BULLETS,count=Math.min(p===3?8:5,Math.max(0,cap-enemyBullets.length)),off=performance.now()*.0007;for(let i=0;i<count;i++){const a=off+i/Math.max(1,count)*Math.PI*2;enemyBullets.push({x:b.x,y:b.y,vx:Math.cos(a)*(p===3?310:250),vy:Math.sin(a)*(p===3?310:250),damage:b.damage*(p===3?.52:.42),radius:p===3?7:6,life:4})}b.v82PatternTimer=p===3?2.4:3.4}
 function v82Skin(o){return V82_SKINS[o?.v82Skin||((o?.local)?save.selectedSkinV82:"default")]||V82_SKINS.default}function v82DrawSkinAura(o){if(!o||o.dead)return;const s=v82Skin(o);if(s===V82_SKINS.default)return;const p=project(o.x,o.y),t=performance.now()*.002;ctx.save();ctx.globalAlpha=.5;ctx.strokeStyle=s.colors[0];ctx.lineWidth=3;ctx.shadowBlur=15;ctx.shadowColor=s.colors[1];ctx.beginPath();ctx.arc(p.x,p.y,24+Math.sin(t+o.id.length)*3,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=.18;ctx.fillStyle=s.colors[1];ctx.beginPath();ctx.arc(p.x,p.y,20,0,Math.PI*2);ctx.fill();ctx.restore()}
 function v82Living(){return[...players.values()].filter(m=>m&&!m.dead&&!m.downed)}function v82CycleSpectator(dir=1){const a=v82Living();if(!a.length){v82SpectateTargetId="";return}let i=a.findIndex(m=>m.id===v82SpectateTargetId);i=i<0?0:(i+dir+a.length)%a.length;v82SpectateTargetId=a[i].id}function v82GetCameraTarget(){if(!player)return null;if(!multiplayer.active||(!player.dead&&!player.downed)){v82SpectateTargetId="";return player}const a=v82Living();if(!a.length)return player;let t=a.find(m=>m.id===v82SpectateTargetId);if(!t){t=a[0];v82SpectateTargetId=t.id}return t}function v82UpdateSpectatorHud(){const h=document.getElementById("v82SpectatorHud");if(!h)return;const active=!!(multiplayer.active&&player&&(player.dead||player.downed)&&v82Living().length);h.classList.toggle("show",active);if(active)document.getElementById("v82SpectatorName").textContent=v82GetCameraTarget()?.nickname||"생존자"}
 function v82CommitRunRewards(){if(!v82RunStats||v82RunStats.committed)return;v82RunStats.committed=true;v82CompletePreviousEvent();save.credits+=Math.round(v82RunStats.credits*v82GetDifficulty().reward);save.relics+=v82RunStats.relics;save.talentTokens+=v82RunStats.talentTokens;save.difficultyBestV82[save.selectedDifficultyV82]=Math.max(Number(save.difficultyBestV82[save.selectedDifficultyV82]||0),wave);persist({cloudDelay:1200});v82RefreshCurrencyUi();v82CheckAchievements()}
@@ -32313,7 +32566,7 @@ function v82Open(id,render){render?.();const o=document.getElementById(id);showO
 function v82CommitRunRewards(){if(!v82RunStats||v82RunStats.committed)return;v82RunStats.committed=true;v82CompletePreviousEvent();save.credits+=Math.round(v82RunStats.credits*v82GetDifficulty().reward);save.relics+=v82RunStats.relics;save.talentTokens+=v82RunStats.talentTokens;save.difficultyBestV82[save.selectedDifficultyV82]=Math.max(Number(save.difficultyBestV82[save.selectedDifficultyV82]||0),wave);persist({cloudDelay:1200});v82RefreshCurrencyUi();v82CheckAchievements()}
 v82EnsureSave();
 const v82BaseStartRun=startRun;startRun=function(mode){v82CurrentEvent=null;v82PreviousEvent=null;v82RunStats={credits:0,relics:0,talentTokens:0,committed:false};const r=v82BaseStartRun(mode);setTimeout(()=>{if(!player)return;player.v82Skin=save.selectedSkinV82;player.v82CombatSnapshot=v82BuildCombatSnapshot(player.job);v82ApplyCombatSnapshot(player,player.v82CombatSnapshot);const f=Number(save.permanentUpgradesV82.fortune)||0;if(f){money+=f*100;if(multiplayer.active&&multiplayer.isHost&&typeof broadcastSharedMoney==="function")broadcastSharedMoney("v82_start")};if(multiplayer.active)notifyMultiplayerLoadoutChanged()},0);return r};
-const v82BaseStartWave=startWave;startWave=function(){v82CompletePreviousEvent();const r=v82BaseStartWave();if(state==="playing"){spawnRemaining=Math.min(MAX_ENEMIES-5,Math.round(spawnRemaining*v82GetDifficulty().count));v82ChooseWaveEvent();save.difficultyBestV82[save.selectedDifficultyV82]=Math.max(Number(save.difficultyBestV82[save.selectedDifficultyV82]||0),wave);v82CheckAchievements()}return r};
+const v82BaseStartWave=startWave;startWave=function(){v82CompletePreviousEvent();const r=v82BaseStartWave();if(state==="playing"){spawnRemaining=Math.min(getActiveEnemyCap()-5,Math.round(spawnRemaining*v82GetDifficulty().count));v82ChooseWaveEvent();save.difficultyBestV82[save.selectedDifficultyV82]=Math.max(Number(save.difficultyBestV82[save.selectedDifficultyV82]||0),wave);v82CheckAchievements()}return r};
 const v82BaseSpawnEnemy=spawnEnemy;spawnEnemy=function(){const n=enemies.length,r=v82BaseSpawnEnemy();for(let i=n;i<enemies.length;i++){v82ApplyDifficultyEnemy(enemies[i]);v82ApplyEventEnemy(enemies[i])}return r};const v82BaseSpawnBoss=spawnBoss;spawnBoss=function(){const n=enemies.length,r=v82BaseSpawnBoss();for(let i=n;i<enemies.length;i++){v82ApplyDifficultyEnemy(enemies[i]);v82ApplyEventEnemy(enemies[i]);if(enemies[i]?.boss){enemies[i].v82Phase=1;enemies[i].v82PatternTimer=2.5}}return r};const v82BaseUpdateBoss=updateBoss;updateBoss=function(b,t,dt,nx,ny,range){const r=v82BaseUpdateBoss(b,t,dt,nx,ny,range);v82BossPhaseUpdate(b,t,dt);return r};
 const v82BaseKillEnemy=killEnemy;killEnemy=function(e,o){const valid=e&&!e.dead,boss=!!(valid&&e.boss),elite=!!(valid&&e.elite),wid=o?getWeaponId(o):"",r=v82BaseKillEnemy(e,o);if(valid&&o?.local){v82AddMastery(wid,boss?18:elite?5:1);if(v82RunStats){v82RunStats.credits+=Math.round((boss?60:elite?10:2)*((v82CurrentEvent?.credit)||1));if(boss){v82RunStats.relics++;v82RunStats.talentTokens++;save.bossKillsV82++}if(v82CurrentEvent?.relicChance&&runRandom()<v82CurrentEvent.relicChance)v82RunStats.relics++}if((o.kills||0)%30===0)persist({cloudDelay:5000});v82CheckAchievements()}return r};
 const v82BaseFinishRun=finishRun;finishRun=function(){v82CommitRunRewards();return v82BaseFinishRun()};const v82BaseReturnToMenu=returnToMenu;returnToMenu=function(){v82CommitRunRewards();const r=v82BaseReturnToMenu();v82RefreshCurrencyUi();v82CheckAchievements();return r};const v82BaseDrawPlayer=drawPlayer;drawPlayer=function(o){v82DrawSkinAura(o);return v82BaseDrawPlayer(o)};const v82BaseDraw=draw;draw=function(){const r=v82BaseDraw();v82UpdateSpectatorHud();return r};const v82BaseUpdate=update;update=function(dt){const r=v82BaseUpdate(dt);if(v82EventHudTimer>0&&(v82EventHudTimer-=dt)<=0)document.getElementById("v82EventHud")?.classList.remove("show");return r};
@@ -33091,7 +33344,7 @@ function v84ForceEvent(
   if(event.count){
     spawnRemaining=
       Math.min(
-        MAX_ENEMIES-
+        getActiveEnemyCap()-
         5,
         Math.round(
           spawnRemaining*
@@ -33322,5 +33575,48 @@ if(
 }
 </script>
 
+
+<script>
+
+const v86BaseKillEnemy=
+  killEnemy;
+
+killEnemy=function(
+  enemy,
+  owner
+){
+
+  const enemyId=
+    enemy?.id;
+
+  const wasAlive=
+    Boolean(
+      enemy &&
+      !enemy.dead
+    );
+
+  const result=
+    v86BaseKillEnemy(
+      enemy,
+      owner
+    );
+
+  if(
+    wasAlive &&
+    enemy?.dead &&
+    enemyId &&
+    multiplayer.active &&
+    multiplayer.isHost
+  ){
+    multiplayer.pendingRemovedEnemyIds.add(
+      enemyId
+    );
+  }
+
+  return result;
+
+};
+
+</script>
 </body>
 </html>
