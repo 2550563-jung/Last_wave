@@ -1,5 +1,5 @@
 /* =========================================================
-   LAST WAVE v89
+   LAST WAVE v90
    navigation · ready check · network telemetry · secure room RPC v2
    quick pings · reconnect resume · team results · adaptive quality
 ========================================================= */
@@ -108,36 +108,33 @@
     v88.historyArmed=true;
   }
 
-  function nudgeRequiredOverlay(element,message){
-    const panel=element?.querySelector(".panel");
-    if(panel?.animate){
-      panel.animate(
-        [
-          {transform:"translateX(0)"},
-          {transform:"translateX(-7px)"},
-          {transform:"translateX(7px)"},
-          {transform:"translateX(0)"}
-        ],
-        {duration:220,easing:"ease-out"}
-      );
-    }
-    showMessage("선택을 완료해야 합니다",message);
+  function goToMainScreen(){
+    /*
+      returnToMenu is the game's authoritative cleanup path: it releases
+      multiplayer locks, clears paused/input state and hides phase overlays.
+      Using it avoids the frozen, empty battlefield caused by DOM-only hiding.
+    */
+    hideOverlay(ui.levelUp);
+    hideOverlay(ui.shop);
+    hideOverlay(ui.pauseMenu);
+    hideOverlay(ui.gameOver);
+    if(typeof pendingLevelUps!=="undefined") pendingLevelUps=0;
+    if(multiplayer?.levelUpPauseOwners) multiplayer.levelUpPauseOwners.clear();
+    if(multiplayer) multiplayer.levelUpPaused=false;
+    returnToMenu();
+    hideOverlay(byId("lw88ExitDialog"));
+    showOverlay(ui.menu);
   }
 
   function closeOverlaySemantically(element){
     if(!element) return false;
 
     /*
-      These two screens own mandatory game-state locks. Hiding their DOM node
-      would leave paused=true (and, in multiplayer, a level-up pause owner)
-      while exposing an empty battlefield.
+      Combat-phase screens own mandatory pause/state locks. Back now uses the
+      full menu cleanup path instead of merely hiding the visible element.
     */
-    if(element.id==="levelUp"){
-      nudgeRequiredOverlay(element,"능력 하나를 선택하면 전투가 계속됩니다.");
-      return true;
-    }
-    if(element.id==="shop"){
-      nudgeRequiredOverlay(element,"정비를 마친 뒤 ‘다음 웨이브’를 눌러주세요.");
+    if(["levelUp","shop","pauseMenu","gameOver"].includes(element.id)){
+      goToMainScreen();
       return true;
     }
 
@@ -153,24 +150,12 @@
       v82MasteryOverlay:"v82MasteryClose"
     };
 
-    if(element.id==="pauseMenu"){
-      if(state==="playing"&&visible(element)){
-        togglePause();
-      }else{
-        hideOverlay(element);
-      }
-      return true;
-    }
     if(element.id==="multiMenu"){
       byId("multiBackButton")?.click();
       return true;
     }
     if(element.id==="lobby"){
       byId("leaveRoomButton")?.click();
-      return true;
-    }
-    if(element.id==="gameOver"){
-      returnToMenu();
       return true;
     }
     if(element.id==="adminLogin"){
@@ -188,6 +173,23 @@
       return true;
     }
 
+    /*
+      Future overlays also get semantic close behavior automatically. Calling
+      click() preserves any save, validation, resume or cleanup handler wired
+      to the popup's own close/cancel button.
+    */
+    const semanticCloseButton=element.querySelector([
+      "button[data-close]",
+      "button[id$='CloseButton']",
+      "button[id$='Close']",
+      "button[id$='CancelButton']",
+      "button[id$='Cancel']"
+    ].join(","));
+    if(semanticCloseButton&&!semanticCloseButton.disabled){
+      semanticCloseButton.click();
+      return true;
+    }
+
     hideOverlay(element);
     return true;
   }
@@ -199,8 +201,7 @@
       return closeOverlaySemantically(top);
     }
     if(typeof state!=="undefined"&&(state==="playing"||state==="waveComplete")){
-      if(typeof paused!=="undefined") paused=true;
-      if(typeof ui!=="undefined"&&ui.pauseMenu) showOverlay(ui.pauseMenu);
+      goToMainScreen();
       return true;
     }
     if(typeof ui!=="undefined"&&ui.multiMenu&&visible(ui.multiMenu)){
