@@ -1,5 +1,5 @@
 /* =========================================================
-   LAST WAVE v90
+   LAST WAVE v91
    navigation · ready check · network telemetry · secure room RPC v2
    quick pings · reconnect resume · team results · adaptive quality
 ========================================================= */
@@ -19,7 +19,10 @@
     allowExit:false,
     historyArmed:false,
     roomToken:"",
-    pingCooldownUntil:0
+    pingCooldownUntil:0,
+    rankingRunId:"",
+    rankingSubmittedRunId:"",
+    rankingSubmission:null
   };
 
   const byId=id=>document.getElementById(id);
@@ -125,6 +128,76 @@
     hideOverlay(byId("lw88ExitDialog"));
     showOverlay(ui.menu);
   }
+
+  /* ---------- terminal-only ranking submission ---------- */
+  const baseSubmitRankingV91=submitRanking;
+  queueRankingSync=function(){
+    /* v91: rankings are intentionally not synchronized during a live run. */
+    return Promise.resolve({skipped:true,reason:"terminal_only"});
+  };
+  submitRanking=function(options={}){
+    const runId=v88.rankingRunId;
+    if(!runId){
+      return baseSubmitRankingV91(options);
+    }
+    if(v88.rankingSubmittedRunId===runId){
+      return Promise.resolve({
+        ok:true,
+        duplicatePrevented:true,
+        message:"현재 판의 랭킹은 이미 등록되었습니다."
+      });
+    }
+    if(v88.rankingSubmission?.runId===runId){
+      return v88.rankingSubmission.promise;
+    }
+
+    /* Reserve the run before starting fetch so pagehide/back/death cannot race. */
+    v88.rankingSubmittedRunId=runId;
+    const promise=Promise.resolve(baseSubmitRankingV91(options))
+      .catch(error=>{
+        if(v88.rankingSubmittedRunId===runId) v88.rankingSubmittedRunId="";
+        throw error;
+      })
+      .finally(()=>{
+        if(v88.rankingSubmission?.runId===runId) v88.rankingSubmission=null;
+      });
+    v88.rankingSubmission={runId,promise};
+    return promise;
+  };
+
+  function submitCurrentRunAtExit(reason="menu"){
+    if(
+      !v88.rankingRunId||
+      !["playing","waveComplete","gameOver"].includes(state)
+    ){
+      return Promise.resolve({skipped:true});
+    }
+    try{syncPersistentRunKills({persistNow:true});}catch{}
+    return submitRanking({
+      silent:true,
+      keepalive:reason==="pagehide"||reason==="unload"
+    });
+  }
+
+  const baseStartRunV91=startRun;
+  startRun=function(...args){
+    v88.rankingRunId=`${save.playerId}:${Date.now()}:${Math.random().toString(36).slice(2,8)}`;
+    v88.rankingSubmittedRunId="";
+    v88.rankingSubmission=null;
+    return baseStartRunV91(...args);
+  };
+
+  const baseReturnToMenuV91=returnToMenu;
+  returnToMenu=function(...args){
+    const rankingPromise=submitCurrentRunAtExit("menu");
+    const result=baseReturnToMenuV91(...args);
+    rankingPromise.catch(error=>console.warn("메인 화면 이동 랭킹 등록 지연",error));
+    return result;
+  };
+
+  /* Existing onclick properties captured the old function value. */
+  if(byId("quitButton")) byId("quitButton").onclick=()=>returnToMenu();
+  if(byId("restartButton")) byId("restartButton").onclick=()=>returnToMenu();
 
   function closeOverlaySemantically(element){
     if(!element) return false;
