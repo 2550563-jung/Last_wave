@@ -1,5 +1,5 @@
 /* =========================================================
-   LAST WAVE v88
+   LAST WAVE v89
    navigation · ready check · network telemetry · secure room RPC v2
    quick pings · reconnect resume · team results · adaptive quality
 ========================================================= */
@@ -28,7 +28,13 @@
   })[char]);
   const visible=el=>Boolean(el&&getComputedStyle(el).display!=="none");
   const activeOverlays=()=>[...document.querySelectorAll(".overlay")]
-    .filter(el=>visible(el)&&el.id!=="menu"&&el.id!=="errorOverlay"&&el.id!=="lw88ExitDialog");
+    .filter(el=>visible(el)&&el.id!=="menu"&&el.id!=="errorOverlay"&&el.id!=="lw88ExitDialog")
+    .map((element,index)=>({
+      element,index,
+      zIndex:Number.parseInt(getComputedStyle(element).zIndex,10)||0
+    }))
+    .sort((a,b)=>a.zIndex-b.zIndex||a.index-b.index)
+    .map(entry=>entry.element);
 
   function ensureV88Ui(){
     if(!byId("lw88NetworkHud")){
@@ -102,12 +108,95 @@
     v88.historyArmed=true;
   }
 
+  function nudgeRequiredOverlay(element,message){
+    const panel=element?.querySelector(".panel");
+    if(panel?.animate){
+      panel.animate(
+        [
+          {transform:"translateX(0)"},
+          {transform:"translateX(-7px)"},
+          {transform:"translateX(7px)"},
+          {transform:"translateX(0)"}
+        ],
+        {duration:220,easing:"ease-out"}
+      );
+    }
+    showMessage("선택을 완료해야 합니다",message);
+  }
+
+  function closeOverlaySemantically(element){
+    if(!element) return false;
+
+    /*
+      These two screens own mandatory game-state locks. Hiding their DOM node
+      would leave paused=true (and, in multiplayer, a level-up pause owner)
+      while exposing an empty battlefield.
+    */
+    if(element.id==="levelUp"){
+      nudgeRequiredOverlay(element,"능력 하나를 선택하면 전투가 계속됩니다.");
+      return true;
+    }
+    if(element.id==="shop"){
+      nudgeRequiredOverlay(element,"정비를 마친 뒤 ‘다음 웨이브’를 눌러주세요.");
+      return true;
+    }
+
+    const closeButtonByOverlay={
+      help:"helpCloseButton",
+      rankings:"rankingCloseButton",
+      resetDataOverlay:"resetCancelButton",
+      accountDeleteOverlay:"accountDeleteCancelButton",
+      guestNicknameOverlay:"guestNicknameCancelButton",
+      v82AchievementsOverlay:"v82AchievementsClose",
+      v82MetaShopOverlay:"v82MetaShopClose",
+      v82TalentOverlay:"v82TalentClose",
+      v82MasteryOverlay:"v82MasteryClose"
+    };
+
+    if(element.id==="pauseMenu"){
+      if(state==="playing"&&visible(element)){
+        togglePause();
+      }else{
+        hideOverlay(element);
+      }
+      return true;
+    }
+    if(element.id==="multiMenu"){
+      byId("multiBackButton")?.click();
+      return true;
+    }
+    if(element.id==="lobby"){
+      byId("leaveRoomButton")?.click();
+      return true;
+    }
+    if(element.id==="gameOver"){
+      returnToMenu();
+      return true;
+    }
+    if(element.id==="adminLogin"){
+      closeAdminLogin();
+      return true;
+    }
+    if(element.id==="adminPanel"){
+      closeAdminPanel();
+      return true;
+    }
+
+    const buttonId=closeButtonByOverlay[element.id];
+    if(buttonId&&byId(buttonId)){
+      byId(buttonId).click();
+      return true;
+    }
+
+    hideOverlay(element);
+    return true;
+  }
+
   function closeTopUi(){
     const overlays=activeOverlays();
     const top=overlays.at(-1);
     if(top){
-      hideOverlay(top);
-      return true;
+      return closeOverlaySemantically(top);
     }
     if(typeof state!=="undefined"&&(state==="playing"||state==="waveComplete")){
       if(typeof paused!=="undefined") paused=true;
