@@ -1,5 +1,5 @@
 /* =========================================================
-   LAST WAVE v91
+   LAST WAVE v93
    navigation · ready check · network telemetry · secure room RPC v2
    quick pings · reconnect resume · team results · adaptive quality
 ========================================================= */
@@ -296,9 +296,27 @@
 
   addEventListener("keydown",event=>{
     if(event.key!=="Escape") return;
+
+    /*
+      Escape is a pause key during an active fight. Browser/mobile Back keeps
+      using closeTopUi(), so the existing "return to main screen" Back rule is
+      unchanged. When the pause menu is already open, Escape resumes instead
+      of treating that menu as a terminal combat overlay.
+    */
+    if(typeof state!=="undefined"&&state==="playing"){
+      const overlays=activeOverlays();
+      const top=overlays.at(-1);
+      if(!top||top.id==="pauseMenu"){
+        togglePause();
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+    }
+
     if(closeTopUi()){
       event.preventDefault();
-      event.stopPropagation();
+      event.stopImmediatePropagation();
     }
   },true);
 
