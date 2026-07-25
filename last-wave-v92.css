@@ -188,6 +188,48 @@ body.lw92-color-tritanopia{
   background:#66efb1;
 }
 
+.chest-menu-btn{
+  position:relative;
+  overflow:hidden;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border-color:rgba(255,190,73,.6);
+  background:linear-gradient(145deg,rgba(111,64,13,.95),rgba(39,23,8,.96));
+}
+
+.chest-menu-btn:not(:disabled){
+  box-shadow:0 0 0 1px rgba(255,197,92,.14) inset,0 0 22px rgba(255,156,45,.12);
+}
+
+.chest-menu-btn:not(:disabled)::after{
+  content:"";
+  position:absolute;
+  top:-60%;
+  left:-35%;
+  width:22%;
+  height:220%;
+  transform:rotate(22deg);
+  background:rgba(255,255,255,.16);
+  animation:lw94ChestShine 3.6s ease-in-out infinite;
+}
+
+.chest-menu-btn:disabled{
+  opacity:.58;
+  filter:saturate(.55);
+}
+
+.chest-menu-icon{
+  font-size:1.25em;
+  line-height:1;
+}
+
+@keyframes lw94ChestShine{
+  0%,68%{left:-35%}
+  88%,100%{left:125%}
+}
+
 body.lw92-reduced-effects canvas{
   filter:saturate(.92);
 }

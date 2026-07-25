@@ -1,5 +1,5 @@
 /* =========================================================
-   LAST WAVE v93
+   LAST WAVE v94
    navigation · ready check · network telemetry · secure room RPC v2
    quick pings · reconnect resume · team results · adaptive quality
 ========================================================= */
@@ -631,9 +631,31 @@
     const reconnecting=multiplayer.reconnecting||/재연결|끊김|오류|초과/.test(multiplayer.connectionState||"");
     const bad=reconnecting||latency>280||jitter>130||loss>12;
     const warn=!bad&&(latency>150||jitter>70||loss>5);
+    const frameKb=
+      (
+        Number(
+          multiplayer.lastWorldFrameBytes
+        )||
+        0
+      )/
+      1024;
+
+    const applyMs=
+      Number(
+        multiplayer.lastFrameApplyMs
+      )||
+      0;
+
     hud.dataset.quality=bad?"bad":warn?"warn":"good";
     byId("lw88NetworkText").textContent=
-      `${multiplayer.connectionState||"안정"} · ${latency}ms · 지터 ${jitter} · 손실 ${loss.toFixed(1)}%`;
+      `${multiplayer.connectionState||"안정"} · ${latency}ms · 지터 ${jitter} · 손실 ${loss.toFixed(1)}%`+
+      (
+        multiplayer.isHost
+          ?
+          ` · 프레임 ${frameKb.toFixed(1)}KB`
+          :
+          ` · 적용 ${applyMs.toFixed(1)}ms`
+      );
     banner?.classList.toggle("show",reconnecting);
     document.documentElement.classList.toggle("lw88-low-network",bad);
     if(typeof graphicsMode!=="undefined"&&bad&&graphicsMode==="ultra") graphicsMode="normal";
