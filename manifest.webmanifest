@@ -1,0 +1,32 @@
+{
+  "name": "Last Wave",
+  "short_name": "Last Wave",
+  "description": "파도를 버티며 성장하는 로그라이크 생존 게임",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080f15",
+  "theme_color": "#080f15",
+  "icons": [
+    {
+      "src": "./icons/last-wave-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/last-wave-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/last-wave-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
