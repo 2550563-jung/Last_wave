@@ -18,10 +18,7 @@
     rate:{name:"공격 속도",base:130,max:15,desc:"+5%"}
   };
   const enemyTypes={
-    walker:{name:"일반 좀비",hp:46,speed:40,damage:8,reward:5,r:15,color:"#71806d"},
-    runner:{name:"러너",hp:31,speed:82,damage:7,reward:8,r:12,color:"#a69b62"},
-    tank:{name:"탱커",hp:150,speed:25,damage:15,reward:15,r:22,color:"#566b62"},
-    spitter:{name:"스피터",hp:78,speed:31,damage:9,reward:22,r:17,color:"#4f9a70",ranged:true}
+    walker:{name:"좀비",hp:46,speed:40,damage:8,reward:5,r:15,color:"#71806d"}
   };
   let record;
   try{record=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");}catch{record={};}
@@ -90,11 +87,7 @@
     texts.push({x:W/2,y:90,text:wave===100?"FINAL WAVE":after100?`INFINITE ${wave}`:`WAVE ${wave}`,color:"#ffffff",life:2,size:27});
   }
   function chooseType(){
-    const pool=["walker"];
-    if(wave>=5)pool.push("runner","runner");
-    if(wave>=11)pool.push("tank");
-    if(wave>=20)pool.push("spitter");
-    return pool[Math.floor(Math.random()*pool.length)];
+    return "walker";
   }
   function edgePoint(){
     const side=Math.floor(Math.random()*4);
@@ -107,12 +100,22 @@
       damage:base.damage*(1+wave*.025),shoot:1+Math.random()*2,summon:4+Math.random()*3,dead:false,...override});
   }
   function spawnBoss(){
-    const number=Math.floor(wave/10),pos=edgePoint();
-    const names=["거대 좀비","강화 거대 좀비","단단한 거대 좀비"];
-    const final=wave===100;
-    const hp=(final?9000:900+wave*95)*(1+Math.max(0,wave-100)*.025);
-    enemies.push({type:"boss",name:final?"최종 변이체":names[(number-1)%names.length],...pos,r:final?44:35,hp,maxHp:hp,speed:final?37:30+Math.min(18,wave*.12),
-      damage:22+wave*.18,reward:300+wave*8,color:final?"#d94f68":"#8e4f59",boss:true,dead:false});
+    const pos=edgePoint();
+    const hp=(900+wave*95)*(1+Math.max(0,wave-100)*.025);
+    enemies.push({
+      type:"boss",
+      name:"보스 좀비",
+      ...pos,
+      r:35,
+      hp,
+      maxHp:hp,
+      speed:30,
+      damage:22+wave*.18,
+      reward:300,
+      color:"#8e4f59",
+      boss:true,
+      dead:false
+    });
   }
   function aimAngle(){
     if(matchMedia("(pointer:coarse)").matches&&enemies.length){
