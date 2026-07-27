@@ -6,10 +6,10 @@
   /* 메인 게임의 초성능 모드보다도 작은 고정 내부 해상도 */
   const W=640,H=360,TAU=Math.PI*2;
   const weapons={
-    pistol:{name:"권총",cost:0,damage:22,rate:4,speed:720,pellets:1,spread:.02,color:"#ffe2a1"},
-    smg:{name:"기관단총",cost:220,damage:10,rate:12,speed:760,pellets:1,spread:.12,color:"#d8f3ff"},
-    shotgun:{name:"산탄총",cost:380,damage:12,rate:1.6,speed:650,pellets:7,spread:.42,color:"#ffd48a"},
-    rifle:{name:"돌격소총",cost:620,damage:25,rate:7,speed:850,pellets:1,spread:.045,color:"#b7e8ff"}
+    pistol:{name:"권총",cost:0,damage:22,rate:4,speed:720,pellets:1,spread:.02},
+    smg:{name:"기관단총",cost:220,damage:10,rate:12,speed:760,pellets:1,spread:.12},
+    shotgun:{name:"산탄총",cost:380,damage:12,rate:1.6,speed:650,pellets:7,spread:.42},
+    rifle:{name:"돌격소총",cost:620,damage:25,rate:7,speed:850,pellets:1,spread:.045}
   };
   const upgrades={
     hp:{name:"최대 체력",base:120,max:20,desc:"+12"},
@@ -131,7 +131,7 @@
     for(let i=0;i<weapon.pellets;i++){
       const angle=base+(Math.random()-.5)*weapon.spread;
       bullets.push({x:player.x,y:player.y,vx:Math.cos(angle)*weapon.speed,vy:Math.sin(angle)*weapon.speed,r:player.weapon==="rocket"?6:3,
-        damage:weapon.damage*player.damageMult*(1+(player.weaponLevels[player.weapon]||0)*.18),life:weapon.life||1.4,pierce:weapon.pierce||0,blast:weapon.blast||0,color:weapon.color,hit:new Set()});
+        damage:weapon.damage*player.damageMult*(1+(player.weaponLevels[player.weapon]||0)*.18),life:1.4,color:"#ffe2a1",hit:new Set()});
     }
   }
   function hurt(amount){
