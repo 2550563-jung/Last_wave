@@ -1,0 +1,40 @@
+/* Last Wave v98 · 방어구 장비와 DPS 정렬 */
+.lw98-equipment-menu-btn{position:relative}
+.lw98-equipment-menu-btn::before{content:"◇";margin-right:6px;color:#77efff}
+.lw98-equipment-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0}
+.lw98-slot{
+  min-height:112px;
+  padding:12px;
+  border:1px solid rgba(105,225,255,.25);
+  border-radius:16px;
+  background:linear-gradient(160deg,rgba(26,55,90,.65),rgba(7,15,31,.9));
+}
+.lw98-slot small,.lw98-slot strong,.lw98-slot span{display:block}
+.lw98-slot small{color:#72eaff;font-weight:800}
+.lw98-slot strong{margin:8px 0 4px}
+.lw98-slot span{color:#9fb4c9;font-size:12px}
+.lw98-armor-catalog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lw98-armor-card{
+  padding:13px;
+  border:1px solid rgba(100,190,255,.2);
+  border-radius:15px;
+  background:rgba(4,13,29,.72);
+}
+.lw98-armor-card.equipped{border-color:#6effd4;box-shadow:inset 0 0 20px rgba(58,255,197,.08)}
+.lw98-armor-card h3{margin:0 0 4px;font-size:15px}
+.lw98-armor-card p{min-height:36px;margin:0 0 10px;color:#afc2d6;font-size:12px}
+.lw98-armor-card button{width:100%}
+.lw98-category-title{grid-column:1/-1;margin:10px 0 0;color:#79edff}
+.lw98-dps{
+  display:inline-flex;
+  margin-top:8px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(45,220,255,.1);
+  color:#80eeff;
+  font:800 11px/1 system-ui;
+}
+@media(max-width:680px){
+  .lw98-equipment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lw98-armor-catalog{grid-template-columns:1fr}
+}

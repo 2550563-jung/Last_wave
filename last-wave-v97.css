@@ -1,0 +1,149 @@
+/* Last Wave v97 · 보상 상자, 직업 스킬, 멀티플레이 상태 UI */
+#dailyChestCard{display:none!important}
+#dailyChestMenuButton{
+  position:relative;
+  min-width:54px!important;
+  width:54px;
+  padding:10px!important;
+}
+#dailyChestMenuButtonText{display:none!important}
+.lw97-ready-dot{
+  position:absolute;
+  right:5px;
+  top:5px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#78ffd6;
+  box-shadow:0 0 12px #38f0c1;
+}
+.lw97-ready-dot:not(.ready){background:#64748b;box-shadow:none}
+.lw97-overlay{
+  position:fixed;
+  inset:0;
+  z-index:1600;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(2,7,18,.82);
+  backdrop-filter:blur(12px);
+}
+.lw97-overlay.show{display:flex}
+.lw97-panel{
+  width:min(760px,100%);
+  max-height:min(760px,92vh);
+  overflow:auto;
+  border:1px solid rgba(80,232,255,.35);
+  border-radius:24px;
+  padding:22px;
+  background:
+    radial-gradient(circle at 78% 5%,rgba(92,58,255,.23),transparent 36%),
+    linear-gradient(145deg,#07182f,#081124 65%,#070b19);
+  box-shadow:0 24px 80px rgba(0,0,0,.55),inset 0 0 38px rgba(38,189,255,.06);
+}
+.lw97-panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.lw97-panel-head h2{margin:0;font-size:clamp(22px,4vw,34px)}
+.lw97-close{width:42px;height:42px;padding:0!important;border-radius:50%!important}
+.lw97-chest-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.lw97-chest-card{
+  position:relative;
+  overflow:hidden;
+  min-height:280px;
+  padding:20px;
+  border:1px solid rgba(120,240,255,.25);
+  border-radius:20px;
+  background:linear-gradient(155deg,rgba(25,57,105,.88),rgba(10,18,42,.95));
+}
+.lw97-chest-card::after{
+  content:"";
+  position:absolute;
+  inset:-60% 40% -60% -40%;
+  transform:rotate(18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+  animation:lw97Shine 4.2s linear infinite;
+}
+.lw97-chest-card.six{background:linear-gradient(155deg,rgba(17,91,92,.75),rgba(8,20,38,.96))}
+@keyframes lw97Shine{to{transform:translateX(230%) rotate(18deg)}}
+.lw97-chest-art{
+  width:112px;
+  height:84px;
+  margin:8px auto 18px;
+  position:relative;
+  border-radius:10px 10px 18px 18px;
+  border:4px solid #aeeeff;
+  background:linear-gradient(135deg,#4a75ff,#7139df);
+  box-shadow:0 0 28px rgba(75,190,255,.5),inset 0 -18px 28px rgba(0,0,0,.25);
+}
+.lw97-chest-card.six .lw97-chest-art{background:linear-gradient(135deg,#1db9b1,#257ae8)}
+.lw97-chest-art::before{
+  content:"";
+  position:absolute;
+  left:-4px;right:-4px;top:-22px;height:34px;
+  border:4px solid #aeeeff;border-radius:18px 18px 7px 7px;
+  background:inherit;
+}
+.lw97-chest-art::after{
+  content:"◆";
+  position:absolute;
+  left:50%;top:22px;transform:translateX(-50%);
+  color:#fff7a8;font-size:28px;text-shadow:0 0 12px #fff;
+}
+.lw97-chest-card h3{margin:0 0 6px;text-align:center}
+.lw97-chest-card p{min-height:42px;text-align:center;color:#b7c8dd}
+.lw97-countdown{display:block;margin:12px 0;text-align:center;font-weight:800;color:#72f4ff}
+.lw97-claim{position:relative;z-index:1;width:100%}
+.lw97-skill-dock{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  z-index:360;
+  display:flex;
+  gap:8px;
+  transform:translateX(-50%);
+  pointer-events:none;
+}
+.lw97-skill-button{
+  width:124px;
+  min-height:58px;
+  padding:7px 9px!important;
+  border:1px solid rgba(108,235,255,.38)!important;
+  border-radius:14px!important;
+  background:rgba(7,17,35,.82)!important;
+  color:#ecfbff!important;
+  backdrop-filter:blur(8px);
+  pointer-events:auto;
+}
+.lw97-skill-button strong,.lw97-skill-button small{display:block}
+.lw97-skill-button small{margin-top:3px;color:#7ce9ff}
+.lw97-skill-button.cooling{filter:saturate(.35);opacity:.7}
+.job-card .lw97-job-details{
+  display:block;
+  margin-top:9px;
+  padding-top:8px;
+  border-top:1px solid rgba(120,220,255,.16);
+  color:#9ce8ff;
+  font-size:12px;
+  line-height:1.45;
+}
+.lw97-network-pill{
+  position:fixed;
+  right:10px;
+  bottom:10px;
+  z-index:350;
+  display:none;
+  padding:6px 9px;
+  border:1px solid rgba(99,226,255,.25);
+  border-radius:999px;
+  background:rgba(4,13,28,.68);
+  color:#9deeff;
+  font:700 11px/1 system-ui;
+  pointer-events:none;
+}
+.lw97-network-pill.show{display:block}
+@media(max-width:620px){
+  .lw97-chest-grid{grid-template-columns:1fr}
+  .lw97-chest-card{min-height:250px}
+  .lw97-skill-dock{bottom:86px;gap:6px}
+  .lw97-skill-button{width:104px;min-height:52px;font-size:12px}
+}
