@@ -2260,9 +2260,9 @@ button.v82-iconized:not(.switch){
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v98</span>
+      <span id="gameVersion" class="game-version">v99</span>
     </div>
-    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=98" alt=""></span>Last Wave</h1>
+    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=99" alt=""></span>Last Wave</h1>
 
     <p>
       감염된 도시에서 살아남고 무기와 궁극기를 진화시키세요.
@@ -3721,7 +3721,8 @@ const GAME_VERSION="v91";
   여기에 네가 정한 관리자 비밀번호를 입력.
 */
 /* v88: 관리자 비밀번호를 공개 클라이언트에 보관하지 않는다. */
-const DEV_PASSWORD = jungwoo admin 1220;
+/* 관리자 비밀번호는 공개 클라이언트가 아닌 Supabase Edge Function에서 검증한다. */
+const DEV_PASSWORD = null;
 
 /* =========================================================
    유틸
@@ -34118,13 +34119,14 @@ killEnemy=function(
 };
 
 </script>
-<link rel="stylesheet" href="./last-wave-v88.css?v=98">
-<link rel="stylesheet" href="./last-wave-v92.css?v=98">
-<link rel="stylesheet" href="./last-wave-v97.css?v=98">
-<link rel="stylesheet" href="./last-wave-v98.css?v=98">
-<script src="./last-wave-v88.js?v=98"></script>
-<script src="./last-wave-v92.js?v=98"></script>
-<script src="./last-wave-v97.js?v=98"></script>
-<script src="./last-wave-v98.js?v=98"></script>
+<link rel="stylesheet" href="./last-wave-v88.css?v=99">
+<link rel="stylesheet" href="./last-wave-v92.css?v=99">
+<link rel="stylesheet" href="./last-wave-v97.css?v=99">
+<link rel="stylesheet" href="./last-wave-v98.css?v=99">
+<script src="./last-wave-v88.js?v=99"></script>
+<script src="./last-wave-v92.js?v=99"></script>
+<script src="./last-wave-v97.js?v=99"></script>
+<script src="./last-wave-v98.js?v=99"></script>
+<script src="./last-wave-v99.js?v=99"></script>
 </body>
 </html>
