@@ -28,13 +28,13 @@
   root.id="lw100Experience";
   root.innerHTML=`
     <div class="lw100-topbar">
-      <div class="lw100-title">LAST WAVE <small>ORIGINAL v1 EXPERIENCE · v100 ANNIVERSARY</small></div>
+      <div class="lw100-title">LAST WAVE <small>v100 기념 v1 체험</small></div>
       <div id="lw100Records" class="lw100-records"></div>
       <button id="lw100Close" class="btn lw100-close" aria-label="체험 닫기">×</button>
     </div>
     <div class="lw100-stage"><canvas id="lw100Canvas" width="${W}" height="${H}"></canvas></div>
     <section id="lw100Start" class="lw100-start-card">
-      <small>복원 체험판</small><h2>LAST WAVE</h2>
+      <small>v100 기념 v1 체험</small><h2>LAST WAVE</h2>
       <p>몰려오는 좀비를 처치하고 100웨이브를 돌파하세요. 100웨이브 이후에는 무한 모드가 이어집니다.</p>
       <p><b>WASD / 방향키</b> 이동 · <b>마우스</b> 조준 · <b>왼쪽 버튼</b> 계속 공격<br>재장전은 없습니다. 5웨이브마다 체력이 회복됩니다.</p>
       <button id="lw100StartButton" class="btn primary">v1 체험 시작</button>
@@ -254,7 +254,7 @@
   }
 
   const menu=document.querySelector("#menu .menu-buttons");
-  if(menu){const button=document.createElement("button");button.id="lw100ExperienceButton";button.className="btn lw100-menu-button";button.textContent="v1 체험";button.onclick=openExperience;
+  if(menu){const button=document.createElement("button");button.id="lw100ExperienceButton";button.className="btn lw100-menu-button";button.textContent="v100 기념 v1 체험";button.onclick=openExperience;
     const help=document.getElementById("helpButton");help?.insertAdjacentElement("beforebegin",button);}
   root.querySelector("#lw100Close").onclick=closeExperience;
   root.querySelector("#lw100StartButton").onclick=()=>{startCard.style.display="none";reset();};
