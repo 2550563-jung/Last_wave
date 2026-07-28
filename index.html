@@ -7,6 +7,7 @@
   content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
 >
 <meta name="theme-color" content="#080f15">
+<meta name="last-wave-game-server" content="">
 <title>Last Wave</title>
 
 <meta name="application-name" content="Last Wave">
@@ -21465,8 +21466,8 @@ async function leaveMultiplayer(){
     }
   }
 
-  if(sbClient && multiplayer.channel){
-    try{await sbClient.removeChannel(multiplayer.channel);}catch{}
+  if(multiplayer.channel){
+    try{await removeLastWaveRealtimeChannel(multiplayer.channel);}catch{}
   }
 
   clearRealtimeReconnect();
@@ -22184,7 +22185,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
 
   if(previousChannel){
     try{
-      await sbClient.removeChannel(previousChannel);
+      await removeLastWaveRealtimeChannel(previousChannel);
     }catch{}
   }
 
@@ -22289,7 +22290,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
 
   const presenceKey=`${save.playerId}-${multiplayer.sessionId.slice(0,8)}-${Math.random().toString(36).slice(2,7)}`;
 
-  const channel=sbClient.channel(`last-wave-room-${cleanCode}`,{
+  const channel=createLastWaveRealtimeChannel(`last-wave-room-${cleanCode}`,{
     config:{
       presence:{key:presenceKey},
       broadcast:{self:false,ack:false}
@@ -34124,6 +34125,7 @@ killEnemy=function(
 <link rel="stylesheet" href="./last-wave-v97.css?v=100">
 <link rel="stylesheet" href="./last-wave-v98.css?v=100.2">
 <link rel="stylesheet" href="./last-wave-v100.css?v=100">
+<script src="./last-wave-cloudflare.js?v=1"></script>
 <script src="./last-wave-v88.js?v=100"></script>
 <script src="./last-wave-v92.js?v=100"></script>
 <script src="./last-wave-v97.js?v=100"></script>

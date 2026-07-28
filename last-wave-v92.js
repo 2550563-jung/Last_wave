@@ -865,7 +865,7 @@
     multiplayer.roomCode=clean;
     multiplayer.isHost=false;
     multiplayer.publicRoom=true;
-    const channel=sbClient.channel(`last-wave-room-${clean}`,{
+    const channel=createLastWaveRealtimeChannel(`last-wave-room-${clean}`,{
       config:{presence:{key:`spectator-${createId()}`},broadcast:{self:false,ack:false}}
     });
     lw92.spectatorChannel=channel;

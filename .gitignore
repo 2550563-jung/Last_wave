@@ -1,0 +1,4 @@
+.pnpm-store/
+cloudflare-multiplayer/node_modules/
+cloudflare-multiplayer/.wrangler/
+cloudflare-multiplayer/*.log
