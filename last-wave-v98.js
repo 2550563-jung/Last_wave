@@ -94,7 +94,7 @@
     const first=entries.find(([id])=>id===defaultId);
     const rest=entries
       .filter(([id])=>id!==defaultId)
-      .sort((a,b)=>score(b[1])-score(a[1])||a[1].name.localeCompare(b[1].name,"ko"));
+      .sort((a,b)=>score(a[1])-score(b[1])||a[1].name.localeCompare(b[1].name,"ko"));
     for(const key of Object.keys(object))delete object[key];
     if(first)object[first[0]]=first[1];
     for(const [id,item] of rest)object[id]=item;
@@ -267,6 +267,7 @@
       }
       catalog.append(group);
     }
+    window.__lastWaveV102?.decorateArmor?.(catalog);
   }
 
   function installEquipmentUi(){

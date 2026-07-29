@@ -1,0 +1,73 @@
+/* Last Wave v102 unified catalog presentation */
+.catalog-card{
+  position:relative;
+  overflow:hidden;
+  border-color:color-mix(in srgb,var(--catalog-color,#72d8ff) 38%,transparent)!important;
+  background:
+    linear-gradient(145deg,color-mix(in srgb,var(--catalog-color,#72d8ff) 8%,#142631),#0c1822 72%)!important;
+}
+
+.catalog-card::after{
+  position:absolute;
+  inset:0 0 auto;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--catalog-color,#72d8ff),transparent);
+  content:"";
+  opacity:.8;
+  pointer-events:none;
+}
+
+.catalog-card.selected,
+.catalog-card.equipped{
+  border-color:var(--catalog-color,#72d8ff)!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--catalog-color,#72d8ff) 22%,transparent),inset 0 0 26px color-mix(in srgb,var(--catalog-color,#72d8ff) 8%,transparent);
+}
+
+.catalog-rarity-badge{
+  display:inline-flex;
+  width:max-content;
+  margin:0 0 6px;
+  padding:3px 7px;
+  border:1px solid color-mix(in srgb,var(--catalog-color,#72d8ff) 45%,transparent);
+  border-radius:999px;
+  background:color-mix(in srgb,var(--catalog-color,#72d8ff) 11%,transparent);
+  color:var(--catalog-color,#72d8ff);
+  font-size:9px;
+  font-weight:1000;
+  line-height:1;
+}
+
+.catalog-tier-basic{--catalog-color:#9eacb8}
+.catalog-tier-common{--catalog-color:#74dba6}
+.catalog-tier-uncommon{--catalog-color:#54c9ff}
+.catalog-tier-rare{--catalog-color:#668dff}
+.catalog-tier-epic{--catalog-color:#b56dff}
+.catalog-tier-legendary{--catalog-color:#ffbd55}
+.catalog-tier-fusion{--catalog-color:#ff73dc}
+.catalog-tier-special{--catalog-color:#ff6d72}
+
+.catalog-card .weapon-price-state{
+  margin-top:8px;
+  padding-top:6px;
+  border-top:1px solid color-mix(in srgb,var(--catalog-color,#72d8ff) 18%,transparent);
+  font-size:10px;
+}
+
+.lw98-armor-card.catalog-card .catalog-rarity-badge{
+  margin-bottom:7px;
+}
+
+.lw98-armor-card.catalog-card p{
+  display:flex;
+  flex:1;
+  flex-direction:column;
+}
+
+.lw98-armor-card.catalog-card .weapon-price-state{
+  margin-top:auto;
+}
+
+@supports not (color:color-mix(in srgb,#fff,#000)){
+  .catalog-card{border-color:rgba(114,216,255,.35)!important}
+  .catalog-rarity-badge{border-color:rgba(114,216,255,.4);background:rgba(114,216,255,.1)}
+}
