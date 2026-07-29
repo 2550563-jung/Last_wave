@@ -24,6 +24,7 @@
     rare:"희귀",
     epic:"특수"
   };
+  let equipmentCollapsed=false;
   const ARMOR={
     helmet:[
       {id:"wornHelmet",name:"허름한 철제 모자",rarity:"basic",cost:550,desc:"가벼운 머리 보호구 · 최대 체력 +4",stats:{maxHp:4}},
@@ -282,15 +283,36 @@
     section.className="lw98-equipment-section";
     section.innerHTML=`
       <div class="section-title lw98-equipment-title">
-        <span>방어구</span>
-        <small>이번 게임에서만 유지</small>
+        <div class="lw98-equipment-heading">
+          <span>방어구</span>
+          <small>이번 게임에서만 유지</small>
+        </div>
+        <button id="lw98EquipmentToggle" class="btn lw98-equipment-toggle" type="button" aria-expanded="true">방어구 닫기</button>
       </div>
-      <p class="lw98-equipment-guide">머리, 상체, 하체, 신발 장비를 정비합니다. 상체와 하체는 허름한 시작 장비가 지급되며 머리와 신발은 비어 있습니다. 구매한 장비는 웨이브가 바뀌어도 유지되고, 게임이 끝난 뒤 새 게임을 시작하면 초기화됩니다.</p>
-      <div id="lw98EquipmentSummary" class="lw98-equipment-summary">기본 방어구 효과</div>
-      <div id="lw98EquipmentSlots" class="lw98-equipment-grid"></div>
-      <div id="lw98ArmorCatalog" class="lw98-armor-catalog"></div>`;
+      <div class="lw98-equipment-body">
+        <p class="lw98-equipment-guide">머리, 상체, 하체, 신발 장비를 정비합니다. 상체와 하체는 허름한 시작 장비가 지급되며 머리와 신발은 비어 있습니다. 구매한 장비는 웨이브가 바뀌어도 유지되고, 게임이 끝난 뒤 새 게임을 시작하면 초기화됩니다.</p>
+        <div id="lw98EquipmentSummary" class="lw98-equipment-summary">기본 방어구 효과</div>
+        <div id="lw98EquipmentSlots" class="lw98-equipment-grid"></div>
+        <div id="lw98ArmorCatalog" class="lw98-armor-catalog"></div>
+      </div>`;
     meleeGrid.insertAdjacentElement("afterend",section);
+    document.getElementById("lw98EquipmentToggle")?.addEventListener("click",()=>{
+      setEquipmentCollapsed(!equipmentCollapsed);
+    });
+    setEquipmentCollapsed(equipmentCollapsed);
     renderEquipment();
+  }
+
+  function setEquipmentCollapsed(collapsed){
+    equipmentCollapsed=Boolean(collapsed);
+    const section=document.getElementById("lw98EquipmentSection");
+    const button=document.getElementById("lw98EquipmentToggle");
+    section?.classList.toggle("collapsed",equipmentCollapsed);
+    if(button){
+      button.setAttribute("aria-expanded",String(!equipmentCollapsed));
+      button.textContent=equipmentCollapsed?"방어구 열기":"방어구 닫기";
+    }
+    return equipmentCollapsed;
   }
 
   const baseStartRun=startRun;
@@ -420,6 +442,7 @@
     meleeDps,
     resetEquipment,
     applyEquipment,
-    renderEquipment
+    renderEquipment,
+    setEquipmentCollapsed
   };
 })();

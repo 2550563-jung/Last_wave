@@ -2264,9 +2264,9 @@ button.v82-iconized:not(.switch){
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v103</span>
+      <span id="gameVersion" class="game-version">v104</span>
     </div>
-    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=103" alt=""></span>Last Wave</h1>
+    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=104" alt=""></span>Last Wave</h1>
 
     <p>
       감염된 도시에서 살아남고 무기와 궁극기를 진화시키세요.
@@ -2434,10 +2434,10 @@ button.v82-iconized:not(.switch){
       <div class="setting-card">
         <label for="v82DifficultySelect">난이도</label>
         <select id="v82DifficultySelect">
-          <option value="survivor">생존자</option>
-          <option value="nightmare">악몽</option>
-          <option value="apocalypse">종말</option>
-          <option value="extinction">멸종</option>
+          <option value="survivor">생존자 · 점수 ×1.00</option>
+          <option value="nightmare">악몽 · 점수 ×1.08</option>
+          <option value="apocalypse">종말 · 점수 ×1.20</option>
+          <option value="extinction">멸종 (멋진 사람용) · 점수 ×1.35</option>
         </select>
         <span id="v82DifficultyDesc" class="audio-value"></span>
       </div>
@@ -10937,15 +10937,17 @@ function killEnemy(
   }
 
   score +=
-    enemy.boss
-      ?
-      3000
-      :
-      enemy.elite
+    getDifficultyAdjustedScore(
+      enemy.boss
         ?
-        230
+        3000
         :
-        75;
+        enemy.elite
+          ?
+          230
+          :
+          75
+    );
 
   const killerWeaponId=
     owner ? getWeaponId(owner) : "pistol";
@@ -12067,7 +12069,9 @@ function updateBullets(
         mission.progress++;
 
         score +=
-          500;
+          getDifficultyAdjustedScore(
+            500
+          );
 
         createExplosionVisual(
           objective.x,
@@ -15562,8 +15566,10 @@ function completeWave(){
     );
 
   score +=
-    wave*
-    120;
+    getDifficultyAdjustedScore(
+      wave*
+      120
+    );
 
   /*
     모바일 성능을 위해 매 킬마다 localStorage를 쓰지 않고,
@@ -33049,7 +33055,48 @@ addEventListener(
 </script>
 
 <script>
-const V82_DIFFICULTIES={survivor:{name:"생존자",desc:"적 능력과 수량 크게 감소",hp:.66,damage:.68,speed:.90,count:.72,reward:.78},nightmare:{name:"악몽",desc:"v86 기본 난이도",hp:.88,damage:.88,speed:.96,count:.86,reward:1},apocalypse:{name:"종말",desc:"적 체력 +12% · 공격력 +10% · 수량 +8%",hp:1.12,damage:1.10,speed:1.02,count:1.08,reward:1.35},extinction:{name:"멸종",desc:"고난도 · 체력 +48% · 공격력 +40%",hp:1.48,damage:1.40,speed:1.08,count:1.18,reward:1.8}};
+const V82_DIFFICULTIES={
+  survivor:{
+    name:"생존자",
+    desc:"점수 ×1.00 · 전리품 ×0.78 · 적 능력과 수량 크게 감소",
+    hp:.66,
+    damage:.68,
+    speed:.90,
+    count:.72,
+    reward:.78,
+    score:1
+  },
+  nightmare:{
+    name:"악몽",
+    desc:"점수 ×1.08 · 전리품 ×1.00 · 기본 난이도",
+    hp:.88,
+    damage:.88,
+    speed:.96,
+    count:.86,
+    reward:1,
+    score:1.08
+  },
+  apocalypse:{
+    name:"종말",
+    desc:"점수 ×1.20 · 전리품 ×1.35 · 적 체력 +12% · 공격력 +10% · 수량 +8%",
+    hp:1.12,
+    damage:1.10,
+    speed:1.02,
+    count:1.08,
+    reward:1.35,
+    score:1.20
+  },
+  extinction:{
+    name:"멸종 (멋진 사람용)",
+    desc:"점수 ×1.35 · 전리품 ×1.80 · 고난도 · 체력 +48% · 공격력 +40%",
+    hp:1.48,
+    damage:1.40,
+    speed:1.08,
+    count:1.18,
+    reward:1.8,
+    score:1.35
+  }
+};
 const V82_SKINS={default:{name:"기본 생존자",desc:"직업별 기본 복장",currency:"credits",cost:0,colors:["#4b6254","#79d8ff"]},ember:{name:"잿불 구조대",desc:"붉은 잔광 스킨",currency:"credits",cost:2800,colors:["#ff6d52","#ffca63"]},toxic:{name:"독성 연구원",desc:"녹색 생체 오라",currency:"credits",cost:4200,colors:["#55ef83","#baff63"]},frost:{name:"빙결 정찰대",desc:"청백색 파동",currency:"prism",cost:4,colors:["#63dfff","#d5f7ff"]},void:{name:"보이드 워커",desc:"보랏빛 공간 잔상",currency:"prism",cost:8,colors:["#a979ff","#ff81db"]},royal:{name:"왕실 근위대",desc:"금빛 방어 링",currency:"relics",cost:3,colors:["#ffd76b","#ff5d72"]},neon:{name:"네온 러너",desc:"청록·분홍 네온",currency:"relics",cost:5,colors:["#4ff8ff","#ff5bd2"]},bloodmoon:{name:"블러드문 생존자",desc:"적색 월식 오라",currency:"relics",cost:8,colors:["#ff3d55","#5d1025"]}};
 const V82_PERMANENT_UPGRADES={vitality:{name:"생존 본능",desc:"최대 체력 +3% / 랭크",max:8,currency:"credits",baseCost:1500},arsenal:{name:"전투 교범",desc:"공격력 +1.5% / 랭크",max:8,currency:"credits",baseCost:2000},mobility:{name:"기동 훈련",desc:"이동속도 +1.5% / 랭크",max:8,currency:"credits",baseCost:1800},guardian:{name:"응급 보호막",desc:"시작 보호막 +5 / 랭크",max:8,currency:"prism",baseCost:2},fortune:{name:"보급 감각",desc:"시작 공용 돈 +100 / 랭크",max:8,currency:"relics",baseCost:1}};
 const V82_JOB_TALENT_NAMES={soldier:[["화력 집중","공격력 +4%","damageMult",.04],["전투 방탄","최대 체력 +6%","hpMult",.06],["정밀 사격","치명타 +2%","critBonus",.02]],student:[["빠른 학습","공격력 +3%","damageMult",.03],["전력 질주","이동속도 +5%","speedMult",.05],["아드레날린","연사 +4%","rateBonus",.04]],scientist:[["촉매 증폭","공격력 +4%","damageMult",.04],["생체 보호막","보호막 +10","shieldBonus",10],["고속 분석","연사 +5%","rateBonus",.05]],courier:[["극한 속도","이동속도 +6%","speedMult",.06],["경량 장비","연사 +4%","rateBonus",.04],["전투 집중","공격력 +3%","damageMult",.03]],guard:[["이동 요새","최대 체력 +8%","hpMult",.08],["중장갑","방어율 +2%","armorBonus",.02],["보호막 전개","보호막 +15","shieldBonus",15]],medic:[["전장 응급처치","재생 +0.45","regenBonus",.45],["회복 체질","최대 체력 +7%","hpMult",.07],["안정된 손","공격력 +3%","damageMult",.03]],engineer:[["오버클럭","연사 +6%","rateBonus",.06],["강화 외골격","최대 체력 +5%","hpMult",.05],["정밀 교정","치명타 +2%","critBonus",.02]],firefighter:[["내열 장비","최대 체력 +8%","hpMult",.08],["강제 돌파","공격력 +4%","damageMult",.04],["구조 돌진","이동속도 +4%","speedMult",.04]]};
@@ -33069,7 +33116,10 @@ function v82CheckAchievements(){let changed=false;for(const a of V82_ACHIEVEMENT
 function v82AddMastery(id,amount){if(!id||!WEAPONS[id]||WEAPONS[id].admin)return;const before=v82MasteryLevel(save.weaponMasteryV82[id]||0);save.weaponMasteryV82[id]=(Number(save.weaponMasteryV82[id])||0)+amount;const after=v82MasteryLevel(save.weaponMasteryV82[id]);if(after>before&&[5,10,20].includes(after)){const reward=after===5?500:after===10?1200:3000;save.credits+=reward;showMessage(WEAPONS[id].name+" 숙련도 "+after,"숙련 보상 🪙 "+formatNumber(reward))}}
 function v82BuildCombatSnapshot(job=save.selectedJob){const p=save.permanentUpgradesV82||{},s={hpMult:1+(Number(p.vitality)||0)*.03,damageMult:1+(Number(p.arsenal)||0)*.015,speedMult:1+(Number(p.mobility)||0)*.015,armorBonus:0,regenBonus:0,shieldBonus:(Number(p.guardian)||0)*5,rateBonus:0,critBonus:0},levels=save.jobTalentsV82?.[job]||{};for(const[tIndex,t]of (V82_JOB_TALENT_NAMES[job]||[]).entries()){const id="t"+tIndex,l=clamp(Math.floor(Number(levels[id])||0),0,3),key=t[2],v=t[3]*l;if(["hpMult","damageMult","speedMult"].includes(key))s[key]+=v;else s[key]=(s[key]||0)+v}return s}
 function v82ApplyCombatSnapshot(o,s){if(!o||!s||o._v82CombatStatsApplied)return;o._v82CombatStatsApplied=true;const old=o.maxHp;o.maxHp*=s.hpMult||1;o.hp+=Math.max(0,o.maxHp-old);o.damageMult*=s.damageMult||1;o.speed*=s.speedMult||1;o.armor=clamp((o.armor||0)+(s.armorBonus||0),0,.8);o.regen=(o.regen||0)+(s.regenBonus||0);o.maxShield=(o.maxShield||0)+(s.shieldBonus||0);o.shield=(o.shield||0)+(s.shieldBonus||0);o.buffs.rate=(o.buffs.rate||0)+(s.rateBonus||0);o.buffs.crit=(o.buffs.crit||0)+(s.critBonus||0)}
-function v82GetDifficulty(){return V82_DIFFICULTIES[save.selectedDifficultyV82]||V82_DIFFICULTIES.nightmare}function v82CurrentRewardMultiplier(){return(v82GetDifficulty().reward||1)*(v82CurrentEvent?.credit||1)}
+function v82GetDifficulty(){return V82_DIFFICULTIES[save.selectedDifficultyV82]||V82_DIFFICULTIES.nightmare}
+function getDifficultyScoreMultiplier(){return Number(v82GetDifficulty().score)||1}
+function getDifficultyAdjustedScore(baseScore){return Math.max(0,Math.floor((Number(baseScore)||0)*getDifficultyScoreMultiplier()))}
+function v82CurrentRewardMultiplier(){return(v82GetDifficulty().reward||1)*(v82CurrentEvent?.credit||1)}
 function v82ShowEvent(e){const h=document.getElementById("v82EventHud");if(!h||!e)return;document.getElementById("v82EventIcon").style.backgroundImage='url("'+v82IconSvg(e.icon||"target",e.name)+'")';document.getElementById("v82EventTitle").textContent=e.name;document.getElementById("v82EventText").textContent=e.desc;h.classList.add("show");v82EventHudTimer=7}
 function v82CompletePreviousEvent(){if(!v82PreviousEvent)return;save.eventsCompletedV82++;if(v82PreviousEvent.clearCredits)save.credits+=Math.round(v82PreviousEvent.clearCredits*v82GetDifficulty().reward);v82PreviousEvent=null}
 function v82ChooseWaveEvent(){v82CurrentEvent=null;if(wave<3||wave%3!==0)return;const e=V82_EVENTS[Math.floor(runRandom()*V82_EVENTS.length)];v82CurrentEvent={...e,wave};v82PreviousEvent=v82CurrentEvent;if(e.money){money+=Math.round(e.money+wave*30);if(multiplayer.active&&multiplayer.isHost&&typeof broadcastSharedMoney==="function")broadcastSharedMoney("v82_event")};if(e.heal||e.shield)for(const m of players.values()){if(!m||m.dead)continue;if(e.heal)m.hp=Math.min(m.maxHp,m.hp+m.maxHp*e.heal);if(e.shield){m.shield=(m.shield||0)+e.shield;m.maxShield=Math.max(m.maxShield||0,m.shield)}}if(e.count)spawnRemaining=Math.min(getActiveEnemyCap()-5,Math.round(spawnRemaining*e.count));v82ShowEvent(e);showMessage(e.name,e.desc)}
@@ -34143,20 +34193,21 @@ killEnemy=function(
 };
 
 </script>
-<link rel="stylesheet" href="./last-wave-v88.css?v=103">
-<link rel="stylesheet" href="./last-wave-v92.css?v=103">
-<link rel="stylesheet" href="./last-wave-v97.css?v=103">
-<link rel="stylesheet" href="./last-wave-v98.css?v=103">
-<link rel="stylesheet" href="./last-wave-v100.css?v=103">
-<link rel="stylesheet" href="./last-wave-v102.css?v=103">
-<script src="./last-wave-cloudflare.js?v=103"></script>
-<script src="./last-wave-v88.js?v=103"></script>
-<script src="./last-wave-v92.js?v=103"></script>
-<script src="./last-wave-v97.js?v=103"></script>
-<script src="./last-wave-v98.js?v=103"></script>
-<script src="./last-wave-v99.js?v=103"></script>
-<script src="./last-wave-v100.js?v=103"></script>
-<script src="./last-wave-v102.js?v=103"></script>
-<script src="./last-wave-v103.js?v=103"></script>
+<link rel="stylesheet" href="./last-wave-v88.css?v=104">
+<link rel="stylesheet" href="./last-wave-v92.css?v=104">
+<link rel="stylesheet" href="./last-wave-v97.css?v=104">
+<link rel="stylesheet" href="./last-wave-v98.css?v=104">
+<link rel="stylesheet" href="./last-wave-v100.css?v=104">
+<link rel="stylesheet" href="./last-wave-v102.css?v=104">
+<script src="./last-wave-cloudflare.js?v=104"></script>
+<script src="./last-wave-v88.js?v=104"></script>
+<script src="./last-wave-v92.js?v=104"></script>
+<script src="./last-wave-v97.js?v=104"></script>
+<script src="./last-wave-v98.js?v=104"></script>
+<script src="./last-wave-v99.js?v=104"></script>
+<script src="./last-wave-v100.js?v=104"></script>
+<script src="./last-wave-v102.js?v=104"></script>
+<script src="./last-wave-v103.js?v=104"></script>
+<script src="./last-wave-v104.js?v=104"></script>
 </body>
 </html>
