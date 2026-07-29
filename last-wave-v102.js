@@ -87,6 +87,7 @@
   function tierByRank(index,total,item={}){
     if(item.admin||item.replica)return"special";
     if(item.fusion)return"fusion";
+    if(item.rarity==="basic")return"basic";
     if(number(item.cost)<=0)return"basic";
     const ratio=total<=1?0:index/(total-1);
     if(ratio<=.18)return"common";
