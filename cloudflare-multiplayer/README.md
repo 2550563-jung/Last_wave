@@ -35,5 +35,9 @@ location.reload()
 pnpm deploy
 ```
 
-배포 후 `index.html`의 `last-wave-game-server` 메타 설정이나
-`window.LAST_WAVE_CLOUDFLARE_URL`에 Worker의 HTTPS 주소를 지정합니다.
+운영 Worker:
+
+`https://last-wave-multiplayer.last-wave-jungwoo.workers.dev`
+
+`index.html`의 `last-wave-game-server` 메타 설정이 이 주소를 사용합니다.
+필요하면 `window.LAST_WAVE_CLOUDFLARE_URL`로 실행 중에 다른 서버를 지정할 수 있습니다.

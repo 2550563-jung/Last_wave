@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { chromium } from "file:///C:/Users/commo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs";
 
+const cloudflareUrl=
+  process.env.LW_CLOUDFLARE_TEST_URL ||
+  "http://127.0.0.1:8787";
 const browser=await chromium.launch({
   headless:true,
   executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe"
@@ -19,9 +22,9 @@ page.on("console",message=>{
   }
 });
 
-await page.addInitScript(()=>{
-  localStorage.setItem("lw_cloudflare_game_server","http://127.0.0.1:8787");
-});
+await page.addInitScript(url=>{
+  localStorage.setItem("lw_cloudflare_game_server",url);
+},cloudflareUrl);
 await page.goto("http://127.0.0.1:8877/index.html",{
   waitUntil:"domcontentloaded",
   timeout:30000
