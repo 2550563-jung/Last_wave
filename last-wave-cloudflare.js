@@ -17,8 +17,8 @@
     const explicit=
       String(
         window.LAST_WAVE_CLOUDFLARE_URL ||
-        document.querySelector('meta[name="last-wave-game-server"]')?.content ||
         localStorage.getItem(CONFIG_KEY) ||
+        document.querySelector('meta[name="last-wave-game-server"]')?.content ||
         ""
       ).trim();
     return explicit.replace(/\/+$/,"");
@@ -295,7 +295,7 @@
 
   window.__lastWaveCloudflare={
     version:1,
-    releaseVersion:101,
+    releaseVersion:103,
     configured:Boolean(configuredEndpoint()),
     endpoint:configuredEndpoint(),
     transport:"durable-objects"

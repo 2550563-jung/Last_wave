@@ -2264,9 +2264,9 @@ button.v82-iconized:not(.switch){
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v102</span>
+      <span id="gameVersion" class="game-version">v103</span>
     </div>
-    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=102" alt=""></span>Last Wave</h1>
+    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=103" alt=""></span>Last Wave</h1>
 
     <p>
       감염된 도시에서 살아남고 무기와 궁극기를 진화시키세요.
@@ -8140,6 +8140,24 @@ function getMultiplayerPlayerCount(){
 
 }
 
+function getMultiplayerMoneyMultiplier(){
+  const count=
+    multiplayer?.active
+      ? getMultiplayerPlayerCount()
+      : 1;
+
+  return(
+    [
+      1,
+      1,
+      1.25,
+      1.5,
+      1.75
+    ][count] ||
+    1
+  );
+}
+
 function getMultiplayerSyncProfile(){
 
   const count=
@@ -10956,7 +10974,8 @@ function killEnemy(
           currentRoute
         ]?.rewardMult ||
         1
-      )
+      )*
+      getMultiplayerMoneyMultiplier()
     );
 
   if(
@@ -15538,7 +15557,8 @@ function completeWave(){
           currentRoute
         ]?.rewardMult ||
         1
-      )
+      )*
+      getMultiplayerMoneyMultiplier()
     );
 
   score +=
@@ -34123,19 +34143,20 @@ killEnemy=function(
 };
 
 </script>
-<link rel="stylesheet" href="./last-wave-v88.css?v=102">
-<link rel="stylesheet" href="./last-wave-v92.css?v=102">
-<link rel="stylesheet" href="./last-wave-v97.css?v=102">
-<link rel="stylesheet" href="./last-wave-v98.css?v=102">
-<link rel="stylesheet" href="./last-wave-v100.css?v=102">
-<link rel="stylesheet" href="./last-wave-v102.css?v=102">
-<script src="./last-wave-cloudflare.js?v=102"></script>
-<script src="./last-wave-v88.js?v=102"></script>
-<script src="./last-wave-v92.js?v=102"></script>
-<script src="./last-wave-v97.js?v=102"></script>
-<script src="./last-wave-v98.js?v=102"></script>
-<script src="./last-wave-v99.js?v=102"></script>
-<script src="./last-wave-v100.js?v=102"></script>
-<script src="./last-wave-v102.js?v=102"></script>
+<link rel="stylesheet" href="./last-wave-v88.css?v=103">
+<link rel="stylesheet" href="./last-wave-v92.css?v=103">
+<link rel="stylesheet" href="./last-wave-v97.css?v=103">
+<link rel="stylesheet" href="./last-wave-v98.css?v=103">
+<link rel="stylesheet" href="./last-wave-v100.css?v=103">
+<link rel="stylesheet" href="./last-wave-v102.css?v=103">
+<script src="./last-wave-cloudflare.js?v=103"></script>
+<script src="./last-wave-v88.js?v=103"></script>
+<script src="./last-wave-v92.js?v=103"></script>
+<script src="./last-wave-v97.js?v=103"></script>
+<script src="./last-wave-v98.js?v=103"></script>
+<script src="./last-wave-v99.js?v=103"></script>
+<script src="./last-wave-v100.js?v=103"></script>
+<script src="./last-wave-v102.js?v=103"></script>
+<script src="./last-wave-v103.js?v=103"></script>
 </body>
 </html>
