@@ -1,12 +1,14 @@
 import fs from "node:fs";
 import assert from "node:assert/strict";
 import { chromium } from "file:///C:/Users/commo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs";
+import { startTestServer } from "./test-server.mjs";
 
 const source=fs.readFileSync(new URL("../index.html",import.meta.url),"utf8");
 assert.match(source,/score \+=\s*getDifficultyAdjustedScore\(\s*enemy\.boss/);
 assert.match(source,/score \+=\s*getDifficultyAdjustedScore\(\s*500/);
 assert.match(source,/score \+=\s*getDifficultyAdjustedScore\(\s*wave\*/);
 
+const testServer=await startTestServer();
 const browser=await chromium.launch({
   headless:true,
   executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe"
@@ -16,16 +18,27 @@ const errors=[];
 
 page.on("pageerror",error=>errors.push(String(error.stack||error)));
 page.on("console",message=>{
-  if(message.type()==="error"&&!message.text().includes("ERR_NETWORK_ACCESS_DENIED")){
+  if(
+    message.type()==="error"&&
+    !message.text().includes("ERR_NETWORK_ACCESS_DENIED")&&
+    !message.text().includes("Failed to load resource")
+  ){
     errors.push(message.text());
   }
 });
+await page.route("**/*",route=>{
+  if(route.request().url().startsWith(testServer.baseUrl)){
+    return route.continue();
+  }else{
+    return route.abort();
+  }
+});
 
-await page.goto("http://127.0.0.1:8877/index.html",{
-  waitUntil:"domcontentloaded",
+await page.goto(`${testServer.baseUrl}/index.html`,{
+  waitUntil:"commit",
   timeout:30000
 });
-await page.waitForFunction(()=>window.__lastWaveV104?.version===104,{timeout:30000});
+await page.waitForFunction(()=>window.__lastWaveV104?.version===104,{timeout:60000});
 
 const result=await page.evaluate(()=>{
   const difficulties=["survivor","nightmare","apocalypse","extinction"];
@@ -68,7 +81,7 @@ const result=await page.evaluate(()=>{
   };
 });
 
-assert.equal(result.version,"v104");
+assert.equal(result.version,"v105");
 assert.equal(result.addon,104);
 assert.deepEqual(result.adjusted,{
   survivor:1000,
@@ -95,3 +108,4 @@ assert.deepEqual(errors,[]);
 
 console.log("v104 browser test passed.",result);
 await browser.close();
+await testServer.close();

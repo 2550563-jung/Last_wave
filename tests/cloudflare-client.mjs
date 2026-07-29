@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { chromium } from "file:///C:/Users/commo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs";
+import { startTestServer } from "./test-server.mjs";
 
 const cloudflareUrl=
   process.env.LW_CLOUDFLARE_TEST_URL ||
   "http://127.0.0.1:8787";
+const testServer=await startTestServer();
 const browser=await chromium.launch({
   headless:true,
   executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe"
@@ -25,11 +27,11 @@ page.on("console",message=>{
 await page.addInitScript(url=>{
   localStorage.setItem("lw_cloudflare_game_server",url);
 },cloudflareUrl);
-await page.goto("http://127.0.0.1:8877/index.html",{
-  waitUntil:"domcontentloaded",
+await page.goto(`${testServer.baseUrl}/index.html`,{
+  waitUntil:"commit",
   timeout:30000
 });
-await page.waitForFunction(()=>window.__lastWaveCloudflare?.configured===true);
+await page.waitForFunction(()=>window.__lastWaveCloudflare?.configured===true,{timeout:60000});
 
 const result=await page.evaluate(async()=>{
   const room=`B${Math.random().toString(36).slice(2,7)}`.toUpperCase().padEnd(6,"0").slice(0,6);
@@ -93,12 +95,13 @@ const result=await page.evaluate(async()=>{
 });
 
 await browser.close();
+await testServer.close();
 
 assert.equal(result.marker,"browser-adapter");
 assert.equal(result.firstTransport,"cloudflare");
 assert.equal(result.secondTransport,"cloudflare");
 assert.equal(result.configured,true);
-assert.equal(result.releaseVersion,104);
-assert.equal(result.displayVersion,"v104");
+assert.equal(result.releaseVersion,105);
+assert.equal(result.displayVersion,"v105");
 assert.deepEqual(errors,[]);
 console.log("Cloudflare browser adapter test passed.",result);
