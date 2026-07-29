@@ -86,7 +86,9 @@ const result=await page.evaluate(async()=>{
     marker:payload.marker,
     firstTransport:first.transportName,
     secondTransport:second.transportName,
-    configured:window.__lastWaveCloudflare.configured
+    configured:window.__lastWaveCloudflare.configured,
+    releaseVersion:window.__lastWaveCloudflare.releaseVersion,
+    displayVersion:document.getElementById("gameVersion")?.textContent?.trim()
   };
 });
 
@@ -96,5 +98,7 @@ assert.equal(result.marker,"browser-adapter");
 assert.equal(result.firstTransport,"cloudflare");
 assert.equal(result.secondTransport,"cloudflare");
 assert.equal(result.configured,true);
+assert.equal(result.releaseVersion,101);
+assert.equal(result.displayVersion,"v101");
 assert.deepEqual(errors,[]);
 console.log("Cloudflare browser adapter test passed.",result);
