@@ -172,9 +172,11 @@
   getPlayerControl=function(owner){
     if(owner&&!owner.local){
       const remote=multiplayer.remoteInputs.get(owner.id);
-      const age=remote?.__lw?.sentAt?Date.now()-remote.__lw.sentAt:Infinity;
-      if(age>620){
-        if(age>1800)multiplayer.remoteInputs.delete(owner.id);
+      const age=typeof getRemoteInputAge==="function"
+        ? getRemoteInputAge(remote)
+        : Infinity;
+      if(age>1400){
+        if(age>5000)multiplayer.remoteInputs.delete(owner.id);
         return{
           x:0,
           y:0,

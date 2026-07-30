@@ -2264,9 +2264,9 @@ button.v82-iconized:not(.switch){
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v105</span>
+      <span id="gameVersion" class="game-version">v106</span>
     </div>
-    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=105" alt=""></span>Last Wave</h1>
+    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=106" alt=""></span>Last Wave</h1>
 
     <p>
       감염된 도시에서 살아남고 무기와 궁극기를 진화시키세요.
@@ -13802,7 +13802,7 @@ function getPlayerControl(
   ){
 
     const remote=multiplayer.remoteInputs.get(owner.id);
-    const age=remote?.__lw?.sentAt ? Date.now()-remote.__lw.sentAt : Infinity;
+    const age=getRemoteInputAge(remote);
 
     if(remote && age<1400){
       return remote;
@@ -13891,6 +13891,38 @@ function getPlayerControl(
     firing:input.firing
   };
 
+}
+
+function markRemoteInputReceived(payload){
+  if(!payload||typeof payload!=="object")return null;
+  payload._lwReceivedAt=performance.now();
+  return payload;
+}
+
+function getRemoteInputAge(payload){
+  const receivedAt=Number(payload?._lwReceivedAt);
+  if(!Number.isFinite(receivedAt))return Infinity;
+  return Math.max(0,performance.now()-receivedAt);
+}
+
+function acceptRemoteInputPacket(payload){
+  if(!multiplayer.isHost)return false;
+  if(!payload?.playerId||payload.playerId===save.playerId)return false;
+  if(payload?.__lw?.sender&&payload.__lw.sender!==payload.playerId)return false;
+
+  const seq=Number(payload?.__lw?.seq)||0;
+  const senderSession=payload?.__lw?.sessionId||"legacy";
+  const sequenceKey=`${payload.playerId}:${senderSession}`;
+  const previous=multiplayer.lastInputSeq.get(sequenceKey)||0;
+  if(seq&&seq<=previous)return false;
+  if(seq)multiplayer.lastInputSeq.set(sequenceKey,seq);
+
+  updateMultiplayerLatency(payload);
+  multiplayer.remoteInputs.set(
+    payload.playerId,
+    markRemoteInputReceived(payload)
+  );
+  return true;
 }
 
 function updatePlayer(
@@ -20276,7 +20308,7 @@ function updateMultiplayerLatency(payload){
     return;
   }
 
-  const sample=Math.max(0,Date.now()-sentAt);
+  const sample=Math.min(5000,Math.max(0,Date.now()-sentAt));
   const previous=multiplayer.latencyMs||sample;
   const delta=Math.abs(sample-previous);
 
@@ -22333,16 +22365,7 @@ async function connectRealtimeRoom(code,{isPublic=false,forceHost=false,reconnec
   channel.on("presence",{event:"leave"},syncMembers);
 
   channel.on("broadcast",{event:"input"},({payload})=>{
-    if(!multiplayer.isHost) return;
-    if(!payload?.playerId || payload.playerId===save.playerId) return;
-    const seq=Number(payload?.__lw?.seq)||0;
-    const senderSession=payload?.__lw?.sessionId||"legacy";
-    const sequenceKey=`${payload.playerId}:${senderSession}`;
-    const previous=multiplayer.lastInputSeq.get(sequenceKey)||0;
-    if(seq&&seq<=previous) return;
-    if(seq) multiplayer.lastInputSeq.set(sequenceKey,seq);
-    updateMultiplayerLatency(payload);
-    multiplayer.remoteInputs.set(payload.playerId,payload);
+    acceptRemoteInputPacket(payload);
   });
 
   channel.on("broadcast",{event:"money_spend_request"},({payload})=>{
@@ -34193,22 +34216,23 @@ killEnemy=function(
 };
 
 </script>
-<link rel="stylesheet" href="./last-wave-v88.css?v=105">
-<link rel="stylesheet" href="./last-wave-v92.css?v=105">
-<link rel="stylesheet" href="./last-wave-v97.css?v=105">
-<link rel="stylesheet" href="./last-wave-v98.css?v=105">
-<link rel="stylesheet" href="./last-wave-v100.css?v=105">
-<link rel="stylesheet" href="./last-wave-v102.css?v=105">
-<script src="./last-wave-cloudflare.js?v=105"></script>
-<script src="./last-wave-v88.js?v=105"></script>
-<script src="./last-wave-v92.js?v=105"></script>
-<script src="./last-wave-v97.js?v=105"></script>
-<script src="./last-wave-v98.js?v=105"></script>
-<script src="./last-wave-v99.js?v=105"></script>
-<script src="./last-wave-v100.js?v=105"></script>
-<script src="./last-wave-v102.js?v=105"></script>
-<script src="./last-wave-v103.js?v=105"></script>
-<script src="./last-wave-v104.js?v=105"></script>
-<script src="./last-wave-v105.js?v=105"></script>
+<link rel="stylesheet" href="./last-wave-v88.css?v=106">
+<link rel="stylesheet" href="./last-wave-v92.css?v=106">
+<link rel="stylesheet" href="./last-wave-v97.css?v=106">
+<link rel="stylesheet" href="./last-wave-v98.css?v=106">
+<link rel="stylesheet" href="./last-wave-v100.css?v=106">
+<link rel="stylesheet" href="./last-wave-v102.css?v=106">
+<script src="./last-wave-cloudflare.js?v=106"></script>
+<script src="./last-wave-v88.js?v=106"></script>
+<script src="./last-wave-v92.js?v=106"></script>
+<script src="./last-wave-v97.js?v=106"></script>
+<script src="./last-wave-v98.js?v=106"></script>
+<script src="./last-wave-v99.js?v=106"></script>
+<script src="./last-wave-v100.js?v=106"></script>
+<script src="./last-wave-v102.js?v=106"></script>
+<script src="./last-wave-v103.js?v=106"></script>
+<script src="./last-wave-v104.js?v=106"></script>
+<script src="./last-wave-v105.js?v=106"></script>
+<script src="./last-wave-v106.js?v=106"></script>
 </body>
 </html>

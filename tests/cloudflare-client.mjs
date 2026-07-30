@@ -55,6 +55,12 @@ const result=await page.evaluate(async()=>{
   const second=createLastWaveRealtimeChannel(`last-wave-room-${room}`,{
     config:{presence:{key:"browser-second"},broadcast:{self:false,ack:false}}
   });
+  const third=createLastWaveRealtimeChannel(`last-wave-room-${room}`,{
+    config:{presence:{key:"browser-third"},broadcast:{self:false,ack:false}}
+  });
+  const fourth=createLastWaveRealtimeChannel(`last-wave-room-${room}`,{
+    config:{presence:{key:"browser-fourth"},broadcast:{self:false,ack:false}}
+  });
 
   const received=new Promise((resolve,reject)=>{
     const timer=setTimeout(()=>reject(new Error("client relay timeout")),5000);
@@ -74,6 +80,16 @@ const result=await page.evaluate(async()=>{
     sessionId:"browser-session-2",
     joinedAt:Date.now()+1
   });
+  await connect(third,{
+    playerId:"browser-player-3",
+    sessionId:"browser-session-3",
+    joinedAt:Date.now()+2
+  });
+  await connect(fourth,{
+    playerId:"browser-player-4",
+    sessionId:"browser-session-4",
+    joinedAt:Date.now()+3
+  });
 
   await first.send({
     type:"broadcast",
@@ -81,8 +97,28 @@ const result=await page.evaluate(async()=>{
     payload:{marker:"browser-adapter",__lw:{seq:1}}
   });
   const payload=await received;
+  const participantInputs=new Promise((resolve,reject)=>{
+    const markers=new Set();
+    const timer=setTimeout(()=>reject(new Error("four-player input relay timeout")),5000);
+    first.on("broadcast",{event:"input"},({payload:inputPayload})=>{
+      if(!inputPayload?.participantIndex)return;
+      markers.add(inputPayload.participantIndex);
+      if(markers.size===3){
+        clearTimeout(timer);
+        resolve([...markers].sort((a,b)=>a-b));
+      }
+    });
+  });
+  await Promise.all([
+    second.send({type:"broadcast",event:"input",payload:{participantIndex:2,x:1}}),
+    third.send({type:"broadcast",event:"input",payload:{participantIndex:3,y:-1}}),
+    fourth.send({type:"broadcast",event:"input",payload:{participantIndex:4,firing:true}})
+  ]);
+  const participantMarkers=await participantInputs;
   await removeLastWaveRealtimeChannel(first);
   await removeLastWaveRealtimeChannel(second);
+  await removeLastWaveRealtimeChannel(third);
+  await removeLastWaveRealtimeChannel(fourth);
 
   return {
     marker:payload.marker,
@@ -90,7 +126,8 @@ const result=await page.evaluate(async()=>{
     secondTransport:second.transportName,
     configured:window.__lastWaveCloudflare.configured,
     releaseVersion:window.__lastWaveCloudflare.releaseVersion,
-    displayVersion:document.getElementById("gameVersion")?.textContent?.trim()
+    displayVersion:document.getElementById("gameVersion")?.textContent?.trim(),
+    participantMarkers
   };
 });
 
@@ -101,7 +138,8 @@ assert.equal(result.marker,"browser-adapter");
 assert.equal(result.firstTransport,"cloudflare");
 assert.equal(result.secondTransport,"cloudflare");
 assert.equal(result.configured,true);
-assert.equal(result.releaseVersion,105);
-assert.equal(result.displayVersion,"v105");
+assert.equal(result.releaseVersion,106);
+assert.equal(result.displayVersion,"v106");
+assert.deepEqual(result.participantMarkers,[2,3,4]);
 assert.deepEqual(errors,[]);
 console.log("Cloudflare browser adapter test passed.",result);
