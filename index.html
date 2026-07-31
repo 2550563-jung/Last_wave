@@ -2264,9 +2264,9 @@ button.v82-iconized:not(.switch){
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL</span>
-      <span id="gameVersion" class="game-version">v106</span>
+      <span id="gameVersion" class="game-version">v107</span>
     </div>
-    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=106" alt=""></span>Last Wave</h1>
+    <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=107" alt=""></span>Last Wave</h1>
 
     <p>
       감염된 도시에서 살아남고 무기와 궁극기를 진화시키세요.
@@ -9207,6 +9207,35 @@ function setAuto(
   enabled
 ){
 
+  /*
+    v107: AUTO는 메뉴에서 설정을 확인할 수만 있고,
+    게임이 시작된 뒤에는 어떤 입력 경로로도 켜지지 않는다.
+  */
+  if(
+    state!==
+      "menu"
+  ){
+
+    autoMode=false;
+    save.autoMode=false;
+    persist();
+    updateAutoUI();
+
+    if(
+      enabled
+    ){
+
+      showMessage(
+        "AUTO 사용 불가",
+        "AUTO는 게임 중에 사용할 수 없습니다."
+      );
+
+    }
+
+    return false;
+
+  }
+
   autoMode=
     Boolean(
       enabled
@@ -14060,10 +14089,12 @@ function updatePlayer(
       control.firing
     );
 
+  /*
+    v107: 이전 버전 클라이언트가 auto:true를 보내더라도
+    방장 시뮬레이션에서는 절대 자동 조준/발사로 처리하지 않는다.
+  */
   const ownerAutoMode=
-    owner.local
-      ? autoMode
-      : Boolean(control.auto);
+    false;
 
   if(
     ownerAutoMode
@@ -20332,7 +20363,7 @@ function getLocalNetworkControl(){
       aimX:Number(control.aimX)||1,
       aimY:Number(control.aimY)||0,
       firing:Boolean(control.firing),
-      auto:autoMode
+      auto:false
     };
   }
 
@@ -20342,7 +20373,7 @@ function getLocalNetworkControl(){
     aimX:Number(input.aimX)||1,
     aimY:Number(input.aimY)||0,
     firing:Boolean(input.firing),
-    auto:autoMode
+    auto:false
   };
 }
 
@@ -34216,23 +34247,24 @@ killEnemy=function(
 };
 
 </script>
-<link rel="stylesheet" href="./last-wave-v88.css?v=106">
-<link rel="stylesheet" href="./last-wave-v92.css?v=106">
-<link rel="stylesheet" href="./last-wave-v97.css?v=106">
-<link rel="stylesheet" href="./last-wave-v98.css?v=106">
-<link rel="stylesheet" href="./last-wave-v100.css?v=106">
-<link rel="stylesheet" href="./last-wave-v102.css?v=106">
-<script src="./last-wave-cloudflare.js?v=106"></script>
-<script src="./last-wave-v88.js?v=106"></script>
-<script src="./last-wave-v92.js?v=106"></script>
-<script src="./last-wave-v97.js?v=106"></script>
-<script src="./last-wave-v98.js?v=106"></script>
-<script src="./last-wave-v99.js?v=106"></script>
-<script src="./last-wave-v100.js?v=106"></script>
-<script src="./last-wave-v102.js?v=106"></script>
-<script src="./last-wave-v103.js?v=106"></script>
-<script src="./last-wave-v104.js?v=106"></script>
-<script src="./last-wave-v105.js?v=106"></script>
-<script src="./last-wave-v106.js?v=106"></script>
+<link rel="stylesheet" href="./last-wave-v88.css?v=107">
+<link rel="stylesheet" href="./last-wave-v92.css?v=107">
+<link rel="stylesheet" href="./last-wave-v97.css?v=107">
+<link rel="stylesheet" href="./last-wave-v98.css?v=107">
+<link rel="stylesheet" href="./last-wave-v100.css?v=107">
+<link rel="stylesheet" href="./last-wave-v102.css?v=107">
+<script src="./last-wave-cloudflare.js?v=107"></script>
+<script src="./last-wave-v88.js?v=107"></script>
+<script src="./last-wave-v92.js?v=107"></script>
+<script src="./last-wave-v97.js?v=107"></script>
+<script src="./last-wave-v98.js?v=107"></script>
+<script src="./last-wave-v99.js?v=107"></script>
+<script src="./last-wave-v100.js?v=107"></script>
+<script src="./last-wave-v102.js?v=107"></script>
+<script src="./last-wave-v103.js?v=107"></script>
+<script src="./last-wave-v104.js?v=107"></script>
+<script src="./last-wave-v105.js?v=107"></script>
+<script src="./last-wave-v106.js?v=107"></script>
+<script src="./last-wave-v107.js?v=107"></script>
 </body>
 </html>
