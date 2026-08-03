@@ -101,9 +101,9 @@ const result=await page.evaluate(()=>{
   };
 });
 
-assert.equal(result.version,"v107");
+assert.equal(result.version,"v108");
 assert.equal(result.addon,107);
-assert.equal(result.cloudflareRelease,107);
+assert.equal(result.cloudflareRelease,108);
 assert.deepEqual(result.monotonic,{
   hp:true,
   damage:true,

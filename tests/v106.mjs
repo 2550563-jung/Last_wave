@@ -108,7 +108,7 @@ const result=await page.evaluate(()=>{
   };
 });
 
-assert.equal(result.version,"v107");
+assert.equal(result.version,"v108");
 assert.equal(result.addon,106);
 assert.ok(result.behindAge>=0&&result.behindAge<1400);
 assert.equal(result.firstAccepted,true);

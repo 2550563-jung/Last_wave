@@ -750,6 +750,13 @@
     }
   },1000);
 
+  window.__lastWaveRoomAuth={
+    version:1,
+    getToken:()=>v88.roomToken,
+    getPlayerId:()=>String(save?.playerId||""),
+    hasRoomSession:()=>Boolean(v88.roomToken&&multiplayer?.roomCode)
+  };
+
   addEventListener("online",()=>{
     if(multiplayer?.active) scheduleRealtimeReconnect("인터넷 연결 복구");
   });

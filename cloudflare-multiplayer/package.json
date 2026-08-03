@@ -1,15 +1,14 @@
 {
   "name": "last-wave-cloudflare-multiplayer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "wrangler deploy --dry-run",
+    "check": "tsc --noEmit && wrangler deploy --dry-run",
     "dev": "wrangler dev --local --port 8787",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20260727.1",
     "typescript": "5.9.2",
     "wrangler": "4.114.0"
   }
