@@ -12,26 +12,26 @@
     return{
       wave:currentWave,
       hp:Math.min(
-        3.5,
+        5,
         .64+
-        progress*.025+
-        progress*progress*.00042
+        progress*.035+
+        progress*progress*.00065
       ),
       damage:Math.min(
-        2.4,
+        3.2,
         .68+
-        progress*.017+
-        progress*progress*.00025
+        progress*.024+
+        progress*progress*.00038
       ),
       speed:Math.min(
-        1.15,
+        1.28,
         .90+
-        progress*.005
+        progress*.0065
       ),
       count:Math.min(
-        1.5,
+        1.9,
         .68+
-        progress*.024
+        progress*.032
       )
     };
   }
