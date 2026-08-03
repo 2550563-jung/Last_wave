@@ -34,6 +34,15 @@
     return url.href;
   }
 
+  function websocketProtocols(presenceKey){
+    if(String(presenceKey).startsWith("spectator-"))return ["last-wave-v1","lw-spectator"];
+    const auth=window.__lastWaveRoomAuth;
+    const playerId=String(auth?.getPlayerId?.()||"");
+    const token=String(auth?.getToken?.()||"");
+    if(!/^[0-9a-f-]{36}$/i.test(playerId)||token.length<32)return ["last-wave-v1"];
+    return ["last-wave-v1",`lw-auth.${playerId}.${token}`];
+  }
+
   class LastWaveCloudflareChannel{
     constructor(topic,options,baseUrl){
       this.topic=topic;
@@ -77,7 +86,8 @@
 
       try{
         this.socket=new WebSocket(
-          websocketEndpoint(this.baseUrl,this.roomCode,this.presenceKey)
+          websocketEndpoint(this.baseUrl,this.roomCode,this.presenceKey),
+          websocketProtocols(this.presenceKey)
         );
       }catch(error){
         console.warn("Cloudflare 멀티플레이 연결 생성 실패",error);
@@ -294,8 +304,8 @@
   }
 
   window.__lastWaveCloudflare={
-    version:1,
-    releaseVersion:107,
+    version:2,
+    releaseVersion:108,
     configured:Boolean(configuredEndpoint()),
     endpoint:configuredEndpoint(),
     transport:"durable-objects"

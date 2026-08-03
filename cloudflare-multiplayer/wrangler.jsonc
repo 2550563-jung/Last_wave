@@ -8,7 +8,9 @@
     "enabled": true
   },
   "vars": {
-    "ALLOWED_ORIGINS": "https://2550563-jung.github.io,http://localhost,http://127.0.0.1"
+    "ALLOWED_ORIGINS": "https://2550563-jung.github.io,http://localhost,http://127.0.0.1",
+    "SUPABASE_URL": "https://nkeeayhodmauifevmaga.supabase.co",
+    "SUPABASE_ANON_KEY": "sb_publishable_u7M3MApb_n-h-5gAUe4rTg_fN2kj4yW"
   },
   "durable_objects": {
     "bindings": [

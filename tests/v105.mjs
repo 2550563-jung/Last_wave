@@ -42,6 +42,7 @@ const result=await page.evaluate(async()=>{
     currentBoss,
     timeOfDay,
     player,
+    paused,
     volume:save.bgmVolume
   };
   const selectedThemes={};
@@ -67,6 +68,7 @@ const result=await page.evaluate(async()=>{
   selectedThemes.evening=api.getTheme();
   timeOfDay="night";
   selectedThemes.night=api.getTheme();
+  paused=true;
 
   const generated=[];
   const originalTone=audioTone;
@@ -78,6 +80,8 @@ const result=await page.evaluate(async()=>{
   audioNoise=options=>generated.push({kind:"noise",...options});
   audioSystem.ctx={};
   audioSystem.unlocked=true;
+  clearInterval(audioSystem.bgmTimer);
+  audioSystem.bgmTimer=null;
   startBgm();
   await new Promise(resolve=>setTimeout(resolve,260));
   const arrangement=api.getArrangement();
@@ -93,6 +97,7 @@ const result=await page.evaluate(async()=>{
   currentBoss=original.currentBoss;
   timeOfDay=original.timeOfDay;
   player=original.player;
+  paused=original.paused;
   save.bgmVolume=original.volume;
 
   return{
@@ -111,7 +116,7 @@ const result=await page.evaluate(async()=>{
   };
 });
 
-assert.equal(result.version,"v107");
+assert.equal(result.version,"v108");
 assert.equal(result.addon,105);
 assert.deepEqual(result.themeNames,[
   "menu",

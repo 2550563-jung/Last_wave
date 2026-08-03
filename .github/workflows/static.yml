@@ -28,6 +28,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate release scripts
+        run: |
+          node --check last-wave-cloudflare.js
+          node --check last-wave-v107.js
+          node --check last-wave-v108.js
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
