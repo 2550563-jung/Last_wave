@@ -305,7 +305,7 @@
 
   window.__lastWaveCloudflare={
     version:2,
-    releaseVersion:108,
+    releaseVersion:109,
     configured:Boolean(configuredEndpoint()),
     endpoint:configuredEndpoint(),
     transport:"durable-objects"

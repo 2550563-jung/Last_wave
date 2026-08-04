@@ -81,7 +81,7 @@ const result=await page.evaluate(()=>{
   };
 });
 
-assert.equal(result.version,"v108");
+assert.equal(result.version,"v109");
 assert.equal(result.addon,104);
 assert.deepEqual(result.adjusted,{
   survivor:1000,

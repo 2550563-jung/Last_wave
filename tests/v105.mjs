@@ -116,7 +116,7 @@ const result=await page.evaluate(async()=>{
   };
 });
 
-assert.equal(result.version,"v108");
+assert.equal(result.version,"v109");
 assert.equal(result.addon,105);
 assert.deepEqual(result.themeNames,[
   "menu",
