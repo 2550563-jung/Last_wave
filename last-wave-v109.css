@@ -1,0 +1,11 @@
+/* v109: nickname-first local play; accounts remain optional. */
+#guestModeButton,
+#guestModeStatus,
+#guestNicknameOverlay {
+  display: none !important;
+}
+
+#nicknameInput:not([readonly]) {
+  border-color: rgba(111, 220, 255, .72);
+  box-shadow: 0 0 0 1px rgba(111, 220, 255, .16), 0 0 22px rgba(53, 191, 255, .08);
+}

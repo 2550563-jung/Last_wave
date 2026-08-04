@@ -29,8 +29,8 @@ const result=await page.evaluate(()=>{
   };
 });
 
-assert.equal(result.version,"v108");
-assert.equal(result.release,108);
+assert.equal(result.version,"v109");
+assert.equal(result.release,109);
 assert.equal(result.season,"2026-S3");
 assert.equal(result.directorUi,true);
 assert.equal(result.rewardUi,true);
