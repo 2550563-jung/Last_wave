@@ -2887,7 +2887,7 @@ button.v82-iconized:not(.switch){
         <p>웨이브 종료 후 상점에서 새 무기를 구매하고 바로 장착할 수 있습니다. 보유 무기는 사라지지 않으며 현재 무기 하나를 선택해 사용합니다.</p>
         <p><b>강화:</b> 현재 무기의 피해량이 증가합니다. 강화가 높아질수록 성공 확률이 낮아지지만 실패해도 무기나 강화 단계는 절대 파괴되지 않습니다.</p>
         <p><b>진화:</b> +5 이상에서 진화 프리즘를 사용해 무기를 상위 형태로 각성시킵니다.</p>
-        <p><b>합체:</b> 특정 무기와 특정 색상 조건을 만족하면 스웜 SMG, 레일건, 카타스트로피 런처, 썬더스톰 같은 특수 무기를 만들 수 있습니다.</p>
+        <p><b>합체:</b> 특정 무기·색상·합체 비용을 모두 준비하면 특수 무기를 만들 수 있습니다. 신규 최상위 합체로 싱귤래리티 엔진, 프리즘 타이푼, 리바이어던 배러지, 앱솔루트 스톰이 추가되었습니다.</p>
         <p>상점에서는 구매·강화·펫·근접무기·합체를 실행할 때마다 현재 돈과 다음 가격이 즉시 다시 계산됩니다.</p>
       </div>
 
@@ -3333,7 +3333,17 @@ button.v82-iconized:not(.switch){
 
 <div id="adminLogin" class="overlay">
 
-  <div class="panel hero" style="max-width:460px">
+  <style>
+    .admin-vault-shell{max-width:460px;border:1px solid #d3a83d;background:radial-gradient(circle at 50% 0,#39301e,#111820 58%,#080d12);box-shadow:0 24px 90px #000c,inset 0 0 0 3px #e5bd5240}
+    .admin-vault-door{width:86px;height:86px;margin:0 auto 12px;border:7px double #d5ad49;border-radius:50%;display:grid;place-items:center;color:#f8db7a;font-size:34px;background:radial-gradient(circle,#313b42,#11171c);box-shadow:inset 0 0 18px #000,0 0 24px #c7963138}
+    .admin-vault-display{width:100%;box-sizing:border-box;padding:14px;text-align:center;letter-spacing:.55em;font-size:24px;font-weight:900;border:1px solid #d4aa43;border-radius:12px;background:#05090c;color:#f4cf65;box-shadow:inset 0 0 18px #000}
+    .admin-vault-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px auto;max-width:310px}
+    .admin-vault-keypad button{aspect-ratio:1;border:1px solid #d2a844;border-radius:50%;background:radial-gradient(circle at 35% 25%,#ffeaa0,#b6841f 58%,#4e3508);color:#1c1303;font-size:20px;font-weight:1000;box-shadow:inset 0 2px 5px #fff8,0 5px 14px #0008}
+  </style>
+
+  <div class="panel hero admin-vault-shell">
+
+    <div class="admin-vault-door" aria-hidden="true">◆</div>
 
     <div class="eyebrow">
       RESTRICTED ACCESS
@@ -3350,19 +3360,23 @@ button.v82-iconized:not(.switch){
       <input
         id="adminPasswordInput"
         type="password"
+        inputmode="none"
+        maxlength="8"
+        readonly
         autocomplete="off"
-        placeholder="관리자 비밀번호"
+        placeholder="••••••••"
       >
-
-      <button
-        id="adminLoginButton"
-        class="btn rainbow-btn"
-        type="button"
-      >
-        인증
-      </button>
 
     </div>
+
+    <div id="adminVaultKeypad" class="admin-vault-keypad">
+      <button type="button" data-admin-key="1">1</button><button type="button" data-admin-key="2">2</button><button type="button" data-admin-key="3">3</button>
+      <button type="button" data-admin-key="4">4</button><button type="button" data-admin-key="5">5</button><button type="button" data-admin-key="6">6</button>
+      <button type="button" data-admin-key="7">7</button><button type="button" data-admin-key="8">8</button><button type="button" data-admin-key="9">9</button>
+      <button type="button" data-admin-action="clear">C</button><button type="button" data-admin-key="0">0</button><button type="button" data-admin-action="back">⌫</button>
+    </div>
+
+    <button id="adminLoginButton" class="btn rainbow-btn" type="button" disabled>금고 열기</button>
 
     <p id="adminLoginStatus"></p>
 
@@ -3719,7 +3733,11 @@ const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
 
-const GAME_VERSION="v109";
+const ADMIN_AUTH_URL =
+  SUPABASE_URL +
+  "/functions/v1/admin-auth";
+
+const GAME_VERSION="v110";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -6405,6 +6423,23 @@ const WEAPONS={
     category:"합체 · 초광속 관통",desc:"하푼 레일러의 중량 탄자와 레이저 기술을 결합한 최상급 관통 무기. 긴 직선을 거의 즉시 관통하며 마지막에 작은 에너지 폭발을 남긴다."
   },
 
+  singularityEngine:{
+    name:"싱귤래리티 엔진",cost:0,damage:410,rate:2.9,speed:1060,spread:.02,pellets:2,pierce:10,blast:145,chain:4,fusion:true,
+    category:"합체 · 중력 붕괴",desc:"보텍스와 플라즈마를 압축한 이중 붕괴탄이 관통·폭발·연쇄를 동시에 일으킨다."
+  },
+  prismTyphoon:{
+    name:"프리즘 타이푼",cost:0,damage:88,rate:12.5,speed:1720,spread:.16,pellets:4,pierce:6,blast:0,chain:2,fusion:true,
+    category:"합체 · 유도 광폭풍",desc:"스캐터 레이저와 이온 탄막이 넓은 프리즘 폭풍을 만들어 빠른 적을 추적한다."
+  },
+  leviathanBarrage:{
+    name:"리바이어던 배러지",cost:0,damage:520,rate:1.35,speed:980,spread:.08,pellets:3,pierce:10,blast:175,chain:0,fusion:true,
+    category:"합체 · 중량 미사일",desc:"초중량 하푼 세 발이 미사일 폭발을 동반해 보스와 밀집 적을 함께 찢는다."
+  },
+  absoluteStorm:{
+    name:"앱솔루트 스톰",cost:0,damage:165,rate:7.4,speed:1360,spread:.045,pellets:2,pierce:6,blast:68,chain:7,fusion:true,
+    category:"합체 · 빙결 전격",desc:"냉각탄과 연쇄 번개가 결합해 빠른 적 무리를 멈추고 넓게 감전시킨다."
+  },
+
   rainbowCopy:{
     name:"PRISM-Ω 복제품",cost:250000,damage:4200,rate:7,speed:1550,spread:.02,pellets:1,pierce:12,blast:0,replica:true,
     category:"초고가 특수무기",desc:"극비 실험무기를 민간용으로 재설계한 초고가 복제품. 가격이 매우 높지만 일반 무기와 비교하기 어려운 막대한 피해를 준다."
@@ -6969,20 +7004,24 @@ function resetAllPetProgress(
 
 
 const FUSIONS=[
-  {id:"swarmSmg",name:"스웜 SMG",requires:["smg"],color:"split",desc:"SMG + 보라(분열) · 2연장 초고속 탄막"},
-  {id:"railgun",name:"레일건",requires:["sniper"],color:"pierce",desc:"저격소총 + 청색(관통) · 초고관통 단발"},
-  {id:"catastrophe",name:"카타스트로피 런처",requires:["launcher"],color:"blast",desc:"로켓 런처 + 주황(폭발) · 거대 폭발"},
-  {id:"thunderstorm",name:"썬더스톰",requires:["tesla","rifle"],color:"slow",desc:"테슬라 캐논 + 돌격소총 + 청록(둔화) · 연쇄 전격 탄막"},
-  {id:"infernoCycler",name:"인페르노 사이클러",requires:["shotgun","plasma"],color:"burn",desc:"산탄총 + 플라즈마 캐논 + 적색(화상) · 다중 화염폭발 산탄"},
-  {id:"voidLance",name:"보이드 랜스",requires:["sniper","plasma"],color:"homing",desc:"저격소총 + 플라즈마 캐논 + 분홍(유도) · 초장거리 붕괴탄"},
-  {id:"stormReaper",name:"스톰 리퍼",requires:["minigun","tesla"],color:"slow",desc:"미니건 + 테슬라 캐논 + 청록(둔화) · 초고속 연쇄 전격"},
-  {id:"solarFlare",name:"솔라 플레어",requires:["laserRifle","plasma"],color:"power",desc:"레이저 라이플 + 플라즈마 캐논 + 백색(공격력) · 고속 광열 폭발"},
-  {id:"aegisBreaker",name:"이지스 브레이커",requires:["dmr","gaussRifle"],color:"pierce",desc:"DMR + 가우스 라이플 + 청색(관통) · 초고관통 방어선 파괴"},
-  {id:"hellstorm",name:"헬스톰 포대",requires:["grenadeLauncher","launcher"],color:"blast",desc:"유탄발사기 + 로켓 런처 + 주황(폭발) · 쌍발 초대형 포격"},
-  {id:"cryoNova",name:"크라이오 노바",requires:["cryoCarbine","plasma"],color:"slow",desc:"크라이오 카빈 + 플라즈마 캐논 + 청록(둔화) · 냉각 관통 폭발"},
-  {id:"toxicHive",name:"톡식 하이브",requires:["needleGun","microMissilePod"],color:"poison",desc:"니들 스웜 + 마이크로 미사일 포드 + 녹색(중독) · 독성 군체 탄막"},
-  {id:"arcMortar",name:"아크 모타르",requires:["mortar","arcRifle"],color:"blast",desc:"중형 박격포 + 아크 라이플 + 주황(폭발) · 대형 전격 포격"},
-  {id:"starPiercer",name:"스타 피어서",requires:["harpoon","laserRifle"],color:"pierce",desc:"하푼 레일러 + 레이저 라이플 + 청색(관통) · 초광속 초관통"}
+  {id:"swarmSmg",name:"스웜 SMG",cost:2600,requires:["smg"],color:"split",desc:"SMG + 보라(분열) · 2연장 초고속 탄막"},
+  {id:"railgun",name:"레일건",cost:5200,requires:["sniper"],color:"pierce",desc:"저격소총 + 청색(관통) · 초고관통 단발"},
+  {id:"catastrophe",name:"카타스트로피 런처",cost:7800,requires:["launcher"],color:"blast",desc:"로켓 런처 + 주황(폭발) · 거대 폭발"},
+  {id:"thunderstorm",name:"썬더스톰",cost:11000,requires:["tesla","rifle"],color:"slow",desc:"테슬라 캐논 + 돌격소총 + 청록(둔화) · 연쇄 전격 탄막"},
+  {id:"infernoCycler",name:"인페르노 사이클러",cost:13500,requires:["shotgun","plasma"],color:"burn",desc:"산탄총 + 플라즈마 캐논 + 적색(화상) · 다중 화염폭발 산탄"},
+  {id:"voidLance",name:"보이드 랜스",cost:16500,requires:["sniper","plasma"],color:"homing",desc:"저격소총 + 플라즈마 캐논 + 분홍(유도) · 초장거리 붕괴탄"},
+  {id:"stormReaper",name:"스톰 리퍼",cost:19000,requires:["minigun","tesla"],color:"slow",desc:"미니건 + 테슬라 캐논 + 청록(둔화) · 초고속 연쇄 전격"},
+  {id:"solarFlare",name:"솔라 플레어",cost:22000,requires:["laserRifle","plasma"],color:"power",desc:"레이저 라이플 + 플라즈마 캐논 + 백색(공격력) · 고속 광열 폭발"},
+  {id:"aegisBreaker",name:"이지스 브레이커",cost:26000,requires:["dmr","gaussRifle"],color:"pierce",desc:"DMR + 가우스 라이플 + 청색(관통) · 초고관통 방어선 파괴"},
+  {id:"hellstorm",name:"헬스톰 포대",cost:30000,requires:["grenadeLauncher","launcher"],color:"blast",desc:"유탄발사기 + 로켓 런처 + 주황(폭발) · 쌍발 초대형 포격"},
+  {id:"cryoNova",name:"크라이오 노바",cost:34000,requires:["cryoCarbine","plasma"],color:"slow",desc:"크라이오 카빈 + 플라즈마 캐논 + 청록(둔화) · 냉각 관통 폭발"},
+  {id:"toxicHive",name:"톡식 하이브",cost:39000,requires:["needleGun","microMissilePod"],color:"poison",desc:"니들 스웜 + 마이크로 미사일 포드 + 녹색(중독) · 독성 군체 탄막"},
+  {id:"arcMortar",name:"아크 모타르",cost:45000,requires:["mortar","arcRifle"],color:"blast",desc:"중형 박격포 + 아크 라이플 + 주황(폭발) · 대형 전격 포격"},
+  {id:"starPiercer",name:"스타 피어서",cost:52000,requires:["harpoon","laserRifle"],color:"pierce",desc:"하푼 레일러 + 레이저 라이플 + 청색(관통) · 초광속 초관통"},
+  {id:"singularityEngine",name:"싱귤래리티 엔진",cost:65000,requires:["vortexCannon","plasma"],color:"split",desc:"보텍스 캐논 + 플라즈마 + 보라(분열) · 중력 붕괴"},
+  {id:"prismTyphoon",name:"프리즘 타이푼",cost:78000,requires:["scatterLaser","ionRepeater"],color:"homing",desc:"스캐터 레이저 + 이온 리피터 + 분홍(유도) · 광폭풍"},
+  {id:"leviathanBarrage",name:"리바이어던 배러지",cost:94000,requires:["harpoon","microMissilePod"],color:"blast",desc:"하푼 레일러 + 미사일 포드 + 주황(폭발) · 중량 포격"},
+  {id:"absoluteStorm",name:"앱솔루트 스톰",cost:112000,requires:["cryoCarbine","arcRifle"],color:"slow",desc:"크라이오 카빈 + 아크 라이플 + 청록(둔화) · 빙결 전격"}
 ];
 
 const MELEE_WEAPONS={
@@ -7015,6 +7054,16 @@ const MELEE_WEAPONS={
     desc:"현재 장착 총기의 탄환 색상과 같은 빛을 내는 최상급 근접무기. 다층 광검 잔상과 긴 에너지 검기를 만든다."
   }
 };
+
+/* v110: 모든 런 상점 가격을 올리고, 고가 장비일수록 인상 폭이 커진다. */
+function v110HardenPrice(value){
+  if(!Number.isFinite(value) || value<=0) return value;
+  const factor=1.32+Math.min(.38,Math.log10(value+1)*.075);
+  return Math.ceil(value*factor/50)*50;
+}
+for(const catalog of [WEAPONS,PETS,MELEE_WEAPONS]){
+  for(const item of Object.values(catalog)) item.cost=v110HardenPrice(item.cost);
+}
 
 
 const GRAPHICS_MODES={
@@ -12505,13 +12554,14 @@ function spawnEnemy(){
   const scale=
     1+
     wave*
-    .054+
+    .068+
     Math.max(
       0,
       wave-
-      70
+      35
     )*
-    .020;
+    .028+
+    Math.pow(Math.max(0,wave-20),1.18)*.0038;
 
   const enemy={
 
@@ -12549,7 +12599,7 @@ function spawnEnemy(){
         Math.min(
           .66,
           wave*
-          .0046
+          .0053
         )
       ),
 
@@ -12558,7 +12608,8 @@ function spawnEnemy(){
       (
         1+
         wave*
-        .020
+        .025+
+        Math.max(0,wave-40)*.004
       ),
 
     color:
@@ -12665,16 +12716,16 @@ function spawnBoss(){
     (
       1250+
       wave*
-      135
+      165
     )*
     (
       1+
       Math.max(
         0,
         wave-
-        100
+        45
       )*
-      .023
+      .032
     );
 
   const boss = {
@@ -12709,7 +12760,7 @@ function spawnBoss(){
 
   damage:
     10 +
-    wave * .145,
+    wave * .19 + Math.max(0,wave-50)*.035,
 
   elite:true,
 
@@ -15949,9 +16000,10 @@ function canFuse(recipe){
 
   if(!recipe.color) return true;
 
-  return recipe.requires.some(
+  const colorReady=recipe.requires.some(
     id=>player.weaponColors[id]===recipe.color
   );
+  return colorReady && money>=recipe.cost;
 }
 
 function renderFusions(){
@@ -15960,6 +16012,7 @@ function renderFusions(){
 
   for(const recipe of FUSIONS){
     const ready=canFuse(recipe);
+    const ownsResult=player.weaponSlots.includes(recipe.id);
     const card=document.createElement("div");
     card.className="card fusion-card"+(ready?" ready":"");
 
@@ -15974,12 +16027,12 @@ function renderFusions(){
 
     desc.innerHTML=
       `${recipe.desc}<br>`+
-      `<span class="catalog-stat">필요 무기: ${requiredNames} · 필요 색상: ${colorName}</span><br>`+
-      `<span class="pet-detail-note">${missingWeapons.length?`없는 무기: ${missingWeapons.map(id=>WEAPONS[id]?.name||id).join(", ")}`:"무기 조건 충족"} · ${colorReady?"색상 조건 충족":`${colorName} 색상을 재료 무기 중 하나에 장착해야 함`}</span>`;
+      `<span class="catalog-stat">합체 비용: ₩${formatNumber(recipe.cost)} · 필요 무기: ${requiredNames} · 필요 색상: ${colorName}</span><br>`+
+      `<span class="pet-detail-note">${ownsResult?"이미 보유":missingWeapons.length?`없는 무기: ${missingWeapons.map(id=>WEAPONS[id]?.name||id).join(", ")}`:"무기 조건 충족"} · ${colorReady?"색상 조건 충족":`${colorName} 색상을 재료 무기 중 하나에 장착해야 함`} · ${money>=recipe.cost?"비용 준비 완료":`₩${formatNumber(recipe.cost-money)} 부족`}</span>`;
 
     const button=document.createElement("button");
     button.className="btn gold-btn";
-    button.textContent=ready?"합체":"조건 미충족";
+    button.textContent=ready?`₩${formatNumber(recipe.cost)} 합체`:ownsResult?"보유 중":"조건 미충족";
     button.disabled=!ready;
     button.onclick=()=>fuseWeapon(recipe);
 
@@ -15990,6 +16043,19 @@ function renderFusions(){
 
 function fuseWeapon(recipe){
   if(!canFuse(recipe)) return;
+
+  spendSharedRunMoney(
+    recipe.cost,
+    `fusion:${player.id}:${recipe.id}`,
+    () => completeFuseWeapon(recipe),
+    message => showMessage("합체 실패",message||"합체 비용이 부족합니다.")
+  );
+}
+
+function completeFuseWeapon(recipe){
+  if(!player || player.weaponSlots.includes(recipe.id)) return;
+  if(!recipe.requires.every(id=>player.weaponSlots.includes(id))) return;
+  if(recipe.color && !recipe.requires.some(id=>player.weaponColors[id]===recipe.color)) return;
 
   const indices=recipe.requires
     .map(id=>player.weaponSlots.indexOf(id))
@@ -16366,9 +16432,10 @@ function renderUpgrade(){
     0;
 
   const cost =
-    250 +
+    420 +
     level *
-    220;
+    360 +
+    level * level * 35;
 
   const max =
     10 +
@@ -26135,9 +26202,10 @@ $("upgradeButton").onclick=
       0;
 
     const cost=
-      250+
+      420+
       level*
-      220;
+      360+
+      level*level*35;
 
     spendSharedRunMoney(
       cost,
@@ -29434,11 +29502,7 @@ updateAdminButton=function(){
 
   if(menuButton){
     menuButton.style.display=
-      unlocked
-        ?
-        "inline-flex"
-        :
-        "none";
+      "inline-flex";
   }
 
   const floating=
@@ -29475,6 +29539,7 @@ openAdminLogin=function(){
   adminMode=false;
 
   $("adminPasswordInput").value="";
+  if(typeof v110RefreshVault==="function") v110RefreshVault();
   $("adminLoginStatus").textContent="";
 
   hideOverlay(
@@ -29487,40 +29552,42 @@ openAdminLogin=function(){
 
 };
 
-loginAdmin=function(){
+const v110AdminInput=$("adminPasswordInput");
+const v110AdminLoginButton=$("adminLoginButton");
+function v110RefreshVault(){
+  v110AdminLoginButton.disabled=v110AdminInput.value.length!==8;
+  v110AdminInput.classList.add("admin-vault-display");
+}
+document.querySelectorAll("#adminVaultKeypad [data-admin-key]").forEach(button=>{
+  button.onclick=()=>{if(v110AdminInput.value.length<8)v110AdminInput.value+=button.dataset.adminKey;v110RefreshVault();};
+});
+document.querySelector('#adminVaultKeypad [data-admin-action="clear"]').onclick=()=>{v110AdminInput.value="";v110RefreshVault();};
+document.querySelector('#adminVaultKeypad [data-admin-action="back"]').onclick=()=>{v110AdminInput.value=v110AdminInput.value.slice(0,-1);v110RefreshVault();};
+v110RefreshVault();
 
-  const password=
-    $("adminPasswordInput").value;
-
-  if(
-    password!==
-    DEV_PASSWORD
-  ){
-    $("adminLoginStatus").textContent=
-      "비밀번호가 틀렸습니다.";
-    return;
+loginAdmin=async function(){
+  const password=v110AdminInput.value;
+  if(password.length!==8) return;
+  v110AdminLoginButton.disabled=true;
+  $("adminLoginStatus").textContent="보안 서버에서 확인 중…";
+  try{
+    const response=await fetch(ADMIN_AUTH_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json",apikey:SUPABASE_PUBLISHABLE_KEY},
+      body:JSON.stringify({password})
+    });
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok||!result.ok){
+      $("adminLoginStatus").textContent=response.status===429?"시도 횟수가 많습니다. 잠시 후 다시 시도하세요.":"비밀번호가 틀렸습니다.";
+      v110AdminInput.value="";v110RefreshVault();return;
+    }
+    unlockAdminAccessForCurrentAccount();
+    adminMode=true;updateAdminButton();hideOverlay(ui.adminLogin);openAdminPanel();
+    showMessage("ADMIN MODE","관리자 인증 완료 · 관리자 기능을 사용한 기록은 일반 랭킹과 분리됩니다.");
+  }catch(error){
+    $("adminLoginStatus").textContent="인증 서버에 연결하지 못했습니다.";
+    v110RefreshVault();
   }
-
-  unlockAdminAccessForCurrentAccount();
-
-  adminMode=true;
-  updateAdminButton();
-
-  hideOverlay(
-    ui.adminLogin
-  );
-
-  openAdminPanel();
-
-  showMessage(
-    "ADMIN MODE",
-    isAdminAccessUnlockedForCurrentAccount()
-      ?
-      "이 계정에 관리자 버튼이 해금되었습니다. 다음에도 비밀번호 입력은 필요합니다."
-      :
-      "관리자 인증 완료"
-  );
-
 };
 
 closeAdminPanel=function(){
@@ -33151,8 +33218,8 @@ const V82_DIFFICULTIES={
     score:1.35
   }
 };
-const V82_SKINS={default:{name:"기본 생존자",desc:"직업별 기본 복장",currency:"credits",cost:0,colors:["#4b6254","#79d8ff"]},ember:{name:"잿불 구조대",desc:"붉은 잔광 스킨",currency:"credits",cost:2800,colors:["#ff6d52","#ffca63"]},toxic:{name:"독성 연구원",desc:"녹색 생체 오라",currency:"credits",cost:4200,colors:["#55ef83","#baff63"]},frost:{name:"빙결 정찰대",desc:"청백색 파동",currency:"prism",cost:4,colors:["#63dfff","#d5f7ff"]},void:{name:"보이드 워커",desc:"보랏빛 공간 잔상",currency:"prism",cost:8,colors:["#a979ff","#ff81db"]},royal:{name:"왕실 근위대",desc:"금빛 방어 링",currency:"relics",cost:3,colors:["#ffd76b","#ff5d72"]},neon:{name:"네온 러너",desc:"청록·분홍 네온",currency:"relics",cost:5,colors:["#4ff8ff","#ff5bd2"]},bloodmoon:{name:"블러드문 생존자",desc:"적색 월식 오라",currency:"relics",cost:8,colors:["#ff3d55","#5d1025"]}};
-const V82_PERMANENT_UPGRADES={vitality:{name:"생존 본능",desc:"최대 체력 +3% / 랭크",max:8,currency:"credits",baseCost:1500},arsenal:{name:"전투 교범",desc:"공격력 +1.5% / 랭크",max:8,currency:"credits",baseCost:2000},mobility:{name:"기동 훈련",desc:"이동속도 +1.5% / 랭크",max:8,currency:"credits",baseCost:1800},guardian:{name:"응급 보호막",desc:"시작 보호막 +5 / 랭크",max:8,currency:"prism",baseCost:2},fortune:{name:"보급 감각",desc:"시작 공용 돈 +100 / 랭크",max:8,currency:"relics",baseCost:1}};
+const V82_SKINS={default:{name:"기본 생존자",desc:"직업별 기본 복장",currency:"credits",cost:0,colors:["#4b6254","#79d8ff"]},ember:{name:"잿불 구조대",desc:"붉은 잔광 스킨",currency:"credits",cost:4600,colors:["#ff6d52","#ffca63"]},toxic:{name:"독성 연구원",desc:"녹색 생체 오라",currency:"credits",cost:7200,colors:["#55ef83","#baff63"]},frost:{name:"빙결 정찰대",desc:"청백색 파동",currency:"prism",cost:7,colors:["#63dfff","#d5f7ff"]},void:{name:"보이드 워커",desc:"보랏빛 공간 잔상",currency:"prism",cost:14,colors:["#a979ff","#ff81db"]},royal:{name:"왕실 근위대",desc:"금빛 방어 링",currency:"relics",cost:5,colors:["#ffd76b","#ff5d72"]},neon:{name:"네온 러너",desc:"청록·분홍 네온",currency:"relics",cost:9,colors:["#4ff8ff","#ff5bd2"]},bloodmoon:{name:"블러드문 생존자",desc:"적색 월식 오라",currency:"relics",cost:14,colors:["#ff3d55","#5d1025"]}};
+const V82_PERMANENT_UPGRADES={vitality:{name:"생존 본능",desc:"최대 체력 +3% / 랭크",max:8,currency:"credits",baseCost:2600},arsenal:{name:"전투 교범",desc:"공격력 +1.5% / 랭크",max:8,currency:"credits",baseCost:3500},mobility:{name:"기동 훈련",desc:"이동속도 +1.5% / 랭크",max:8,currency:"credits",baseCost:3100},guardian:{name:"응급 보호막",desc:"시작 보호막 +5 / 랭크",max:8,currency:"prism",baseCost:4},fortune:{name:"보급 감각",desc:"시작 공용 돈 +100 / 랭크",max:8,currency:"relics",baseCost:2}};
 const V82_JOB_TALENT_NAMES={soldier:[["화력 집중","공격력 +4%","damageMult",.04],["전투 방탄","최대 체력 +6%","hpMult",.06],["정밀 사격","치명타 +2%","critBonus",.02]],student:[["빠른 학습","공격력 +3%","damageMult",.03],["전력 질주","이동속도 +5%","speedMult",.05],["아드레날린","연사 +4%","rateBonus",.04]],scientist:[["촉매 증폭","공격력 +4%","damageMult",.04],["생체 보호막","보호막 +10","shieldBonus",10],["고속 분석","연사 +5%","rateBonus",.05]],courier:[["극한 속도","이동속도 +6%","speedMult",.06],["경량 장비","연사 +4%","rateBonus",.04],["전투 집중","공격력 +3%","damageMult",.03]],guard:[["이동 요새","최대 체력 +8%","hpMult",.08],["중장갑","방어율 +2%","armorBonus",.02],["보호막 전개","보호막 +15","shieldBonus",15]],medic:[["전장 응급처치","재생 +0.45","regenBonus",.45],["회복 체질","최대 체력 +7%","hpMult",.07],["안정된 손","공격력 +3%","damageMult",.03]],engineer:[["오버클럭","연사 +6%","rateBonus",.06],["강화 외골격","최대 체력 +5%","hpMult",.05],["정밀 교정","치명타 +2%","critBonus",.02]],firefighter:[["내열 장비","최대 체력 +8%","hpMult",.08],["강제 돌파","공격력 +4%","damageMult",.04],["구조 돌진","이동속도 +4%","speedMult",.04]]};
 const V82_EVENTS=[{id:"armored",name:"강철 감염체",desc:"적 체력 +35% · 크레딧 보상 증가",icon:"shield",hp:1.35,credit:1.6},{id:"frenzy",name:"광란의 밤",desc:"적 속도와 공격력 증가",icon:"skull",speed:1.22,damage:1.28,credit:1.35},{id:"swarm",name:"대규모 군집",desc:"적 수 +30%",icon:"horde",count:1.3,credit:1.35},{id:"eliteHunt",name:"엘리트 사냥",desc:"일부 감염체가 엘리트로 변이",icon:"target",eliteChance:.28,credit:1.55},{id:"supply",name:"긴급 보급 작전",desc:"공용 돈 즉시 보급",icon:"crate",money:1200,clearCredits:180},{id:"recovery",name:"구조 신호",desc:"팀 체력과 보호막 회복",icon:"medic",heal:.35,shield:20},{id:"bloodMoon",name:"블러드문",desc:"적 수·공격력 증가 · 유물 발견 가능",icon:"moon",count:1.18,damage:1.22,relicChance:.06,credit:1.45},{id:"bounty",name:"현상금 작전",desc:"크레딧 보상 2배",icon:"coin",credit:2}];
 let v82CurrentEvent=null,v82PreviousEvent=null,v82RunStats=null,v82SpectateTargetId="",v82EventHudTimer=0;
