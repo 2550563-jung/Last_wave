@@ -1,0 +1,28 @@
+{
+  "name": "last-wave-desktop",
+  "version": "1.0.0",
+  "author": "jungwoo",
+  "private": true,
+  "description": "Last Wave Windows desktop application",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "43.4.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.jungwoo.lastwave",
+    "productName": "Last Wave",
+    "asar": true,
+    "files": ["main.cjs", "offline.html", "package.json"],
+    "directories": {"output": "dist"},
+    "win": {
+      "icon": "../icons/last-wave-512.png",
+      "target": [{"target": "portable", "arch": ["x64"]}],
+      "artifactName": "Last-Wave-Windows-${version}.exe"
+    }
+  }
+}

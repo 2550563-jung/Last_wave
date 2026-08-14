@@ -2478,6 +2478,7 @@ button.v82-iconized:not(.switch){
       <button id="v82MetaShopButton" class="btn gold-btn" type="button">스킨 · 재화 상점</button>
       <button id="v82TalentButton" class="btn" type="button">직업 특성 트리</button>
       <button id="v82MasteryButton" class="btn" type="button">무기 숙련도</button>
+      <a class="btn gold-btn" href="https://github.com/2550563-jung/Last_wave/releases/latest" target="_blank" rel="noopener">Windows EXE 다운로드</a>
 
       <button id="adminMenuAccessButton" class="btn" type="button">
         관리자 모드
@@ -3737,7 +3738,7 @@ const ADMIN_AUTH_URL =
   SUPABASE_URL +
   "/functions/v1/admin-auth";
 
-const GAME_VERSION="v110";
+const GAME_VERSION="v111";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -32541,6 +32542,7 @@ function attachDraggablePopup(container){
   }
 
   handle.addEventListener("pointerdown",event=>{
+    if(!document.body.classList.contains("lw111-layout-edit")) return;
     if(event.button!==undefined&&event.button!==0) return;
 
     const rect=panel.getBoundingClientRect();
@@ -32754,6 +32756,10 @@ function attachMovableGameUi(
   element.addEventListener(
     "pointerdown",
     event => {
+
+      if(!document.body.classList.contains("lw111-layout-edit")){
+        return;
+      }
 
       if(
         event.button!==undefined &&
@@ -33009,6 +33015,10 @@ function attachMovableGameUi(
   element.addEventListener(
     "dblclick",
     event => {
+
+      if(!document.body.classList.contains("lw111-layout-edit")){
+        return;
+      }
 
       resetMovableGameUi(
         element
@@ -34322,6 +34332,7 @@ killEnemy=function(
 <link rel="stylesheet" href="./last-wave-v102.css?v=109">
 <link rel="stylesheet" href="./last-wave-v108.css?v=109">
 <link rel="stylesheet" href="./last-wave-v109.css?v=109">
+<link rel="stylesheet" href="./last-wave-v111.css?v=111">
 <script src="./last-wave-cloudflare.js?v=109"></script>
 <script src="./last-wave-v88.js?v=109"></script>
 <script src="./last-wave-v92.js?v=109"></script>
@@ -34337,5 +34348,6 @@ killEnemy=function(
 <script src="./last-wave-v107.js?v=109"></script>
 <script src="./last-wave-v108.js?v=109"></script>
 <script src="./last-wave-v109.js?v=109"></script>
+<script src="./last-wave-v111.js?v=111"></script>
 </body>
 </html>
