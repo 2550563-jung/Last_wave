@@ -210,7 +210,7 @@
     drawPet(owner);return true;
   }
   window.__lastWaveSkinsV115={groups,sanitize,price,apply,open,render,compose,drawCharacter,get ready(){return atlasReady;},setDraft(value){draft=sanitize(value);}};
-  document.getElementById("gameVersion").textContent="v116";
-  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=116;
+  document.getElementById("gameVersion").textContent="v116.1";
+  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion="116.1";
 })();
 

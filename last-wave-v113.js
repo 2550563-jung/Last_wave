@@ -1,7 +1,13 @@
 /* Last Wave v113: one price-based combat model, transparent supply draws. */
 (() => {
   "use strict";
-  const DRAW_COST=900;
+  const DRAW_COST=2500;
+  const DRAW_TIERS=[
+    {id:"common",name:"일반",chance:.60},
+    {id:"uncommon",name:"고급",chance:.25},
+    {id:"rare",name:"희귀",chance:.12},
+    {id:"legendary",name:"전설",chance:.03}
+  ];
   const totalCost=id=>{
     const w=WEAPONS[id], recipe=FUSIONS.find(r=>r.id===id);
     return recipe ? recipe.cost+recipe.requires.reduce((n,key)=>n+(WEAPONS[key]?.cost||0),0) : w.cost;
@@ -32,11 +38,18 @@
       (1+(buff.rate||0))*power*(1+Math.max(0,Math.min(1,.05+(buff.crit||0)))*.55);
   }
   const baseOwner=()=>({weaponLevels:{},unlockedEvolutions:{},weaponColors:{},buffs:{rate:0,damage:0,crit:0},damageMult:1});
-  function odds(owner=player){
-    const pool=Object.entries(WEAPONS).filter(([id,w])=>!w.admin&&!w.replica&&!w.fusion&&w.cost>0&&!owner?.weaponSlots?.includes(id))
-      .map(([id,w])=>({id,name:w.name,dps:combatDps(baseOwner(),id),weight:Math.pow(targetDps(w.cost),-3)}));
-    const sum=pool.reduce((n,x)=>n+x.weight,0);
-    return pool.map(x=>({...x,probability:x.weight/sum}));
+  function odds(){
+    const pool=Object.entries(WEAPONS).filter(([,w])=>!w.admin&&!w.replica&&!w.fusion&&w.cost>0)
+      .map(([id,w])=>({id,name:w.name,dps:combatDps(baseOwner(),id)}))
+      .sort((a,b)=>a.dps-b.dps||a.id.localeCompare(b.id));
+    const tierWeights=DRAW_TIERS.map(()=>0);
+    const weighted=pool.map((entry,index)=>{
+      const tierIndex=Math.min(3,Math.floor(index*4/pool.length)),weight=1/entry.dps;
+      tierWeights[tierIndex]+=weight;
+      return {...entry,tierIndex,weight,tier:DRAW_TIERS[tierIndex].id,tierName:DRAW_TIERS[tierIndex].name};
+    });
+    const chanceSum=DRAW_TIERS.reduce((sum,tier,index)=>sum+(tierWeights[index]>0?tier.chance:0),0);
+    return weighted.map(entry=>({...entry,probability:DRAW_TIERS[entry.tierIndex].chance/chanceSum*entry.weight/tierWeights[entry.tierIndex]}));
   }
   function select(pool,u){
     let remaining=Math.max(0,Math.min(.999999999999,u));
@@ -54,10 +67,21 @@
       pending=false;
       const randomValues=new Uint32Array(1);crypto.getRandomValues(randomValues);
       const result=select(pool,randomValues[0]/4294967296);
-      if(!owner.weaponSlots.includes(result.id))owner.weaponSlots.push(result.id);
+      const duplicate=owner.weaponSlots.includes(result.id);
+      if(!duplicate)owner.weaponSlots.push(result.id);
       owner.activeSlot=owner.weaponSlots.indexOf(result.id);
       owner.weaponLevels[result.id]??=0;
-      lastResult=result.name+" 획득! · 확률 "+(result.probability*100).toFixed(3)+"%";
+      let upgradeText="";
+      if(duplicate){
+        const before=Math.max(0,Math.floor(Number(owner.weaponLevels[result.id])||0));
+        const maxLevel=10+Math.max(0,Math.floor(Number(save.prestige)||0))*2;
+        if(before<maxLevel){
+          owner.weaponLevels[result.id]=before+1;
+          upgradeText=" · 확정 강화 +"+before+" → +"+(before+1);
+        }else upgradeText=" · 최대 강화 +"+before+" 유지";
+      }
+      lastResult=(duplicate?"중복 획득 · ":"새 무기 획득 · ")+result.name+" ["+result.tierName+"] · 확률 "+(result.probability*100).toFixed(3)+"%"+
+        upgradeText;
       if(player===owner){
         notifyMultiplayerLoadoutChanged();playSfx("buy");
         syncShopEconomyUI({clearUpgradeResult:true});renderColors();
@@ -74,15 +98,15 @@
       grid.before(section);
     }
     const pool=odds();
-    section.innerHTML='<div class="lw113-draw-art"></div><div><small>SUPPLY DROP</small><h3>무기 보급 상자</h3><p>게임 돈 '+formatNumber(DRAW_COST)+' · 강한 총일수록 낮은 확률 · 미보유 일반 총기만 등장</p><p aria-live="polite">'+lastResult+'</p><button id="lw113DrawButton" class="btn gold-btn">보급 상자 열기</button><details><summary>총기별 확률 · 남은 '+pool.length+'종</summary><p>기본 DPS의 세제곱에 반비례합니다. 획득한 총은 제외하고 확률을 다시 계산합니다. 합체·관리자 무기는 나오지 않습니다.</p><div class="lw113-odds"></div></details></div>';
+    section.innerHTML='<div class="lw113-draw-art"></div><div><small>SUPPLY DROP</small><h3>무기 보급 상자</h3><p>게임 돈 '+formatNumber(DRAW_COST)+' · 중복 시 확정 +1 강화 · 강한 총일수록 낮은 확률</p><p>일반 60% · 고급 25% · 희귀 12% · 전설 3%</p><p aria-live="polite">'+lastResult+'</p><button id="lw113DrawButton" class="btn gold-btn">보급 상자 열기</button><details><summary>총기별 확률 · 전체 '+pool.length+'종 · 중복 포함</summary><p>기본 DPS 순으로 4개 등급을 나누며 같은 등급에서는 DPS에 반비례합니다. 보유 여부에 따라 확률이 바뀌지 않습니다. 중복은 해당 총을 확정 +1 강화하고 장착하며 색상과 슬롯 수를 유지합니다. 상점과 같은 최대 강화에 도달하면 추가 강화·환급은 없습니다. 합체·관리자 무기는 나오지 않습니다.</p><div class="lw113-odds"></div></details></div>';
     const list=section.querySelector(".lw113-odds");
     for(const entry of pool){
       const row=document.createElement("div");
-      row.textContent=entry.name+" · 기본 DPS "+entry.dps.toFixed(1)+" · "+(entry.probability*100).toFixed(3)+"%";list.append(row);
+      row.textContent="["+entry.tierName+"] "+entry.name+" · 기본 DPS "+entry.dps.toFixed(1)+" · "+(entry.probability*100).toFixed(3)+"%";list.append(row);
     }
     const button=document.getElementById("lw113DrawButton");
     button.disabled=pending||state!=="waveComplete"||money<DRAW_COST||!pool.length;
-    button.textContent=pending?"보급 승인 중…":!pool.length?"일반 총기 수집 완료":formatNumber(DRAW_COST)+" 보급 상자 열기";
+    button.textContent=pending?"보급 승인 중…":!pool.length?"뽑기 대상 없음":formatNumber(DRAW_COST)+" 보급 상자 열기";
     button.onclick=drawGun;
   }
   const baseRenderWeapons=renderWeapons;
@@ -116,6 +140,6 @@
   };
   document.getElementById("gameVersion").textContent="v113";
   if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=113;
-  window.__lastWaveV113={version:113,totalCost,targetDps,combatDps,odds,select,drawGun,renderDraw,baseOwner};
+  window.__lastWaveV113={version:113,totalCost,targetDps,combatDps,odds,select,drawGun,renderDraw,baseOwner,drawCost:DRAW_COST,drawTiers:DRAW_TIERS};
 })();
 
