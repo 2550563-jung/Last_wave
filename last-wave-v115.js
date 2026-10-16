@@ -88,32 +88,100 @@
   const oldRoster=makeLoadoutRoster;
   makeLoadoutRoster=function(){const r=oldRoster();for(const entry of r.players||[])entry.styleV115=sanitize(players.get(entry.playerId)?.styleV115);return r;};
 
-  let atlasReady=false;const pieces=[],cache=new Map();
+  let atlasReady=false,baseReady=false;const pieces=[],cache=new Map(),outfits=[[],[]],hairs=[];
   function tinted(index,color,skinOnly=false){
-    const key=index+":"+color+":"+skinOnly;if(cache.has(key))return cache.get(key);
-    const source=pieces[index];if(!source)return null;
+    const key=(typeof index==="number"?index:index.key)+":"+color+":"+skinOnly;if(cache.has(key))return cache.get(key);
+    const source=typeof index==="number"?pieces[index]:index.canvas;if(!source)return null;
     const c=document.createElement("canvas");c.width=source.width;c.height=source.height;
     const g=c.getContext("2d",{willReadFrequently:true});g.drawImage(source,0,0);
     const data=g.getImageData(0,0,c.width,c.height),d=data.data;
     const rgb=color.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16));
     for(let i=0;i<d.length;i+=4){
       if(!d[i+3])continue;
-      if(skinOnly&&!(d[i]>d[i+1]*1.12&&d[i]>d[i+2]*1.22))continue;
+      if(skinOnly){
+        const px=(i/4)%c.width,py=Math.floor(i/4/c.width),female=index.key?.includes("female");
+        const exposed=py<c.height*.20||
+          (py>c.height*(female?.44:.49)&&py<c.height*(female?.57:.62)&&(px<c.width*.24||px>c.width*.76));
+        const skinHue=d[i]>d[i+1]*1.12&&d[i]>d[i+2]*1.22&&d[i+2]>d[i+1]*.52&&d[i]<d[i+1]*1.85;
+        if(!exposed||!skinHue)continue;
+      }
       const light=(d[i]*.3+d[i+1]*.59+d[i+2]*.11)/170;
       d[i]=Math.min(255,rgb[0]*light);d[i+1]=Math.min(255,rgb[1]*light);d[i+2]=Math.min(255,rgb[2]*light);
     }
     g.putImageData(data,0,0);cache.set(key,c);return c;
   }
   function compose(g,raw,x,y,scale=1,female=false){
+    if(!atlasReady)return;
     const s=sanitize(raw);g.save();g.translate(x,y);g.scale(scale,scale);
-    const part=(image,px,py,w,h)=>{if(image)g.drawImage(image,px-w/2,py-h/2,w,h);};
-    part(tinted(female?1:0,skinColors[s.skin],true),0,-25,57,108);
-    part(pieces[12+s.pants],0,4,43,49);
-    part(pieces[8+s.top],0,-43,58,50);
-    part(tinted(4+s.hair,hairColors[s.hairColor]),0,-74,s.hair>=2?27:23,s.hair>=2?29:19);
-    if(s.accessory)part(tinted(15,["","#d9ad50","#62d4ee","#343845"][s.accessory]),6,-67,19,9);
+    const outfit=outfits[female?1:0][s.pants*4+s.top],factor=108/outfit.canvas.height;
+    const width=outfit.canvas.width*factor,left=-width/2,top=-83;
+    g.drawImage(tinted(outfit,skinColors[s.skin],true),left,top,width,108);
+    const head=outfit.head,headWidth=(head.right-head.left)*factor,headHeight=(head.bottom-head.top)*factor;
+    const foreheadX=left+(head.right-(head.right-head.left)*.12)*factor;
+    const foreheadY=top+(head.top+(head.bottom-head.top)*.30)*factor;
+    const hair=hairs[s.hair],attachment=[[.70,.40,.55],[.72,.37,.55],[.72,.39,.54],[.83,.38,.52]][s.hair];
+    const hairScale=headWidth/(hair.canvas.width*attachment[2]);
+    const hairImage=tinted(hair,hairColors[s.hairColor]);
+    g.drawImage(hairImage,foreheadX-hair.canvas.width*attachment[0]*hairScale,
+      foreheadY-hair.canvas.height*attachment[1]*hairScale,hair.canvas.width*hairScale,hair.canvas.height*hairScale);
+    if(s.accessory){
+      const goggles=tinted(15,["","#d9ad50","#62d4ee","#343845"][s.accessory]);
+      const eyeX=left+(head.left+(head.right-head.left)*.64)*factor,eyeY=top+(head.top+(head.bottom-head.top)*.50)*factor;
+      const w=headWidth*1.05,h=headHeight*.30;
+      g.drawImage(goggles,eyeX-w/2,eyeY-h/2,w,h);
+    }
     g.restore();
   }
+  function refreshReady(){
+    atlasReady=baseReady&&outfits.every(sheet=>sheet.length===12)&&hairs.length===4;
+    if(atlasReady)render();
+  }
+  function extractFrame(image,col,row,cols,rows,trim=true){
+    const c=document.createElement("canvas");c.width=Math.floor(image.width/cols);c.height=Math.floor(image.height/rows);
+    const g=c.getContext("2d",{willReadFrequently:true});
+    g.drawImage(image,Math.floor(image.width*col/cols),Math.floor(image.height*row/rows),c.width,c.height,0,0,c.width,c.height);
+    const data=g.getImageData(0,0,c.width,c.height),d=data.data;
+    let left=c.width,top=c.height,right=-1,bottom=-1;
+    for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
+      const i=(y*c.width+x)*4;
+      if(d[i]>130&&d[i+2]>110&&d[i+1]<120&&d[i]+d[i+2]>d[i+1]*3.4)d[i+3]=0;
+      if(d[i+3]){left=Math.min(left,x);top=Math.min(top,y);right=Math.max(right,x);bottom=Math.max(bottom,y);}
+    }
+    g.putImageData(data,0,0);
+    if(!trim)return c;
+    const result=document.createElement("canvas");result.width=Math.max(1,right-left+1);result.height=Math.max(1,bottom-top+1);
+    result.getContext("2d").drawImage(c,left,top,result.width,result.height,0,0,result.width,result.height);
+    return result;
+  }
+  function measureHead(canvas){
+    const g=canvas.getContext("2d"),d=g.getImageData(0,0,canvas.width,canvas.height).data;
+    let left=canvas.width,right=0,top=canvas.height,bottom=0;
+    for(let y=0;y<canvas.height*.12;y++)for(let x=0;x<canvas.width;x++){
+      const i=(y*canvas.width+x)*4;
+      if(d[i+3]>100&&d[i]>d[i+1]*1.12&&d[i]>d[i+2]*1.22){
+        left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);
+      }
+    }
+    if(right<=left)return {left:canvas.width*.4,right:canvas.width*.65,top:0,bottom:canvas.height*.12};
+    return {left,right,top,bottom};
+  }
+  ["male","female"].forEach((gender,genderIndex)=>{
+    const sheet=new Image();sheet.onload=()=>{
+      for(let row=0;row<3;row++)for(let col=0;col<4;col++){
+        const canvas=extractFrame(sheet,col,row,4,3),index=row*4+col;
+        outfits[genderIndex].push({canvas,key:"outfit:"+gender+":"+index,head:measureHead(canvas)});
+      }
+      refreshReady();
+    };sheet.src="./assets/outfits-"+gender+"-v1151.webp";
+  });
+  const hairSheet=new Image();hairSheet.onload=()=>{
+    for(let col=0;col<4;col++){
+      const canvas=extractFrame(hairSheet,col,0,4,1,false);
+      if(col===2)canvas.getContext("2d").clearRect(canvas.width*.88,0,canvas.width*.12,canvas.height);
+      hairs.push({canvas,key:"hair:"+col});
+    }
+    refreshReady();
+  };hairSheet.src="./assets/hair-v1151.webp";
   const image=new Image();image.onload=()=>{
     const rows=[0,.30,.51,.715,1];
     for(let row=0;row<4;row++)for(let col=0;col<4;col++){
@@ -129,7 +197,7 @@
       trimmed.width=Math.max(1,maxX-minX+1);trimmed.height=Math.max(1,maxY-minY+1);
       trimmed.getContext("2d").drawImage(c,minX,minY,trimmed.width,trimmed.height,0,0,trimmed.width,trimmed.height);pieces.push(trimmed);
     }
-    atlasReady=true;render();
+    baseReady=true;refreshReady();
   };image.src="./assets/comic-wardrobe-v115.webp";
   function drawCharacter(owner){
     if(!atlasReady||!owner||owner.dead)return false;
@@ -141,7 +209,7 @@
     drawPet(owner);return true;
   }
   window.__lastWaveSkinsV115={groups,sanitize,price,apply,open,render,compose,drawCharacter,get ready(){return atlasReady;},setDraft(value){draft=sanitize(value);}};
-  document.getElementById("gameVersion").textContent="v115";
-  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=115;
+  document.getElementById("gameVersion").textContent="v115.1";
+  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion="115.1";
 })();
 
