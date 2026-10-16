@@ -200,6 +200,7 @@
     baseReady=true;refreshReady();
   };image.src="./assets/comic-wardrobe-v115.webp";
   function drawCharacter(owner){
+    if(window.__lastWaveGraphicsV116?.style==="classic")return false;
     if(!atlasReady||!owner||owner.dead)return false;
     const p=project(owner.x,owner.y),angle=owner.angle||0,bob=Math.sin(performance.now()*.012)*(owner.motion||0)*1.4;
     ctx.save();ctx.translate(p.x,p.y+bob);if(Math.cos(angle)<0)ctx.scale(-1,1);if(owner.downed)ctx.rotate(Math.PI/2);
@@ -209,7 +210,7 @@
     drawPet(owner);return true;
   }
   window.__lastWaveSkinsV115={groups,sanitize,price,apply,open,render,compose,drawCharacter,get ready(){return atlasReady;},setDraft(value){draft=sanitize(value);}};
-  document.getElementById("gameVersion").textContent="v115.1";
-  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion="115.1";
+  document.getElementById("gameVersion").textContent="v116";
+  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=116;
 })();
 

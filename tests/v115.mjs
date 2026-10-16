@@ -36,7 +36,7 @@ const result=await page.evaluate(()=>{
   const clothingColorPreserved=light.every((value,index)=>value===dark[index])&&light.some(value=>value>0);
   return {price,denied,bought,spent,owned,repeatFree,persisted,cloudSaved,sanitized,outgoing,multiplayerStyle,clothingColorPreserved,version:document.getElementById("gameVersion").textContent};
 });
-assert.equal(result.version,"v115.1");assert.equal(result.price,5900);assert.equal(result.spent,result.price);
+assert.equal(result.version,"v116");assert.equal(result.price,5900);assert.equal(result.spent,result.price);
 for(const key of ["denied","bought","owned","repeatFree","persisted","cloudSaved","outgoing","multiplayerStyle"])assert.ok(result[key],key);
 assert.equal(result.sanitized.hair,0);assert.equal(result.sanitized.skin,2);
 assert.ok(result.clothingColorPreserved,"changing skin color must preserve the orange hoodie");

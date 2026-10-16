@@ -1,0 +1,8 @@
+.lw116-style-control{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:12px 0;padding:12px;border:1px solid #3a6377;border-radius:12px;min-width:0;grid-column:1/-1}
+.lw116-style-control legend{padding:0 7px;font-weight:700;color:#d3eff8;font-size:13px}
+.lw116-style-control .btn{font-size:13px;min-height:38px;padding:8px 14px}
+.lw116-style-control .btn.selected{border-color:#76e4ff;background:#20566d;box-shadow:inset 0 0 0 1px #76e4ff}
+.lw116-style-control small{flex-basis:100%;color:#9db8c5;font-size:11px;text-align:center;line-height:1.5}
+.lw116-classic .lw113-weapon-art,.lw116-classic .lw113-item-thumb,.lw116-classic .lw113-draw-art{display:none!important}
+.lw116-classic .lw113-draw{grid-template-columns:1fr}
+@media(max-width:500px){.lw116-style-control{padding:9px;gap:6px}.lw116-style-control .btn{padding:8px 10px;font-size:12px}}

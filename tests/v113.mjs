@@ -49,7 +49,7 @@ const result=await page.evaluate(()=>{
   const multiplayerDraw=waiting&&player.weaponSlots.length===countBefore+1&&money===4100;
   return {version:document.getElementById("gameVersion").textContent,checks,sum,draw,denied,direct,expected,fusionLast,multiplayerDraw};
 });
-assert.equal(result.version,"v115.1");assert.ok(Math.abs(result.sum-1)<1e-10);
+assert.equal(result.version,"v116");assert.ok(Math.abs(result.sum-1)<1e-10);
 assert.deepEqual(result.draw,{success:true,spent:900,count:1,valid:true,excluded:true});
 assert.ok(result.denied);assert.ok(result.fusionLast);assert.ok(Math.abs(result.direct-result.expected)<1e-8);
 assert.ok(result.multiplayerDraw);

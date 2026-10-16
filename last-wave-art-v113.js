@@ -2,6 +2,44 @@
 (() => {
   "use strict";
   const sheets=[[],[]],ready=[false,false];
+  const STYLE_KEY="lastWaveGraphicsStyleV116";
+  let artStyle="comic";
+  try{if(localStorage.getItem(STYLE_KEY)==="classic")artStyle="classic";}catch{}
+  const isComic=()=>artStyle==="comic";
+  function syncStyleUi(){
+    document.body.classList.toggle("lw116-classic",!isComic());
+    document.body.classList.toggle("lw116-comic",isComic());
+    document.body.classList.toggle("lw113-art-ready",isComic()&&ready.some(Boolean));
+    document.querySelectorAll("[data-lw116-style]").forEach(button=>{
+      const selected=button.dataset.lw116Style===artStyle;
+      button.setAttribute("aria-pressed",String(selected));button.classList.toggle("selected",selected);
+    });
+  }
+  function setStyle(value){
+    if(value!=="classic"&&value!=="comic")return false;
+    artStyle=value;try{localStorage.setItem(STYLE_KEY,value);}catch{}
+    syncStyleUi();if(isComic())decorate();return true;
+  }
+  function installStyleControl(parent,id){
+    if(!parent||document.getElementById(id))return;
+    const group=document.createElement("fieldset");group.id=id;group.className="lw116-style-control";
+    const legend=document.createElement("legend");legend.textContent="그래픽 표현";group.append(legend);
+    for(const [value,label]of [["classic","기존 도형"],["comic","만화풍 이미지"]]){
+      const button=document.createElement("button");button.type="button";button.className="btn";
+      button.dataset.lw116Style=value;button.textContent=label;button.onclick=()=>setStyle(value);group.append(button);
+    }
+    const help=document.createElement("small");help.textContent="언제든 전환 · 이 기기에 선택 저장 · 외형 스킨은 만화풍에서 표시";group.append(help);
+    parent.append(group);
+  }
+  const menuButtons=document.querySelector("#menu .menu-buttons");
+  if(menuButtons){
+    const container=document.createElement("div");container.className="lw116-menu-style";menuButtons.before(container);
+    installStyleControl(container,"lw116MenuStyle");
+  }
+  installStyleControl(document.querySelector("#lw111SettingsOverlay .lw111-settings-grid"),"lw116SettingsStyle");
+  installStyleControl(document.querySelector("#pauseMenu .pause-settings-grid"),"lw116PauseStyle");
+  window.__lastWaveGraphicsV116={get style(){return artStyle;},setStyle,storageKey:STYLE_KEY};
+  syncStyleUi();
   const urls=["./assets/comic-atlas-v113.webp","./assets/comic-items-v113.webp"];
   const thumb=new Map();
   function loadSheet(index){
@@ -22,7 +60,7 @@
         }
         sheets[index].push(c);
       }
-      ready[index]=true;document.body.classList.add("lw113-art-ready");
+      ready[index]=true;syncStyleUi();
       decorate();window.__lastWaveArtV113.ready=ready.every(Boolean);
     };
     image.onerror=()=>{window.__lastWaveArtV113.error="이미지를 불러오지 못했습니다.";};
@@ -49,6 +87,7 @@
     return thumb.get(key);
   }
   function decorate(){
+    if(!isComic())return;
     for(const el of document.querySelectorAll(".lw113-weapon-art")){
       const id=el.closest("[data-weapon-id]")?.dataset.weaponId;
       const url=ready[1]?imageUrl(1,gunIndex(id)):ready[0]?imageUrl(0,12):null;
@@ -71,15 +110,15 @@
   }
   const oldCity=drawCity;
   drawCity=function(){
-    if(!ready[0])return oldCity();
+    if(!isComic()||!ready[0])return oldCity();
     const tile=sheets[0][15],size=420,ox=-((camera.x%size)+size)%size,oy=-(((camera.y*WORLD_Y_SCALE)%size)+size)%size;
     for(let x=ox-size;x<WIDTH+size;x+=size)for(let y=oy-size;y<HEIGHT+size;y+=size)ctx.drawImage(tile,x,y,size,size);
   };
   const oldBackdrop=v63DrawDynamicBackdrop;
-  v63DrawDynamicBackdrop=function(){if(!ready[0])oldBackdrop();};
+  v63DrawDynamicBackdrop=function(){if(!isComic()||!ready[0])return oldBackdrop();};
   const oldPlayer=drawPlayer;
   drawPlayer=function(owner){
-    if(!ready[0])return oldPlayer(owner);if(!owner||owner.dead)return;
+    if(!isComic()||!ready[0])return oldPlayer(owner);if(!owner||owner.dead)return;
     if(window.__lastWaveSkinsV115?.drawCharacter(owner))return;
     const p=project(owner.x,owner.y),flip=Math.cos(owner.angle||0)<0;
     const bob=Math.sin(performance.now()*.012)*(owner.motion||0)*2;
@@ -91,7 +130,7 @@
   };
   const oldEnemy=drawEnemy;
   drawEnemy=function(enemy){
-    if(!ready[0])return oldEnemy(enemy);if(!enemy||enemy.dead)return;
+    if(!isComic()||!ready[0])return oldEnemy(enemy);if(!enemy||enemy.dead)return;
     const p=project(enemy.x,enemy.y);
     const boss=[4,9,5,11,8,10,9,10,7,8][Math.max(0,enemy.bossIndex||0)%10];
     const cell=enemy.boss?boss:({runner:3,charger:3,tank:4,spitter:5,bomber:6}[enemy.type]??2);
@@ -105,7 +144,7 @@
   };
   const oldPet=drawSinglePet;
   drawSinglePet=function(owner){
-    if(!ready[0])return oldPet(owner);if(!owner||owner.dead||!owner.petId)return;
+    if(!isComic()||!ready[0])return oldPet(owner);if(!owner||owner.dead||!owner.petId)return;
     const p=project(owner.petX,owner.petY,18),id=owner.petId;
     const map={hound:8,raven:9,cat:10,gecko:11};
     const cell=map[id],bob=Math.sin(performance.now()*.004)*3;
@@ -113,7 +152,7 @@
   };
   const oldBullets=drawBullets;
   drawBullets=function(){
-    if(!ready[0])return oldBullets();
+    if(!isComic()||!ready[0])return oldBullets();
     for(const [list,hostile]of [[bullets,false],[enemyBullets,true]])for(const b of list){
       const p=project(b.x,b.y),angle=Math.atan2(b.vy*WORLD_Y_SCALE,b.vx);
       sprite(ready[1]?1:0,ready[1]?15:14,p.x,p.y,hostile?17:14,hostile?17:10,false,angle);
@@ -121,7 +160,7 @@
   };
   const oldParticles=drawParticles;
   drawParticles=function(){
-    if(!ready[0])return oldParticles();
+    if(!isComic()||!ready[0])return oldParticles();
     for(const p of particles){
       if(["smoke","blood","debris"].includes(p.type))continue;
       const pos=project(p.x,p.y),alpha=clamp(p.life/p.maxLife,0,1);
@@ -136,7 +175,7 @@
   };
   const oldSupplies=v56DrawSupplies;
   v56DrawSupplies=function(){
-    if(!ready[1])return oldSupplies();if(!v56SystemsEnabled())return;
+    if(!isComic()||!ready[1])return oldSupplies();if(!v56SystemsEnabled())return;
     for(const s of v56State.supplies){const p=project(s.x,s.y);sprite(1,12,p.x,p.y,48,48,false,0,clamp(s.life/3,0,1));}
   };
   window.__lastWaveArtV113={ready:false,decorate,sprite,gunIndex};
