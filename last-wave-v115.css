@@ -1,0 +1,12 @@
+#lw115Wardrobe{z-index:200000}
+body:has(#lw115Wardrobe[style*="flex"]) #lw97SkillDock{display:none!important}
+.lw115-panel{max-width:1060px!important;width:96vw!important;max-height:92vh;overflow:auto;border:2px solid #71dcff!important}
+.lw115-balance{color:#ffd681;font-weight:800;margin:14px 0}
+.lw115-layout{display:grid;grid-template-columns:240px 1fr;gap:22px}
+.lw115-preview{position:sticky;top:0;align-self:start;background:radial-gradient(ellipse at center,#2a536a,#101c2d 72%);border:2px solid #396779;border-radius:18px;text-align:center;padding-bottom:18px}
+.lw115-preview canvas{position:static!important;inset:auto!important;display:block;width:240px;height:300px;max-width:100%}.lw115-preview small{display:block;color:#b1dce9}
+.lw115-groups h3{margin:10px 0;font-size:15px}.lw115-options{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:17px}
+.lw115-option{font:inherit;font-size:12px;background:#172d3e;color:#deedf4;border:2px solid #35586d;border-bottom-width:5px;padding:9px 12px;border-radius:9px;cursor:pointer}
+.lw115-option.selected{outline:2px solid #a3f0ff;background:#24516b}.lw115-option:focus-visible{outline:3px solid #ffe290}
+@media(max-width:650px){.lw115-layout{grid-template-columns:1fr}.lw115-preview{position:relative;max-width:230px;justify-self:center}.lw115-preview canvas{height:220px;width:176px}.lw115-option{font-size:11px;padding:8px}}
+
