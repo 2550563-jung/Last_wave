@@ -22,5 +22,5 @@ try{
   }
   return {poses,maxGap,maxLength,maxGripStep,version:document.getElementById('gameVersion').textContent};
  });
- assert.equal(result.version,'v118');assert.deepEqual(errors,[]);console.log(JSON.stringify(result));
+ assert.equal(result.version,'v120');assert.deepEqual(errors,[]);console.log(JSON.stringify(result));
 }finally{await browser.close();}

@@ -1,4 +1,4 @@
-/* v118: fixed anatomical lengths; fit weapon grips inside both arms' reach. */
+/* v120: proportioned fixed arms, reachable grips and distance-driven walking. */
 (()=>{
  const skins=window.__lastWaveSkinsV115,art=window.__lastWaveArtV113,old=skins.drawCharacter,parts=[];
  const ready=()=>parts.length===12&&skins.ready&&skins.rigReady&&art.ready;
@@ -13,7 +13,7 @@
   }
  };image.src='./assets/aim-arms-v117.webp';
  const rotate=(x,y,a)=>({x:x*Math.cos(a)-y*Math.sin(a),y:x*Math.sin(a)+y*Math.cos(a)});
- function solveIK(start,target,l1=12.5,l2=12.5){
+ function solveIK(start,target,l1=15.5,l2=15.5){
   const dx=target.x-start.x,dy=target.y-start.y,distance=Math.hypot(dx,dy);
   const ux=distance>1e-8?dx/distance:1,uy=distance>1e-8?dy/distance:0;
   // Unreachable input must never lengthen either bone, even for future poses.
@@ -31,8 +31,8 @@
   const primary={x:.4,y:.7},support={x:.67,y:.49},tip={x:.99,y:.28};
   const rotation=screen-Math.atan2((tip.y-primary.y)*h,(tip.x-primary.x)*w);
   recoil=Math.max(0,Math.min(1,Number(recoil)||0));
-  const l1=female?11.5:12.5,l2=l1,reach=l1+l2-.4;
-  const grip={x:anchors.centerX+4+Math.cos(screen)*(4-recoil*1.5),y:anchors.shoulderY+8+Math.sin(screen)*(5-recoil*1.5)};
+  const l1=female?14.5:15.5,l2=l1,reach=l1+l2-.4;
+  const grip={x:anchors.centerX+8+Math.cos(screen)*(8-recoil*1.5),y:anchors.shoulderY+11+Math.sin(screen)*(7-recoil*1.5)};
   const handOffset=rotate(-4.1,.25,rotation),supportOffset=rotate((support.x-primary.x)*w,(support.y-primary.y)*h,rotation);
   const sockets=[anchors.near,anchors.far],offsets=[handOffset,{x:handOffset.x+supportOffset.x,y:handOffset.y+supportOffset.y}];
   // Move the complete weapon, preserving barrel angle and hand contacts.
@@ -48,18 +48,31 @@
  }
  function segment(g,img,a,b,width,length){g.save();g.translate(a.x,a.y);g.rotate(Math.atan2(b.y-a.y,b.x-a.x)-Math.PI/2);g.drawImage(img,-width/2,-.6,width,length+1.2);g.restore();}
  function arm(g,rig,bones){const top=rig.style.top,width=rig.female?6.5:7.5;segment(g,parts[top],bones.start,bones.elbow,width,bones.l1);segment(g,parts[4+top],bones.elbow,bones.end,width*.82,bones.l2);}
- function renderPose(g,style,female,angle,id,recoil=0){
+ const walkers=new WeakMap();
+ function sampleGait(owner,now=performance.now()){
+  let gait=walkers.get(owner);
+  if(!gait){gait={x:owner.x,y:owner.y,time:now,phase:0,amount:0};walkers.set(owner,gait);return {phase:0,amount:0};}
+  const dt=Math.max(0,Math.min(.1,(now-gait.time)/1000)),distance=Math.hypot(owner.x-gait.x,owner.y-gait.y);
+  const moving=dt>0&&distance>.001&&distance<80&&!owner.downed&&!owner.dead;
+  const target=moving?Math.min(1,distance/(dt*150)):0;
+  gait.amount+=(target-gait.amount)*(1-Math.exp(-dt*16));
+  if(moving)gait.phase=(gait.phase+Math.min(distance*.13,dt*22))%(Math.PI*2);
+  if(owner.downed||owner.dead||gait.amount<.001)gait.amount=0;
+  gait.x=owner.x;gait.y=owner.y;gait.time=now;
+  return {phase:gait.phase,amount:gait.amount};
+ }
+ function renderPose(g,style,female,angle,id,recoil=0,gait=null){
   if(!ready())return null;const rig=buildRig(style,female,angle,id,recoil);if(!rig)return null;
-  g.save();g.scale(rig.facing,1);arm(g,rig,rig.far);skins.composeRig(g,style,0,0,1,female);arm(g,rig,rig.near);
+  g.save();g.scale(rig.facing,1);arm(g,rig,rig.far);skins.composeRig(g,style,0,0,1,female,gait);arm(g,rig,rig.near);
   g.save();g.translate(rig.grip.x,rig.grip.y);g.rotate(rig.rotation);g.drawImage(rig.gun,-rig.w*.4,-rig.h*.7,rig.w,rig.h);g.restore();
   rig.contacts.forEach((p,i)=>{const hand=skins.tintRigPart(parts[8+i],'aim-hand:'+i,rig.style.skin);g.save();g.translate(p.x,p.y);g.rotate(rig.rotation);g.drawImage(hand,-5.04,-2.5,7,5);g.restore();});
   g.restore();return rig;
  }
  skins.drawCharacter=function(owner){
   if(!ready())return old(owner);if(window.__lastWaveGraphicsV116?.style==='classic'||!owner||owner.dead)return false;
-  const p=project(owner.x,owner.y),bob=Math.sin(performance.now()*.012)*(owner.motion||0)*1.4;
+  const p=project(owner.x,owner.y),gait=sampleGait(owner),bob=-Math.abs(Math.sin(gait.phase*2))*gait.amount*.7;
   ctx.save();ctx.translate(p.x,p.y+bob);if(owner.downed)ctx.rotate(Math.PI/2);
-  const rig=renderPose(ctx,owner.local?save.styleV115:owner.styleV115,owner.gender==='female',owner.angle||0,getWeaponId(owner),Math.min(1,(owner.muzzleTimer||0)/.055));
+  const rig=renderPose(ctx,owner.local?save.styleV115:owner.styleV115,owner.gender==='female',owner.angle||0,getWeaponId(owner),Math.min(1,(owner.muzzleTimer||0)/.055),gait);
   ctx.restore();if(rig&&owner.muzzleTimer>0&&!owner.downed)art.sprite(1,15,p.x+rig.muzzle.x*rig.facing,p.y+bob+rig.muzzle.y,13,9,false,Math.atan2(Math.sin(owner.angle||0)*WORLD_Y_SCALE,Math.cos(owner.angle||0)));
   drawPet(owner);return true;
  };
@@ -69,5 +82,5 @@
   const owner=players.get(b.ownerId);if(!owner)return null;const angle=Math.atan2(b.vy,b.vx),rig=buildRig(owner.local?save.styleV115:owner.styleV115,owner.gender==='female',angle,b.weaponId);
   if(!rig)return null;const offset={x:rig.muzzle.x*rig.facing-Math.cos(angle)*25,y:rig.muzzle.y-Math.sin(angle)*25*WORLD_Y_SCALE};offsets.set(b,offset);return offset;
  }
- window.__lastWaveAimV117={get ready(){return ready();},buildRig,solveIK,renderPose,bulletOffset};
+ window.__lastWaveAimV117={get ready(){return ready();},buildRig,solveIK,renderPose,bulletOffset,sampleGait};
 })();

@@ -70,7 +70,7 @@ const result=await page.evaluate(()=>{
   crypto.getRandomValues=originalRandom;
   return {version:document.getElementById("gameVersion").textContent,checks,sum,draw,denied,direct,expected,fusionLast,multiplayerDraw,approvedDuplicate,tiersCorrect,oddsStable,duplicateUpgrade,respectsCap,allOwnedAllowed,duplicateMessage};
 });
-assert.equal(result.version,"v118");assert.ok(Math.abs(result.sum-1)<1e-10);
+assert.equal(result.version,"v120");assert.ok(Math.abs(result.sum-1)<1e-10);
 assert.deepEqual(result.draw,{success:true,spent:2500,count:1,valid:true,stillEligible:true});
 for(const key of ["tiersCorrect","oddsStable","duplicateUpgrade","respectsCap","allOwnedAllowed","approvedDuplicate"])assert.ok(result[key],key);
 assert.match(result.duplicateMessage,/중복 획득.*확정 강화 \+2 → \+3/);

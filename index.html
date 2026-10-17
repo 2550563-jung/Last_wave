@@ -2264,7 +2264,7 @@ button.v82-iconized:not(.switch){
 
     <div class="eyebrow menu-eyebrow">
       <span>ONLINE · ROGUELIKE · SURVIVAL 정우가 만듬</span>
-      <span id="gameVersion" class="game-version">v118</span>
+      <span id="gameVersion" class="game-version">v120</span>
     </div>
     <h1 id="gameTitle"><span class="brand-game-icon" aria-hidden="true"><img src="./icons/last-wave-192.png?v=108" alt=""></span>Last Wave</h1>
 
@@ -3738,7 +3738,7 @@ const ADMIN_AUTH_URL =
   SUPABASE_URL +
   "/functions/v1/admin-auth";
 
-const GAME_VERSION="v118";
+const GAME_VERSION="v120";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -34350,12 +34350,17 @@ killEnemy=function(
 <script src="./last-wave-v109.js?v=109"></script>
 <script src="./last-wave-v111.js?v=111"></script>
 <link rel="stylesheet" href="./last-wave-v113.css?v=113">
-<script src="./last-wave-v113.js?v=116.1"></script>
-<script src="./last-wave-art-v113.js?v=118"></script>
+<script src="./last-wave-v113.js?v=120"></script>
+<script src="./last-wave-art-v113.js?v=120"></script>
 <link rel="stylesheet" href="./last-wave-v115.css?v=115">
-<script src="./last-wave-v115.js?v=116.1"></script>
+<script src="./last-wave-v115.js?v=120"></script>
 <link rel="stylesheet" href="./last-wave-v116.css?v=116">
-<script src="./last-wave-aim-v117.js?v=118"></script>
+<script src="./last-wave-aim-v117.js?v=120"></script>
+<script>
+// The page release is authoritative, including when an older addon is cached.
+document.getElementById("gameVersion").textContent=GAME_VERSION;
+if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=Number(GAME_VERSION.slice(1));
+</script>
 </body>
 </html>
 

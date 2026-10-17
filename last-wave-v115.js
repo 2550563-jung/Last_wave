@@ -110,12 +110,36 @@
     }
     g.putImageData(data,0,0);cache.set(key,c);return c;
   }
-  function compose(g,raw,x,y,scale=1,female=false,rigged=false){
+  function walkingBody(g,image,left,top,width,height,gait){
+    const amount=Math.max(0,Math.min(1,gait?.amount||0));
+    if(amount<.001){g.drawImage(image,left,top,width,height);return;}
+    const hip=.50,knee=.765,seam=1.5,split=.50;
+    // Keep the original trouser and shoe pixels together. Each joint rotates
+    // rigid sections at their actual size; no scale or leg-length animation.
+    for(let side=0;side<2;side++){
+      const start=side?split:0,end=side?1:split,pivot=side?.72:.28;
+      const step=Math.sin((gait.phase||0)+side*Math.PI),upper=step*.20*amount;
+      const lower=Math.max(0,-step)*.30*amount;
+      const hipX=left+width*pivot,hipY=top+height*hip,kneeY=height*(knee-hip);
+      g.save();g.translate(hipX,hipY);g.rotate(upper);
+      const sx=image.width*start,sw=image.width*(end-start),dx=width*(start-pivot),dw=width*(end-start);
+      g.drawImage(image,sx,image.height*hip,sw,image.height*(knee-hip)+seam/height*image.height,dx,0,dw,kneeY+seam);
+      g.translate(0,kneeY);g.rotate(lower);
+      g.drawImage(image,sx,image.height*knee-seam/height*image.height,sw,image.height*(1-knee)+seam/height*image.height,dx,-seam,dw,height*(1-knee)+seam);
+      g.restore();
+    }
+    // Pelvis covers the moving hip seams, so coats and waistbands stay aligned.
+    const torsoHeight=height*hip+2;
+    g.drawImage(image,0,0,image.width,image.height*torsoHeight/height,left,top,width,torsoHeight);
+  }
+  function compose(g,raw,x,y,scale=1,female=false,rigged=false,gait=null){
     if(!atlasReady)return;
     const s=sanitize(raw);g.save();g.translate(x,y);g.scale(scale,scale);
     const outfit=(rigged?rigOutfits:outfits)[female?1:0][s.pants*4+s.top],factor=108/outfit.canvas.height;
     const width=outfit.canvas.width*factor,left=-width/2,top=-83;
-    g.drawImage(tinted(outfit,skinColors[s.skin],true),left,top,width,108);
+    const body=tinted(outfit,skinColors[s.skin],true);
+    if(rigged&&gait)walkingBody(g,body,left,top,width,108,gait);
+    else g.drawImage(body,left,top,width,108);
     const head=outfit.head,headWidth=(head.right-head.left)*factor,headHeight=(head.bottom-head.top)*factor;
     const foreheadX=left+(head.right-(head.right-head.left)*.12)*factor;
     const foreheadY=top+(head.top+(head.bottom-head.top)*.30)*factor;
@@ -226,11 +250,11 @@
     drawPet(owner);return true;
   }
   window.__lastWaveSkinsV115={groups,sanitize,price,apply,open,render,compose,drawCharacter,rigLandmarks,
-    composeRig(g,style,x,y,scale,female){return compose(g,style,x,y,scale,female,true);},
+    composeRig(g,style,x,y,scale,female,gait){return compose(g,style,x,y,scale,female,true,gait);},
     tintRigPart(canvas,key,skin){return tinted({canvas,key},""+skinColors[Number.isInteger(skin)&&skin>=0&&skin<skinColors.length?skin:2]);},
     get rigReady(){return rigOutfits.every(sheet=>sheet.length===12);},
     get ready(){return atlasReady;},setDraft(value){draft=sanitize(value);}};
-  document.getElementById("gameVersion").textContent="v118";
-  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=118;
+  document.getElementById("gameVersion").textContent=GAME_VERSION;
+  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=Number(GAME_VERSION.slice(1));
 })();
 

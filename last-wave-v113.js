@@ -138,8 +138,8 @@
       card.append(note);
     });
   };
-  document.getElementById("gameVersion").textContent="v113";
-  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=113;
+  document.getElementById("gameVersion").textContent=GAME_VERSION;
+  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=Number(GAME_VERSION.slice(1));
   window.__lastWaveV113={version:113,totalCost,targetDps,combatDps,odds,select,drawGun,renderDraw,baseOwner,drawCost:DRAW_COST,drawTiers:DRAW_TIERS};
 })();
 

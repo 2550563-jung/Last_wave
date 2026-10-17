@@ -23,7 +23,7 @@ try{
   }
   return {count,maxReach,galleries,version:document.getElementById('gameVersion').textContent};
  });
- assert.equal(result.version,'v118');assert.deepEqual(errors,[]);
+ assert.equal(result.version,'v120');assert.deepEqual(errors,[]);
  result.galleries.forEach((uri,i)=>fs.writeFileSync(new URL('../../../aim-gallery-'+i+'.png',import.meta.url),Buffer.from(uri.split(',')[1],'base64')));
  console.log(JSON.stringify({poses:result.count,maxReach:result.maxReach,errors}));
 }finally{await browser.close();}
