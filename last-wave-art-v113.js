@@ -41,7 +41,17 @@
   window.__lastWaveGraphicsV116={get style(){return artStyle;},setStyle,storageKey:STYLE_KEY};
   syncStyleUi();
   const urls=["./assets/comic-atlas-v113.webp","./assets/comic-items-v113.webp"];
-  const thumb=new Map();
+  const thumb=new Map(),weaponSprites=[];
+  function trimWeapon(source){
+    const g=source.getContext("2d"),data=g.getImageData(0,0,source.width,source.height).data;
+    let left=source.width,top=source.height,right=0,bottom=0;
+    for(let y=0;y<source.height;y++)for(let x=0;x<source.width;x++){
+      if(data[(y*source.width+x)*4+3]>120){left=Math.min(left,x);top=Math.min(top,y);right=Math.max(right,x);bottom=Math.max(bottom,y);}
+    }
+    const result=document.createElement("canvas");result.width=Math.max(1,right-left+1);result.height=Math.max(1,bottom-top+1);
+    result.getContext("2d").drawImage(source,left,top,result.width,result.height,0,0,result.width,result.height);
+    return result;
+  }
   function loadSheet(index){
     const image=new Image();
     image.onload=()=>{
@@ -59,6 +69,7 @@
           g.putImageData(data,0,0);
         }
         sheets[index].push(c);
+        if(index===1&&row<2)weaponSprites[row*4+col]=trimWeapon(c);
       }
       ready[index]=true;syncStyleUi();
       decorate();window.__lastWaveArtV113.ready=ready.every(Boolean);
@@ -154,7 +165,8 @@
   drawBullets=function(){
     if(!isComic()||!ready[0])return oldBullets();
     for(const [list,hostile]of [[bullets,false],[enemyBullets,true]])for(const b of list){
-      const p=project(b.x,b.y),angle=Math.atan2(b.vy*WORLD_Y_SCALE,b.vx);
+      const p=project(b.x,b.y),angle=Math.atan2(b.vy*WORLD_Y_SCALE,b.vx),offset=!hostile?window.__lastWaveAimV117?.bulletOffset(b):null;
+      if(offset){p.x+=offset.x;p.y+=offset.y;}
       sprite(ready[1]?1:0,ready[1]?15:14,p.x,p.y,hostile?17:14,hostile?17:10,false,angle);
     }
   };
@@ -178,7 +190,7 @@
     if(!isComic()||!ready[1])return oldSupplies();if(!v56SystemsEnabled())return;
     for(const s of v56State.supplies){const p=project(s.x,s.y);sprite(1,12,p.x,p.y,48,48,false,0,clamp(s.life/3,0,1));}
   };
-  window.__lastWaveArtV113={ready:false,decorate,sprite,gunIndex};
+  window.__lastWaveArtV113={ready:false,decorate,sprite,gunIndex,weaponImage(id){return weaponSprites[gunIndex(id)];}};
   loadSheet(0);loadSheet(1);
 })();
 

@@ -88,7 +88,7 @@
   const oldRoster=makeLoadoutRoster;
   makeLoadoutRoster=function(){const r=oldRoster();for(const entry of r.players||[])entry.styleV115=sanitize(players.get(entry.playerId)?.styleV115);return r;};
 
-  let atlasReady=false,baseReady=false;const pieces=[],cache=new Map(),outfits=[[],[]],hairs=[];
+  let atlasReady=false,baseReady=false;const pieces=[],cache=new Map(),outfits=[[],[]],rigOutfits=[[],[]],hairs=[];
   function tinted(index,color,skinOnly=false){
     const key=(typeof index==="number"?index:index.key)+":"+color+":"+skinOnly;if(cache.has(key))return cache.get(key);
     const source=typeof index==="number"?pieces[index]:index.canvas;if(!source)return null;
@@ -110,10 +110,10 @@
     }
     g.putImageData(data,0,0);cache.set(key,c);return c;
   }
-  function compose(g,raw,x,y,scale=1,female=false){
+  function compose(g,raw,x,y,scale=1,female=false,rigged=false){
     if(!atlasReady)return;
     const s=sanitize(raw);g.save();g.translate(x,y);g.scale(scale,scale);
-    const outfit=outfits[female?1:0][s.pants*4+s.top],factor=108/outfit.canvas.height;
+    const outfit=(rigged?rigOutfits:outfits)[female?1:0][s.pants*4+s.top],factor=108/outfit.canvas.height;
     const width=outfit.canvas.width*factor,left=-width/2,top=-83;
     g.drawImage(tinted(outfit,skinColors[s.skin],true),left,top,width,108);
     const head=outfit.head,headWidth=(head.right-head.left)*factor,headHeight=(head.bottom-head.top)*factor;
@@ -153,10 +153,10 @@
     result.getContext("2d").drawImage(c,left,top,result.width,result.height,0,0,result.width,result.height);
     return result;
   }
-  function measureHead(canvas){
+  function measureHead(canvas,limit=.12){
     const g=canvas.getContext("2d"),d=g.getImageData(0,0,canvas.width,canvas.height).data;
     let left=canvas.width,right=0,top=canvas.height,bottom=0;
-    for(let y=0;y<canvas.height*.12;y++)for(let x=0;x<canvas.width;x++){
+    for(let y=0;y<canvas.height*limit;y++)for(let x=0;x<canvas.width;x++){
       const i=(y*canvas.width+x)*4;
       if(d[i+3]>100&&d[i]>d[i+1]*1.12&&d[i]>d[i+2]*1.22){
         left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);
@@ -164,6 +164,16 @@
     }
     if(right<=left)return {left:canvas.width*.4,right:canvas.width*.65,top:0,bottom:canvas.height*.12};
     return {left,right,top,bottom};
+  }
+  function rigLandmarks(raw,female=false){
+    const s=sanitize(raw),outfit=rigOutfits[female?1:0][s.pants*4+s.top];
+    if(!outfit)return null;
+    const factor=108/outfit.canvas.height,width=outfit.canvas.width*factor,head=outfit.head;
+    const headWidth=(head.right-head.left)*factor;
+    const neckX=-width/2+(head.left+head.right)*.5*factor-headWidth*.10;
+    const shoulderY=-83+head.bottom*factor+10.8;
+    return {near:{x:neckX-headWidth*(female?1.10:1.55),y:shoulderY},
+      far:{x:neckX+headWidth*(female?.95:1.05),y:shoulderY-.7},centerX:neckX,shoulderY};
   }
   ["male","female"].forEach((gender,genderIndex)=>{
     const sheet=new Image();sheet.onload=()=>{
@@ -173,6 +183,12 @@
       }
       refreshReady();
     };sheet.src="./assets/outfits-"+gender+"-v1151.webp";
+    const rigSheet=new Image();rigSheet.onload=()=>{
+      for(let row=0;row<3;row++)for(let col=0;col<4;col++){
+        const canvas=extractFrame(rigSheet,col,row,4,3),index=row*4+col;
+        rigOutfits[genderIndex].push({canvas,key:"rigoutfit:"+gender+":"+index,head:measureHead(canvas,.085)});
+      }
+    };rigSheet.src="./assets/aim-"+gender+"-v117.webp";
   });
   const hairSheet=new Image();hairSheet.onload=()=>{
     for(let col=0;col<4;col++){
@@ -209,8 +225,12 @@
     if(art?.ready)art.sprite(1,art.gunIndex(getWeaponId(owner)),p.x+Math.cos(angle)*20,p.y-24+Math.sin(angle)*10,56,32,false,angle);
     drawPet(owner);return true;
   }
-  window.__lastWaveSkinsV115={groups,sanitize,price,apply,open,render,compose,drawCharacter,get ready(){return atlasReady;},setDraft(value){draft=sanitize(value);}};
-  document.getElementById("gameVersion").textContent="v116.1";
-  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion="116.1";
+  window.__lastWaveSkinsV115={groups,sanitize,price,apply,open,render,compose,drawCharacter,rigLandmarks,
+    composeRig(g,style,x,y,scale,female){return compose(g,style,x,y,scale,female,true);},
+    tintRigPart(canvas,key,skin){return tinted({canvas,key},""+skinColors[Number.isInteger(skin)&&skin>=0&&skin<skinColors.length?skin:2]);},
+    get rigReady(){return rigOutfits.every(sheet=>sheet.length===12);},
+    get ready(){return atlasReady;},setDraft(value){draft=sanitize(value);}};
+  document.getElementById("gameVersion").textContent="v117";
+  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=117;
 })();
 
