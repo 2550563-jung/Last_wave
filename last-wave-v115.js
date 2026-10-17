@@ -230,7 +230,7 @@
     tintRigPart(canvas,key,skin){return tinted({canvas,key},""+skinColors[Number.isInteger(skin)&&skin>=0&&skin<skinColors.length?skin:2]);},
     get rigReady(){return rigOutfits.every(sheet=>sheet.length===12);},
     get ready(){return atlasReady;},setDraft(value){draft=sanitize(value);}};
-  document.getElementById("gameVersion").textContent="v117";
-  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=117;
+  document.getElementById("gameVersion").textContent="v118";
+  if(window.__lastWaveCloudflare)window.__lastWaveCloudflare.releaseVersion=118;
 })();
 

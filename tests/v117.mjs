@@ -16,14 +16,14 @@ try{
    const canvas=document.createElement('canvas');canvas.width=1120;canvas.height=1800;const g=canvas.getContext('2d');g.fillStyle='#253447';g.fillRect(0,0,1120,1800);
    for(let pants=0;pants<3;pants++)for(let top=0;top<4;top++)for(let dir=0;dir<8;dir++){
     const style={top,pants,skin:2,hair:0,hairColor:0,accessory:0},angle=dir*Math.PI/4;
-    for(const id of chosen){const rig=api.buildRig(style,female,angle,id);for(const arm of [rig.near,rig.far]){const reach=Math.hypot(arm.end.x-arm.start.x,arm.end.y-arm.start.y);maxReach=Math.max(maxReach,reach);if(reach>42)throw Error('Unreachable grip '+JSON.stringify({female,top,pants,dir,id,reach}));for(const [a,b] of [[arm.start,arm.elbow],[arm.elbow,arm.end]])if(Math.abs(Math.hypot(a.x-b.x,a.y-b.y)-21)>.001)throw Error('Arm seam');}count++;}
+    for(const id of chosen){const rig=api.buildRig(style,female,angle,id);for(const arm of [rig.near,rig.far]){const reach=Math.hypot(arm.end.x-arm.start.x,arm.end.y-arm.start.y);maxReach=Math.max(maxReach,reach);if(reach>arm.l1+arm.l2)throw Error('Unreachable grip');for(const [a,b,length] of [[arm.start,arm.elbow,arm.l1],[arm.elbow,arm.end,arm.l2]])if(Math.abs(Math.hypot(a.x-b.x,a.y-b.y)-length)>.001)throw Error('Arm seam');}count++;}
     g.save();g.translate(dir*140+70,(pants*4+top)*150+129);g.scale(1.05,1.05);api.renderPose(g,style,female,angle,chosen[top%chosen.length]);g.restore();
    }
    galleries.push(canvas.toDataURL());
   }
   return {count,maxReach,galleries,version:document.getElementById('gameVersion').textContent};
  });
- assert.equal(result.version,'v117');assert.deepEqual(errors,[]);
+ assert.equal(result.version,'v118');assert.deepEqual(errors,[]);
  result.galleries.forEach((uri,i)=>fs.writeFileSync(new URL('../../../aim-gallery-'+i+'.png',import.meta.url),Buffer.from(uri.split(',')[1],'base64')));
  console.log(JSON.stringify({poses:result.count,maxReach:result.maxReach,errors}));
 }finally{await browser.close();}

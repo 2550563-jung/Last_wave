@@ -38,7 +38,7 @@ try{
    return {comic,classic,unchanged,rejected,version:document.getElementById("gameVersion").textContent};
  });
  assert.ok(result.comic>0);assert.equal(result.classic,0);
- assert.ok(result.unchanged);assert.ok(result.rejected);assert.equal(result.version,"v117");
+ assert.ok(result.unchanged);assert.ok(result.rejected);assert.equal(result.version,"v118");
  await page.evaluate(()=>{state="playing";paused=false;togglePause();});
  await page.locator('#lw116PauseStyle [data-lw116-style="classic"]').click();
  assert.equal(await page.locator('#lw116MenuStyle [data-lw116-style="classic"]').getAttribute("aria-pressed"),"true");

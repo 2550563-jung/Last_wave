@@ -1,4 +1,4 @@
-/* v117: image sleeves, fixed shoulder sockets and shared hand/weapon anchors. */
+/* v118: fixed anatomical lengths; fit weapon grips inside both arms' reach. */
 (()=>{
  const skins=window.__lastWaveSkinsV115,art=window.__lastWaveArtV113,old=skins.drawCharacter,parts=[];
  const ready=()=>parts.length===12&&skins.ready&&skins.rigReady&&art.ready;
@@ -13,9 +13,15 @@
   }
  };image.src='./assets/aim-arms-v117.webp';
  const rotate=(x,y,a)=>({x:x*Math.cos(a)-y*Math.sin(a),y:x*Math.sin(a)+y*Math.cos(a)});
- function solveIK(start,end,l1=21,l2=21){
-  const dx=end.x-start.x,dy=end.y-start.y,d=Math.max(.001,Math.hypot(dx,dy)),a=(l1*l1-l2*l2+d*d)/(2*d),h=Math.sqrt(Math.max(0,l1*l1-a*a));
-  return {start,elbow:{x:start.x+dx/d*a-dy/d*h,y:start.y+dy/d*a+dx/d*h},end};
+ function solveIK(start,target,l1=12.5,l2=12.5){
+  const dx=target.x-start.x,dy=target.y-start.y,distance=Math.hypot(dx,dy);
+  const ux=distance>1e-8?dx/distance:1,uy=distance>1e-8?dy/distance:0;
+  // Unreachable input must never lengthen either bone, even for future poses.
+  if(distance<1e-8&&l1===l2)return {start,elbow:{x:start.x,y:start.y+l1},end:{...start},l1,l2};
+  const d=Math.max(Math.abs(l1-l2)+1e-8,Math.min(l1+l2-.001,distance));
+  const end={x:start.x+ux*d,y:start.y+uy*d};
+  const a=(l1*l1-l2*l2+d*d)/(2*d),h=Math.sqrt(Math.max(0,l1*l1-a*a));
+  return {start,elbow:{x:start.x+ux*a-uy*h,y:start.y+uy*a+ux*h},end,l1,l2};
  }
  function buildRig(style,female,angle,id,recoil=0){
   const anchors=skins.rigLandmarks(style,female),gun=art.weaponImage(id),index=art.gunIndex(id);
@@ -24,13 +30,24 @@
   let w=[30,49,57,50,44,50,46,46][index]||46,h=w*gun.height/gun.width;if(h>26){w*=26/h;h=26;}
   const primary={x:.4,y:.7},support={x:.67,y:.49},tip={x:.99,y:.28};
   const rotation=screen-Math.atan2((tip.y-primary.y)*h,(tip.x-primary.x)*w);
-  const grip={x:anchors.centerX+5+Math.cos(screen)*(5-recoil*2),y:anchors.shoulderY+10+Math.sin(screen)*(6-recoil*2)};
+  recoil=Math.max(0,Math.min(1,Number(recoil)||0));
+  const l1=female?11.5:12.5,l2=l1,reach=l1+l2-.4;
+  const grip={x:anchors.centerX+4+Math.cos(screen)*(4-recoil*1.5),y:anchors.shoulderY+8+Math.sin(screen)*(5-recoil*1.5)};
+  const handOffset=rotate(-4.1,.25,rotation),supportOffset=rotate((support.x-primary.x)*w,(support.y-primary.y)*h,rotation);
+  const sockets=[anchors.near,anchors.far],offsets=[handOffset,{x:handOffset.x+supportOffset.x,y:handOffset.y+supportOffset.y}];
+  // Move the complete weapon, preserving barrel angle and hand contacts.
+  // Each disk constrains the same grip point by one shoulder's fixed reach.
+  for(let pass=0;pass<32;pass++)for(let i=0;i<2;i++){
+   const center={x:sockets[i].x-offsets[i].x,y:sockets[i].y-offsets[i].y};
+   const dx=grip.x-center.x,dy=grip.y-center.y,d=Math.hypot(dx,dy);
+   if(d>reach){grip.x=center.x+dx*reach/d;grip.y=center.y+dy*reach/d;}
+  }
   const point=p=>{const v=rotate((p.x-primary.x)*w,(p.y-primary.y)*h,rotation);return{x:grip.x+v.x,y:grip.y+v.y};};
   const contacts=[grip,point(support)],wrists=contacts.map(p=>{const v=rotate(-4.1,.25,rotation);return{x:p.x+v.x,y:p.y+v.y};});
-  return {anchors,facing,rotation,w,h,gun,grip,contacts,wrists,muzzle:point(tip),near:solveIK(anchors.near,wrists[0]),far:solveIK(anchors.far,wrists[1]),style:skins.sanitize(style),female};
+  return {anchors,facing,rotation,w,h,gun,grip,contacts,wrists,muzzle:point(tip),near:solveIK(anchors.near,wrists[0],l1,l2),far:solveIK(anchors.far,wrists[1],l1,l2),style:skins.sanitize(style),female};
  }
- function segment(g,img,a,b,width){const len=Math.hypot(b.x-a.x,b.y-a.y);g.save();g.translate(a.x,a.y);g.rotate(Math.atan2(b.y-a.y,b.x-a.x)-Math.PI/2);g.drawImage(img,-width/2,-1,width,len+2);g.restore();}
- function arm(g,rig,bones){const top=rig.style.top,width=rig.female?6.5:7.5;segment(g,parts[top],bones.start,bones.elbow,width);segment(g,parts[4+top],bones.elbow,bones.end,width*.82);}
+ function segment(g,img,a,b,width,length){g.save();g.translate(a.x,a.y);g.rotate(Math.atan2(b.y-a.y,b.x-a.x)-Math.PI/2);g.drawImage(img,-width/2,-.6,width,length+1.2);g.restore();}
+ function arm(g,rig,bones){const top=rig.style.top,width=rig.female?6.5:7.5;segment(g,parts[top],bones.start,bones.elbow,width,bones.l1);segment(g,parts[4+top],bones.elbow,bones.end,width*.82,bones.l2);}
  function renderPose(g,style,female,angle,id,recoil=0){
   if(!ready())return null;const rig=buildRig(style,female,angle,id,recoil);if(!rig)return null;
   g.save();g.scale(rig.facing,1);arm(g,rig,rig.far);skins.composeRig(g,style,0,0,1,female);arm(g,rig,rig.near);
