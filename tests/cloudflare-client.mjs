@@ -25,6 +25,15 @@ page.on("console",message=>{
 
 await page.addInitScript(url=>{
   localStorage.setItem("lw_cloudflare_game_server",url);
+  // The local Worker validates sessions against tests/mock-supabase.mjs.
+  Object.defineProperty(window,"__lastWaveRoomAuth",{
+    configurable:true,
+    set(){},
+    get:()=>({
+      getPlayerId:()=>"00000000-0000-4000-8000-000000000000",
+      getToken:()=>"a".repeat(64)
+    })
+  });
 },cloudflareUrl);
 await page.goto(`${testServer.baseUrl}/index.html`,{
   waitUntil:"commit",

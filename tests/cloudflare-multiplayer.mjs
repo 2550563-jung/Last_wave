@@ -29,7 +29,8 @@ function connect(index){
   url.searchParams.set("presence_key",`presence-${index}`);
 
   return new Promise((resolve,reject)=>{
-    const socket=new WebSocket(url);
+    const playerId=`00000000-0000-4000-8000-00000000000${index}`;
+    const socket=new WebSocket(url,["last-wave-v1",`lw-auth.${playerId}.${"a".repeat(64)}`]);
     const timer=setTimeout(()=>reject(new Error(`client ${index} connect timeout`)),5000);
     socket.addEventListener("open",()=>{
       clearTimeout(timer);
@@ -66,6 +67,18 @@ function waitForEventCount(socket,eventName,target,timeout=5000){
 const health=await fetch(`${baseUrl}/health`);
 assert.equal(health.status,200);
 assert.equal((await health.json()).transport,"cloudflare-durable-objects");
+
+const rejected=await new Promise(resolve=>{
+  const url=new URL(baseUrl);
+  url.protocol=url.protocol==="https:"?"wss:":"ws:";
+  url.pathname=`/rooms/${roomCode}/connect`;
+  url.searchParams.set("connection_id","unauthenticated");
+  url.searchParams.set("presence_key","unauthenticated");
+  const socket=new WebSocket(url,["last-wave-v1"]);
+  socket.addEventListener("open",()=>{socket.close();resolve(false);},{once:true});
+  socket.addEventListener("error",()=>resolve(true),{once:true});
+});
+assert.equal(rejected,true);
 
 const clients=[];
 try{

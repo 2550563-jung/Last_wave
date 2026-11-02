@@ -19,17 +19,36 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm test
 
-  # The multiplayer tests connect without a session, which the Worker now rejects,
-  # so CI only type-checks and bundles the Worker until they are updated.
-  worker-check:
+  multiplayer-tests:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: cloudflare-multiplayer
+    env:
+      LW_CLOUDFLARE_TEST_URL: http://127.0.0.1:8787
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm ci --no-audit --no-fund
-      - run: npm run check
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Check Worker build
+        working-directory: cloudflare-multiplayer
+        run: |
+          npm ci --no-audit --no-fund
+          npm run check
+      - name: Start mock Supabase and local Worker
+        run: |
+          node tests/mock-supabase.mjs &
+          cd cloudflare-multiplayer
+          npx wrangler dev --local --port 8787 --var SUPABASE_URL:http://127.0.0.1:54399 > wrangler.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            curl -s -o /dev/null http://127.0.0.1:8787/health && exit 0
+            sleep 1
+          done
+          cat wrangler.log
+          exit 1
+      - run: node tests/run.mjs
+
+  supabase-js-hash:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsSL https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0 | openssl dgst -sha384 -binary | openssl base64 -A
