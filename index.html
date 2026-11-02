@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="./last-wave-core.css?v=120">
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" integrity="sha384-UagCvVPT5XXA0Hx+nJYUAGBFseHT9zBgpJMSebsAxl9lciTwbT+39j5VfRjdP5Tp" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -253,7 +253,7 @@
             autocomplete="current-password"
             minlength="6"
             maxlength="72"
-            placeholder="비밀번호 · 6자 이상"
+            placeholder="비밀번호 · 가입 시 8자 이상"
           >
         </div>
 
@@ -1680,6 +1680,7 @@
 <link rel="stylesheet" href="./last-wave-v116.css?v=116">
 <script src="./last-wave-aim-v117.js?v=120"></script>
 <script src="./last-wave-core-5.js?v=120"></script>
+<script>if("serviceWorker"in navigator&&location.protocol==="https:")navigator.serviceWorker.register("./sw.js").catch(()=>{});</script>
 </body>
 </html>
 

@@ -4,8 +4,7 @@
 const ADMIN_SALT = Deno.env.get("ADMIN_SALT") || "";
 const ADMIN_HASH = Deno.env.get("ADMIN_HASH") || "";
 const ITERATIONS = 210000;
-const attempts = new Map<string, { count: number; resetAt: number }>();
-const WINDOW_MS = 15 * 60 * 1000;
+const WINDOW_SECONDS = 15 * 60;
 const MAX_ATTEMPTS = 6;
 const allowedOrigins = new Set([
   "https://2550563-jung.github.io",
@@ -13,6 +12,21 @@ const allowedOrigins = new Set([
   "http://localhost:8877"
 ]);
 
+// Counters live in Postgres so restarts and other instances cannot reset them.
+// If the limiter is unreachable, login is refused.
+async function rpc(name: string, args: Record<string, unknown>) {
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  const response = await fetch(`${Deno.env.get("SUPABASE_URL")}/rest/v1/rpc/${name}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", apikey: key, Authorization: `Bearer ${key}` },
+    body: JSON.stringify(args)
+  });
+  if (!response.ok) throw new Error(`${name} failed: ${response.status}`);
+  return await response.json();
+}
+function recordFailure(key: string) {
+  return rpc("lw_auth_record_failure", { p_key: key, p_window_seconds: WINDOW_SECONDS });
+}
 function hexBytes(value: string) {
   return new Uint8Array(value.match(/.{2}/g)?.map((part) => Number.parseInt(part, 16)) || []);
 }
@@ -52,11 +66,15 @@ Deno.serve(async (req: Request) => {
 
   const forwarded = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   const clientKey = forwarded || req.headers.get("cf-connecting-ip") || "unknown";
-  const now = Date.now();
-  const saved = attempts.get(clientKey);
-  const active = saved && saved.resetAt > now ? saved : { count: 0, resetAt: now + WINDOW_MS };
-  if (active.count >= MAX_ATTEMPTS) {
-    const retryAfter = Math.ceil((active.resetAt - now) / 1000);
+  const attemptKey = `admin:${clientKey}`;
+  let retryAfter = 0;
+  try {
+    retryAfter = Number(await rpc("lw_auth_retry_after", { p_key: attemptKey, p_max: MAX_ATTEMPTS })) || 0;
+  } catch (error) {
+    console.error(String(error));
+    return new Response(JSON.stringify({ ok: false }), { status: 503, headers });
+  }
+  if (retryAfter > 0) {
     return new Response(JSON.stringify({ ok: false, retryAfter }), { status: 429, headers: { ...headers, "Retry-After": String(retryAfter) } });
   }
 
@@ -68,16 +86,15 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ ok: false }), { status: 400, headers });
   }
   if (!/^\d{8}$/.test(password)) {
-    active.count += 1; attempts.set(clientKey, active);
+    await recordFailure(attemptKey).catch((error) => console.error(String(error)));
     return new Response(JSON.stringify({ ok: false }), { status: 401, headers });
   }
 
   const valid = constantTimeEqual(await passwordHash(password), hexBytes(ADMIN_HASH));
   await new Promise((resolve) => setTimeout(resolve, valid ? 180 : 700));
   if (!valid) {
-    active.count += 1; attempts.set(clientKey, active);
+    await recordFailure(attemptKey).catch((error) => console.error(String(error)));
     return new Response(JSON.stringify({ ok: false }), { status: 401, headers });
   }
-  attempts.delete(clientKey);
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 });

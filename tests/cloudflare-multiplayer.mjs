@@ -29,7 +29,8 @@ function connect(index){
   url.searchParams.set("presence_key",`presence-${index}`);
 
   return new Promise((resolve,reject)=>{
-    const socket=new WebSocket(url);
+    const playerId=`00000000-0000-4000-8000-00000000000${index}`;
+    const socket=new WebSocket(url,["last-wave-v1",`lw-auth.${playerId}.${"a".repeat(64)}`]);
     const timer=setTimeout(()=>reject(new Error(`client ${index} connect timeout`)),5000);
     socket.addEventListener("open",()=>{
       clearTimeout(timer);
@@ -67,6 +68,18 @@ const health=await fetch(`${baseUrl}/health`);
 assert.equal(health.status,200);
 assert.equal((await health.json()).transport,"cloudflare-durable-objects");
 
+const rejected=await new Promise(resolve=>{
+  const url=new URL(baseUrl);
+  url.protocol=url.protocol==="https:"?"wss:":"ws:";
+  url.pathname=`/rooms/${roomCode}/connect`;
+  url.searchParams.set("connection_id","unauthenticated");
+  url.searchParams.set("presence_key","unauthenticated");
+  const socket=new WebSocket(url,["last-wave-v1"]);
+  socket.addEventListener("open",()=>{socket.close();resolve(false);},{once:true});
+  socket.addEventListener("error",()=>resolve(true),{once:true});
+});
+assert.equal(rejected,true);
+
 const clients=[];
 try{
   for(let index=0;index<4;index+=1){
@@ -81,7 +94,7 @@ try{
     socket.send(JSON.stringify({
       op:"track",
       presence:{
-        playerId:`player-${index}`,
+        playerId:`00000000-0000-4000-8000-00000000000${index}`,
         sessionId:`session-${index}`,
         nickname:`Player ${index}`,
         joinedAt:Date.now()+index
@@ -147,7 +160,7 @@ try{
   fifth.send(JSON.stringify({
     op:"track",
     presence:{
-      playerId:"player-5",
+      playerId:"00000000-0000-4000-8000-000000000005",
       sessionId:"session-5",
       joinedAt:Date.now()
     }
@@ -159,7 +172,7 @@ try{
       message.op==="presence" &&
       Object.values(message.state||{})
         .flat()
-        .some(member=>member.playerId==="player-5")
+        .some(member=>member.playerId==="00000000-0000-4000-8000-000000000005")
   );
   fifth.close(1000,"replacement_ok");
   assert.equal(await fifthRejected,1000);

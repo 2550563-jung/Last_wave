@@ -35,17 +35,28 @@ npm test
 
 `CHROME_PATH`로 사용할 브라우저를 지정할 수 있습니다.
 
-멀티플레이 테스트(`tests/cloudflare-*.mjs`)는 Worker에 세션 인증이 추가되기 전에 작성되어 현재 통과하지 못하므로 `npm test`와 CI에서 제외됩니다. CI는 Worker의 타입 검사와 번들링만 확인합니다.
+멀티플레이 테스트는 `tests/mock-supabase.mjs`로 세션 검증을 대신하며 운영 DB에 접속하지 않습니다.
+
+```bash
+node tests/mock-supabase.mjs
+cd cloudflare-multiplayer && npm ci && npx wrangler dev --local --port 8787 --var SUPABASE_URL:http://127.0.0.1:54399
+# 다른 터미널의 저장소 루트에서
+LW_CLOUDFLARE_TEST_URL=http://127.0.0.1:8787 node tests/run.mjs
+```
 
 ## 배포
 
 - `main`에 푸시하면 테스트 통과 후 GitHub Pages에 배포됩니다. 게임에 필요한 파일만 올라갑니다.
 - `exe-v*` 태그를 푸시하면 Windows 실행 파일을 빌드해 릴리스에 올립니다.
-- 새 파일을 게임에 추가할 때 이름이 `last-wave-*`가 아니면 `.github/workflows/static.yml`의 복사 목록에 추가하세요.
+- 오프라인 실행은 `sw.js`가 맡습니다. 새 파일을 게임에 추가할 때 이름이 `last-wave-*`가 아니면 `.github/workflows/static.yml`의 복사 목록에 추가하세요.
 
 ## Supabase Edge Function
 
-배포된 함수는 `admin-auth`, `accounts`, `rankings`입니다. 저장소에는 현재 `admin-auth`만 있습니다.
+배포된 함수는 `admin-auth`, `accounts`, `rankings`입니다. `rankings` 소스는 아직 저장소에 없습니다. 다음 명령으로 받아 추가하세요.
+
+```bash
+supabase functions download rankings --project-ref nkeeayhodmauifevmaga
+```
 
 `admin-auth`는 비밀번호 솔트와 해시를 Supabase secret으로 읽습니다. 이 저장소는 공개 상태이므로 값을 코드에 넣지 마세요.
 
