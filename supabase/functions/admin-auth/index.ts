@@ -22,7 +22,9 @@ async function rpc(name: string, args: Record<string, unknown>) {
     body: JSON.stringify(args)
   });
   if (!response.ok) throw new Error(`${name} failed: ${response.status}`);
-  return await response.json();
+  // Functions returning void answer with an empty body.
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
 function recordFailure(key: string) {
   return rpc("lw_auth_record_failure", { p_key: key, p_window_seconds: WINDOW_SECONDS });

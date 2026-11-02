@@ -34,7 +34,9 @@ async function rest(path: string, body: unknown, prefer?: string) {
     body: JSON.stringify(body)
   });
   if (!response.ok) throw new Error(`${path} failed: ${response.status}`);
-  return prefer ? null : await response.json();
+  // Functions returning void answer with an empty body.
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
 
 async function sendEmail(entry: { message: string; nickname: string; version: string }) {
