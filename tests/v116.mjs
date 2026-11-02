@@ -4,6 +4,7 @@ const browser=await chromium.launch({headless:true,args:["--allow-file-access-fr
 try{
  const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];
  page.on("pageerror",e=>errors.push(e.message));
+ await page.addInitScript(version=>localStorage.setItem("lw_seen_update",version),GAME_VERSION);
  await page.route("**/*",r=>r.request().url().startsWith("file:")?r.continue():r.abort());
  await page.goto(new URL("../index.html",import.meta.url).href,{waitUntil:"load"});
  await page.waitForFunction(()=>window.__lastWaveSkinsV115?.ready&&window.__lastWaveArtV113?.ready);
