@@ -1,0 +1,14 @@
+{
+  "name": "last-wave",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Last Wave browser game: test tooling",
+  "type": "module",
+  "scripts": {
+    "check": "node tests/check-scripts.mjs",
+    "test": "npm run check && node tests/run.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

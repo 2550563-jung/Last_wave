@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
-import { chromium } from "file:///C:/Users/commo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs";
+import { chromium, GAME_VERSION } from "./browser.mjs";
 import { startTestServer } from "./test-server.mjs";
 
 const testServer=await startTestServer();
-const browser=await chromium.launch({headless:true,executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe"});
+const browser=await chromium.launch({headless:true});
 const page=await browser.newPage({viewport:{width:1280,height:900}});
 const errors=[];
 page.on("pageerror",error=>errors.push(String(error.stack||error)));
@@ -29,8 +29,8 @@ const result=await page.evaluate(()=>{
   };
 });
 
-assert.equal(result.version,"v109");
-assert.equal(result.release,109);
+assert.equal(result.version,GAME_VERSION);
+assert.equal(result.release,Number(GAME_VERSION.slice(1)));
 assert.equal(result.season,"2026-S3");
 assert.equal(result.directorUi,true);
 assert.equal(result.rewardUi,true);

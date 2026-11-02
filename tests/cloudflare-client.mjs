@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chromium } from "file:///C:/Users/commo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs";
+import { chromium, GAME_VERSION } from "./browser.mjs";
 import { startTestServer } from "./test-server.mjs";
 
 const cloudflareUrl=
@@ -8,7 +8,6 @@ const cloudflareUrl=
 const testServer=await startTestServer();
 const browser=await chromium.launch({
   headless:true,
-  executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe"
 });
 const page=await browser.newPage({viewport:{width:1280,height:800}});
 const errors=[];
@@ -138,8 +137,8 @@ assert.equal(result.marker,"browser-adapter");
 assert.equal(result.firstTransport,"cloudflare");
 assert.equal(result.secondTransport,"cloudflare");
 assert.equal(result.configured,true);
-assert.equal(result.releaseVersion,109);
-assert.equal(result.displayVersion,"v109");
+assert.equal(result.releaseVersion,Number(GAME_VERSION.slice(1)));
+assert.equal(result.displayVersion,GAME_VERSION);
 assert.deepEqual(result.participantMarkers,[2,3,4]);
 assert.deepEqual(errors,[]);
 console.log("Cloudflare browser adapter test passed.",result);

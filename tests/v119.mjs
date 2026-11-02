@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
-import {createRequire} from 'node:module';
-const {chromium}=createRequire(process.execPath)('playwright-core');
-const browser=await chromium.launch({headless:true,args:['--allow-file-access-from-files'],executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+import { chromium } from "./browser.mjs";
+const browser=await chromium.launch({headless:true,args:['--allow-file-access-from-files']});
 try{
  const page=await browser.newPage(),errors=[],requested=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/*',r=>{const url=r.request().url();requested.push(url);return url.startsWith('file:')?r.continue():r.abort();});

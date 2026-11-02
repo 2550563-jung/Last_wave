@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import assert from "node:assert/strict";
-import { chromium } from "file:///C:/Users/commo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs";
+import { chromium, GAME_VERSION } from "./browser.mjs";
 import { startTestServer } from "./test-server.mjs";
 
 const source=fs.readFileSync(new URL("../index.html",import.meta.url),"utf8");
@@ -11,7 +11,6 @@ assert.match(source,/score \+=\s*getDifficultyAdjustedScore\(\s*wave\*/);
 const testServer=await startTestServer();
 const browser=await chromium.launch({
   headless:true,
-  executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe"
 });
 const page=await browser.newPage({viewport:{width:1280,height:900}});
 const errors=[];
@@ -81,7 +80,7 @@ const result=await page.evaluate(()=>{
   };
 });
 
-assert.equal(result.version,"v109");
+assert.equal(result.version,GAME_VERSION);
 assert.equal(result.addon,104);
 assert.deepEqual(result.adjusted,{
   survivor:1000,

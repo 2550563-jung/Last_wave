@@ -1,11 +1,10 @@
 import assert from "node:assert/strict";
-import { chromium } from "file:///C:/Users/commo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/index.mjs";
+import { chromium, GAME_VERSION } from "./browser.mjs";
 import { startTestServer } from "./test-server.mjs";
 
 const testServer=await startTestServer();
 const browser=await chromium.launch({
   headless:true,
-  executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe"
 });
 const page=await browser.newPage({viewport:{width:1280,height:900}});
 const errors=[];
@@ -108,7 +107,7 @@ const result=await page.evaluate(()=>{
   };
 });
 
-assert.equal(result.version,"v109");
+assert.equal(result.version,GAME_VERSION);
 assert.equal(result.addon,106);
 assert.ok(result.behindAge>=0&&result.behindAge<1400);
 assert.equal(result.firstAccepted,true);
