@@ -94,7 +94,7 @@ try{
     socket.send(JSON.stringify({
       op:"track",
       presence:{
-        playerId:`player-${index}`,
+        playerId:`00000000-0000-4000-8000-00000000000${index}`,
         sessionId:`session-${index}`,
         nickname:`Player ${index}`,
         joinedAt:Date.now()+index

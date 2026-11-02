@@ -30,7 +30,7 @@ await page.addInitScript(url=>{
     configurable:true,
     set(){},
     get:()=>({
-      getPlayerId:()=>"00000000-0000-4000-8000-000000000000",
+      getPlayerId:()=>window.__testPlayerId,
       getToken:()=>"a".repeat(64)
     })
   });
@@ -45,6 +45,7 @@ const result=await page.evaluate(async()=>{
   const room=`B${Math.random().toString(36).slice(2,7)}`.toUpperCase().padEnd(6,"0").slice(0,6);
   const connect=(channel,presence)=>new Promise((resolve,reject)=>{
     const timer=setTimeout(()=>reject(new Error("client subscribe timeout")),5000);
+    window.__testPlayerId=presence.playerId;
     channel.subscribe(async status=>{
       if(status==="SUBSCRIBED"){
         const tracked=await channel.track(presence);
@@ -79,22 +80,22 @@ const result=await page.evaluate(async()=>{
   });
 
   await connect(first,{
-    playerId:"browser-player-1",
+    playerId:"00000000-0000-4000-8000-000000000001",
     sessionId:"browser-session-1",
     joinedAt:Date.now()
   });
   await connect(second,{
-    playerId:"browser-player-2",
+    playerId:"00000000-0000-4000-8000-000000000002",
     sessionId:"browser-session-2",
     joinedAt:Date.now()+1
   });
   await connect(third,{
-    playerId:"browser-player-3",
+    playerId:"00000000-0000-4000-8000-000000000003",
     sessionId:"browser-session-3",
     joinedAt:Date.now()+2
   });
   await connect(fourth,{
-    playerId:"browser-player-4",
+    playerId:"00000000-0000-4000-8000-000000000004",
     sessionId:"browser-session-4",
     joinedAt:Date.now()+3
   });

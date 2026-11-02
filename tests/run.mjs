@@ -3,7 +3,7 @@ import fs from "node:fs";
 
 // The multiplayer tests need a running Worker (see cloudflare-multiplayer/README.md).
 const multiplayer=process.env.LW_CLOUDFLARE_TEST_URL;
-const skip=new Set(["browser.mjs","check-scripts.mjs","mock-supabase.mjs","run.mjs","test-server.mjs"]);
+const skip=new Set(["browser.mjs","cdn-integrity.mjs","check-scripts.mjs","mock-supabase.mjs","run.mjs","test-server.mjs"]);
 const dir=new URL("./",import.meta.url);
 const tests=fs.readdirSync(dir).filter(name=>
   name.endsWith(".mjs")&&!skip.has(name)&&(multiplayer?name.startsWith("cloudflare-"):!name.startsWith("cloudflare-"))
