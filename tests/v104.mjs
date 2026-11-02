@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import assert from "node:assert/strict";
-import { chromium, GAME_VERSION } from "./browser.mjs";
+import { chromium, GAME_VERSION, readGameSource } from "./browser.mjs";
 import { startTestServer } from "./test-server.mjs";
 
-const source=fs.readFileSync(new URL("../index.html",import.meta.url),"utf8");
+const source=readGameSource();
 assert.match(source,/score \+=\s*getDifficultyAdjustedScore\(\s*enemy\.boss/);
 assert.match(source,/score \+=\s*getDifficultyAdjustedScore\(\s*500/);
 assert.match(source,/score \+=\s*getDifficultyAdjustedScore\(\s*wave\*/);

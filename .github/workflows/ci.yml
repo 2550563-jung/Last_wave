@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  game-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+
+  multiplayer-tests:
+    runs-on: ubuntu-latest
+    env:
+      LW_CLOUDFLARE_TEST_URL: http://127.0.0.1:8787
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm ci --no-audit --no-fund
+        working-directory: cloudflare-multiplayer
+      - name: Start local Worker
+        working-directory: cloudflare-multiplayer
+        run: |
+          npm run dev > wrangler.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            curl -s -o /dev/null http://127.0.0.1:8787 && exit 0
+            sleep 1
+          done
+          cat wrangler.log
+          exit 1
+      - run: node tests/run.mjs

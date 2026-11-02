@@ -15,8 +15,10 @@ export const chromium={
   launch:(options={})=>playwrightChromium.launch({...options,...browserOptions()})
 };
 
+// Source of the page and its core scripts, which index.html loads in this order.
 export function readGameSource(){
-  return fs.readFileSync(new URL("index.html",root),"utf8");
+  const files=fs.readdirSync(root).filter(name=>/^last-wave-core-\d+\.js$/.test(name)).sort();
+  return ["index.html",...files].map(name=>fs.readFileSync(new URL(name,root),"utf8")).join("\n");
 }
 
 export const GAME_VERSION=readGameSource().match(/const GAME_VERSION="(v\d+)"/)[1];

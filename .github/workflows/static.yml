@@ -17,7 +17,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
   deploy:
+    needs: test
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -28,12 +32,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate release scripts
+      # Publish only what the game loads, not tests or server sources.
+      - name: Collect site files
         run: |
-          node --check last-wave-cloudflare.js
-          node --check last-wave-v107.js
-          node --check last-wave-v108.js
-          node --check last-wave-v109.js
+          mkdir _site
+          cp -r index.html manifest.webmanifest LICENSE assets icons _site/
+          cp last-wave-*.js last-wave-*.css _site/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -41,7 +45,7 @@ jobs:
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - name: Deploy
         id: deployment
