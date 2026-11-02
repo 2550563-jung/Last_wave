@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { chromium } from "./browser.mjs";
+import { chromium, GAME_VERSION } from "./browser.mjs";
 const browser=await chromium.launch({headless:true,args:['--allow-file-access-from-files']});
 try{
  const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -21,5 +21,5 @@ try{
   }
   return {poses,maxGap,maxLength,maxGripStep,version:document.getElementById('gameVersion').textContent};
  });
- assert.equal(result.version,'v120');assert.deepEqual(errors,[]);console.log(JSON.stringify(result));
+ assert.equal(result.version,GAME_VERSION);assert.deepEqual(errors,[]);console.log(JSON.stringify(result));
 }finally{await browser.close();}

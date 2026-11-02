@@ -23,7 +23,7 @@ const ADMIN_AUTH_URL =
   SUPABASE_URL +
   "/functions/v1/admin-auth";
 
-const GAME_VERSION="v120";
+const GAME_VERSION="v121";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -1004,6 +1004,7 @@ function cloudProfilePayload(){
     relics:Math.max(0,Math.floor(Number(save.relics)||0)),
     talentTokens:Math.max(0,Math.floor(Number(save.talentTokens)||0)),
     achievementsV82:{...(save.achievementsV82||{})},
+    v121:save.v121&&typeof save.v121==="object"?{...save.v121}:{},
     weaponMasteryV82:{...(save.weaponMasteryV82||{})},
     jobTalentsV82:{...(save.jobTalentsV82||{})},
     ownedSkinsV82:Array.isArray(save.ownedSkinsV82)?[...new Set(save.ownedSkinsV82)]:["default"],
@@ -1053,7 +1054,7 @@ function cloudProfileSignature(profile){
 function applyCloudProfile(profile){
   if(!profile||typeof profile!=="object") return false;
   const allowed=[
-    "nickname","prism","credits","relics","talentTokens","achievementsV82","weaponMasteryV82",
+    "nickname","prism","credits","relics","talentTokens","achievementsV82","v121","weaponMasteryV82",
     "jobTalentsV82","ownedSkinsV82","selectedSkinV82","permanentUpgradesV82",
     "selectedDifficultyV82","difficultyBestV82","bossKillsV82","eventsCompletedV82",
     "profileXp","bestWave","bestScore","totalRuns","totalKills",

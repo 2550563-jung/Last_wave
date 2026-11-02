@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { chromium } from "./browser.mjs";
+import { chromium, GAME_VERSION } from "./browser.mjs";
 const browser=await chromium.launch({headless:true,args:['--allow-file-access-from-files']});
 try{
  const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -41,6 +41,6 @@ try{
   }
   return {poses,gallery:gallery.toDataURL(),version:document.getElementById('gameVersion').textContent};
  });
- assert.equal(result.version,'v120');assert.deepEqual(errors,[]);
+ assert.equal(result.version,GAME_VERSION);assert.deepEqual(errors,[]);
  fs.writeFileSync(new URL('../../../walking-v120.png',import.meta.url),Buffer.from(result.gallery.split(',')[1],'base64'));console.log('v120 walking/idle/teleport/downed, rigid leg transforms and upper outfit alignment passed',result.poses);
 }finally{await browser.close();}
