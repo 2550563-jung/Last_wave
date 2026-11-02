@@ -12,11 +12,14 @@
 .lw121-option{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);text-align:left}
 .lw121-option input{width:22px;height:22px;flex:none}
 .lw121-notes{margin:6px 0 0;padding-left:20px;text-align:left;line-height:1.7}
-#lw121CenterButton .lw121-new{margin-left:6px;padding:1px 6px;border-radius:8px;background:#ff8a3d;color:#111;font-size:.72em;font-weight:800}
 #lw121Contracts{margin:12px 0;padding:10px;border:1px solid rgba(255,138,61,.55);border-radius:10px;text-align:left}
 #lw121Contracts h3{margin:0 0 4px;font-size:1rem}
 #lw121Contracts small{display:block;margin-bottom:8px;opacity:.85}
 #lw121Contracts .lw121-contract-list{display:flex;flex-wrap:wrap;gap:8px}
 #lw121Contracts button.active{outline:2px solid #ff8a3d}
 #lw121Hint{position:fixed;left:50%;bottom:17%;transform:translateX(-50%);z-index:9000;max-width:88vw;padding:9px 16px;border-radius:10px;background:rgba(5,14,22,.86);border:1px solid #71dcff;color:#fff;font-size:15px;text-align:center;pointer-events:none;display:none}
-body.lw121-large-text .overlay .panel,body.lw121-large-text #hud{zoom:1.12}
+.lw121-option{grid-column:span 1}
+#lw122Updates{z-index:300000}
+.lw122-panel{max-width:560px!important;width:92vw!important;max-height:88vh;overflow:auto}
+.lw122-panel .eyebrow{margin-bottom:4px}
+.lw122-feedback-text{width:100%;box-sizing:border-box;margin:10px 0 6px;padding:10px;border-radius:8px;border:1px solid rgba(113,220,255,.45);background:rgba(5,14,22,.8);color:#fff;font:inherit;resize:vertical}

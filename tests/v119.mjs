@@ -6,13 +6,13 @@ try{
  await page.route('**/*',r=>{const url=r.request().url();requested.push(url);return url.startsWith('file:')?r.continue():r.abort();});
  await page.goto(new URL('../index.html',import.meta.url).href);
  await page.waitForFunction(()=>window.__lastWaveAimV117?.ready);
- for(const name of ['last-wave-v113.js','last-wave-v115.js','last-wave-art-v113.js','last-wave-aim-v117.js'])assert.ok(requested.some(url=>url.endsWith('/'+name+'?v=121')),'stale URL '+name);
- assert.equal(await page.locator('#gameVersion').textContent(),'v121');
+ for(const name of ['last-wave-v113.js','last-wave-v115.js','last-wave-art-v113.js','last-wave-aim-v117.js'])assert.ok(requested.some(url=>url.endsWith('/'+name+'?v=122')),'stale URL '+name);
+ assert.equal(await page.locator('#gameVersion').textContent(),'v122');
  // Reproduce the exact old addon overwrite after page scripts, before the
  // authoritative footer. No external network or browser-cache clearing needed.
- await page.route('**/last-wave-aim-v117.js?v=121',r=>r.fulfill({contentType:'application/javascript',body:'document.getElementById("gameVersion").textContent="v117";'}));
+ await page.route('**/last-wave-aim-v117.js?v=122',r=>r.fulfill({contentType:'application/javascript',body:'document.getElementById("gameVersion").textContent="v117";'}));
  await page.reload();
- assert.equal(await page.locator('#gameVersion').textContent(),'v121');
- assert.equal(await page.evaluate(()=>window.__lastWaveCloudflare.releaseVersion),121);
+ assert.equal(await page.locator('#gameVersion').textContent(),'v122');
+ assert.equal(await page.evaluate(()=>window.__lastWaveCloudflare.releaseVersion),122);
  assert.deepEqual(errors,[]);console.log('v120 fresh dependency URLs and stale-addon overwrite regression passed');
 }finally{await browser.close();}

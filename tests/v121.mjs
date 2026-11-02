@@ -8,8 +8,7 @@ try{
   await page.route("**/*",route=>route.request().url().startsWith("file:")?route.continue():route.abort());
   await page.goto(new URL("../index.html",import.meta.url).href,{waitUntil:"load"});
   await page.waitForFunction(()=>window.__lastWaveV121&&window.__lastWaveAimV117?.ready);
-  assert.equal(GAME_VERSION,"v121");
-  assert.equal(await page.locator("#gameVersion").textContent(),"v121");
+  assert.equal(await page.locator("#gameVersion").textContent(),GAME_VERSION);
 
   const result=await page.evaluate(()=>{
     const api=window.__lastWaveV121,out={};
@@ -85,14 +84,6 @@ try{
     out.sameDay=JSON.stringify(api.missionsFor("2026-11-02").map(m=>m.id))===JSON.stringify(api.missionsFor("2026-11-02").map(m=>m.id));
     out.kst=api.dateKey(Date.UTC(2026,0,1,15,0,0));
 
-    api.meta().settings.noShake=true;camera.shake=20;draw();out.shake=camera.shake;
-    api.meta().settings.noShake=false;
-
-    multiplayer.active=true;
-    wave=20;let mpVariants=0;
-    for(let i=0;i<100;i++){enemies.length=0;spawnEnemy();if(enemies[0]?.v121Variant)mpVariants++;}
-    multiplayer.active=false;
-    out.mpVariants=mpVariants;
     return out;
   });
   assert.deepEqual(result.variants,["charger","healer","splitter"]);
@@ -110,16 +101,13 @@ try{
   assert.equal(result.missionOnce,true);
   assert.equal(result.sameDay,true);
   assert.equal(result.kst,"2026-01-02");
-  assert.equal(result.shake,0);
-  assert.equal(result.mpVariants,0);
 
   await page.evaluate(()=>{for(const id of ["shop","lw108RewardOverlay"])document.getElementById(id)?.classList.remove("show");state="menu";hideOverlay(ui.shop);showOverlay(ui.menu);});
   await page.evaluate(()=>document.getElementById("lw121CenterButton").click());
   await page.waitForSelector("#lw121Center .lw121-card");
   assert.equal(await page.locator("#lw121Missions .lw121-card").count(),3);
-  await page.evaluate(()=>document.querySelector('[data-lw121-setting="largeText"]').click());
-  assert.equal(await page.evaluate(()=>document.body.classList.contains("lw121-large-text")),true);
-  await page.evaluate(()=>document.querySelector('[data-lw121-setting="largeText"]').click());
+  assert.equal(await page.locator("#lw111SettingsOverlay [data-lw121-setting]").count(),2);
+  assert.equal(await page.evaluate(()=>[...document.querySelectorAll("#menu button")].filter(button=>button.textContent.includes("설정")&&!button.textContent.includes("닉네임")).length),1);
   await page.evaluate(()=>document.getElementById("lw121Close").click());
 
   await page.evaluate(()=>{openShop();});

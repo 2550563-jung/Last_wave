@@ -23,7 +23,7 @@ const ADMIN_AUTH_URL =
   SUPABASE_URL +
   "/functions/v1/admin-auth";
 
-const GAME_VERSION="v121";
+const GAME_VERSION="v122";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
