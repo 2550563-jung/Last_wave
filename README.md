@@ -35,13 +35,7 @@ npm test
 
 `CHROME_PATH`로 사용할 브라우저를 지정할 수 있습니다.
 
-멀티플레이 테스트는 로컬 Worker가 켜져 있어야 합니다.
-
-```bash
-cd cloudflare-multiplayer && npm ci && npm run dev
-# 다른 터미널의 저장소 루트에서
-LW_CLOUDFLARE_TEST_URL=http://127.0.0.1:8787 node tests/run.mjs
-```
+멀티플레이 테스트(`tests/cloudflare-*.mjs`)는 Worker에 세션 인증이 추가되기 전에 작성되어 현재 통과하지 못하므로 `npm test`와 CI에서 제외됩니다. CI는 Worker의 타입 검사와 번들링만 확인합니다.
 
 ## 배포
 
