@@ -1,0 +1,22 @@
+/* LAST WAVE v121: daily missions, settings, contracts, first-run hints. */
+#lw121Center{z-index:200000}
+.lw121-panel{max-width:860px!important;width:96vw!important;max-height:92vh;overflow:auto}
+.lw121-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:10px 0 18px}
+.lw121-card{border:1px solid rgba(113,220,255,.35);border-radius:10px;padding:12px;background:rgba(10,25,36,.72);text-align:left}
+.lw121-card h3{margin:0 0 6px;font-size:1rem}
+.lw121-card p{margin:0;font-size:.88rem;line-height:1.5;opacity:.88}
+.lw121-card.done{border-color:#7be495}
+.lw121-bar{height:8px;margin:8px 0 6px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden}
+.lw121-bar>i{display:block;height:100%;background:#71dcff}
+.lw121-card.done .lw121-bar>i{background:#7be495}
+.lw121-option{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);text-align:left}
+.lw121-option input{width:22px;height:22px;flex:none}
+.lw121-notes{margin:6px 0 0;padding-left:20px;text-align:left;line-height:1.7}
+#lw121CenterButton .lw121-new{margin-left:6px;padding:1px 6px;border-radius:8px;background:#ff8a3d;color:#111;font-size:.72em;font-weight:800}
+#lw121Contracts{margin:12px 0;padding:10px;border:1px solid rgba(255,138,61,.55);border-radius:10px;text-align:left}
+#lw121Contracts h3{margin:0 0 4px;font-size:1rem}
+#lw121Contracts small{display:block;margin-bottom:8px;opacity:.85}
+#lw121Contracts .lw121-contract-list{display:flex;flex-wrap:wrap;gap:8px}
+#lw121Contracts button.active{outline:2px solid #ff8a3d}
+#lw121Hint{position:fixed;left:50%;bottom:17%;transform:translateX(-50%);z-index:9000;max-width:88vw;padding:9px 16px;border-radius:10px;background:rgba(5,14,22,.86);border:1px solid #71dcff;color:#fff;font-size:15px;text-align:center;pointer-events:none;display:none}
+body.lw121-large-text .overlay .panel,body.lw121-large-text #hud{zoom:1.12}

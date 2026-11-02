@@ -44,6 +44,10 @@ cd cloudflare-multiplayer && npm ci && npx wrangler dev --local --port 8787 --va
 LW_CLOUDFLARE_TEST_URL=http://127.0.0.1:8787 node tests/run.mjs
 ```
 
+## 릴리스
+
+게임에 영향을 주는 업데이트는 `last-wave-core-1.js`의 `GAME_VERSION`과 `index.html`의 `#gameVersion`을 함께 올립니다. 메인 화면에 표시됩니다.
+
 ## 배포
 
 - `main`에 푸시하면 테스트 통과 후 GitHub Pages에 배포됩니다. 게임에 필요한 파일만 올라갑니다.

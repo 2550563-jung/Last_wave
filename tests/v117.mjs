@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { chromium } from "./browser.mjs";
+import { chromium, GAME_VERSION } from "./browser.mjs";
 const browser=await chromium.launch({headless:true,args:['--allow-file-access-from-files']});
 try{
  const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -22,7 +22,7 @@ try{
   }
   return {count,maxReach,galleries,version:document.getElementById('gameVersion').textContent};
  });
- assert.equal(result.version,'v120');assert.deepEqual(errors,[]);
+ assert.equal(result.version,GAME_VERSION);assert.deepEqual(errors,[]);
  result.galleries.forEach((uri,i)=>fs.writeFileSync(new URL('../../../aim-gallery-'+i+'.png',import.meta.url),Buffer.from(uri.split(',')[1],'base64')));
  console.log(JSON.stringify({poses:result.count,maxReach:result.maxReach,errors}));
 }finally{await browser.close();}

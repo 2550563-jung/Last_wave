@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chromium } from "./browser.mjs";
+import { chromium, GAME_VERSION } from "./browser.mjs";
 const browser=await chromium.launch({headless:true,args:["--allow-file-access-from-files"]});
 try{
  const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];
@@ -37,7 +37,7 @@ try{
    return {comic,classic,unchanged,rejected,version:document.getElementById("gameVersion").textContent};
  });
  assert.ok(result.comic>0);assert.equal(result.classic,0);
- assert.ok(result.unchanged);assert.ok(result.rejected);assert.equal(result.version,"v120");
+ assert.ok(result.unchanged);assert.ok(result.rejected);assert.equal(result.version,GAME_VERSION);
  await page.evaluate(()=>{state="playing";paused=false;togglePause();});
  await page.locator('#lw116PauseStyle [data-lw116-style="classic"]').click();
  assert.equal(await page.locator('#lw116MenuStyle [data-lw116-style="classic"]').getAttribute("aria-pressed"),"true");
