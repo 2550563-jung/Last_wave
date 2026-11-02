@@ -160,7 +160,7 @@ try{
   fifth.send(JSON.stringify({
     op:"track",
     presence:{
-      playerId:"player-5",
+      playerId:"00000000-0000-4000-8000-000000000005",
       sessionId:"session-5",
       joinedAt:Date.now()
     }
@@ -172,7 +172,7 @@ try{
       message.op==="presence" &&
       Object.values(message.state||{})
         .flat()
-        .some(member=>member.playerId==="player-5")
+        .some(member=>member.playerId==="00000000-0000-4000-8000-000000000005")
   );
   fifth.close(1000,"replacement_ok");
   assert.equal(await fifthRejected,1000);
