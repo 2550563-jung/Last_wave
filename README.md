@@ -4,6 +4,8 @@
 
 **플레이:** https://2550563-jung.github.io/Last_wave/
 
+**게임 소개:** https://2550563-jung.github.io/Last_wave/about/
+
 ## 구조
 
 | 경로 | 내용 |

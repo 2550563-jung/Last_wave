@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b232c">
+<title>Last Wave(라스트 웨이브) 게임 소개 | 무료 브라우저 좀비 생존 로그라이크</title>
+<meta name="description" content="Last Wave(라스트 웨이브)는 설치와 가입 없이 브라우저에서 바로 하는 무료 좀비 생존 로그라이크입니다. 감염체 웨이브를 버티며 무기를 진화시키고, 친구와 최대 4명이 협동할 수 있습니다.">
+<link rel="canonical" href="https://2550563-jung.github.io/Last_wave/about/">
+<link rel="icon" type="image/png" sizes="64x64" href="../icons/last-wave-64.png?v=96">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="Last Wave">
+<meta property="og:title" content="Last Wave(라스트 웨이브) 게임 소개">
+<meta property="og:description" content="설치 없이 브라우저에서 바로 하는 무료 좀비 생존 로그라이크. 친구와 최대 4명 협동.">
+<meta property="og:url" content="https://2550563-jung.github.io/Last_wave/about/">
+<meta property="og:image" content="https://2550563-jung.github.io/Last_wave/about/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--asphalt:#1b232c;--road:#2a3540;--lane:#f2b92c;--paint:#eef1f3;--muted:#b4bfc9;--infected:#a8e03a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--asphalt);color:var(--paint);font:400 17px/1.75 "Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all;overflow-wrap:break-word}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--infected);outline-offset:3px}
+h1,h2,.play{font-family:"Black Han Sans","Gothic A1","Malgun Gothic",sans-serif;font-weight:400}
+
+.hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:flex-end;background:#000;overflow:hidden}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(27,35,44,.05) 18%,rgba(27,35,44,.86) 52%,var(--asphalt) 100%)}
+.hero-text{position:relative;z-index:1;width:100%;max-width:1120px;margin:0 auto;padding:0 24px 44px}
+h1{margin:0;font-size:clamp(68px,15vw,190px);line-height:.95;letter-spacing:-.01em}
+h1 small{display:block;margin-top:14px;font:800 clamp(17px,2.2vw,24px)/1.4 "Gothic A1","Malgun Gothic",sans-serif;letter-spacing:0}
+.lead{max-width:34em;margin:16px 0 26px;font-size:clamp(17px,2vw,20px)}
+.play{display:inline-block;padding:14px 30px 12px;background:var(--lane);color:#14191f;font-size:clamp(22px,3vw,28px);text-decoration:none;border-radius:4px}
+.play:hover{background:var(--paint)}
+.note{display:block;margin-top:12px;color:var(--muted);font-size:15px}
+
+/* The road: a double lane line runs down the page and carries the content. */
+main{max-width:1120px;margin:0 auto;padding:0 24px}
+.road{position:relative;padding-left:44px;border-left:0}
+.road::before{content:"";position:absolute;left:0;top:0;bottom:0;width:14px;border-left:4px solid var(--lane);border-right:4px solid var(--lane)}
+section{padding:58px 0 8px}
+h2{margin:0 0 18px;font-size:clamp(32px,5vw,50px);line-height:1.15}
+section>p{max-width:38em;margin:0 0 16px}
+
+.loop{list-style:none;counter-reset:s;margin:26px 0 0;padding:0;display:grid;gap:26px;grid-template-columns:repeat(3,1fr)}
+.loop li{counter-increment:s}
+.loop li::before{content:counter(s);display:block;font:400 56px/1 "Black Han Sans",sans-serif;color:var(--lane)}
+.loop b{display:block;margin:8px 0 4px;font-size:19px;font-weight:800}
+.loop p{margin:0;color:var(--muted);font-size:16px;line-height:1.65}
+
+.split{display:grid;grid-template-columns:1.1fr 1fr;gap:38px;align-items:start}
+.split img{border-radius:4px;border:1px solid #4a5764}
+dl.feat{margin:0}
+dl.feat dt{font-weight:800;font-size:18px;margin-top:20px}
+dl.feat dt:first-child{margin-top:0}
+dl.feat dd{margin:2px 0 0;color:var(--muted);font-size:16px;line-height:1.65}
+
+.modes{margin:0;padding:0;list-style:none;border-top:2px solid #47535f}
+.modes li{display:grid;grid-template-columns:190px 1fr;gap:16px;padding:14px 0;border-bottom:2px solid #47535f}
+.modes b{font-weight:800}
+.modes span{color:var(--muted)}
+
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px 30px;margin:0}
+.keys div{display:flex;gap:12px;align-items:baseline}
+.keys dt{min-width:64px;font-weight:800;color:var(--lane)}
+.keys dd{margin:0;color:var(--muted)}
+
+details{border-bottom:2px solid #47535f;padding:13px 0}
+summary{cursor:pointer;font-weight:800}
+details p{margin:8px 0 2px;color:var(--muted)}
+
+/* Crosswalk: the last thing on the road, and where the page sends you. */
+.cross{margin-top:64px;padding:62px 24px;text-align:center;background:repeating-linear-gradient(90deg,#3a4652 0 54px,#2a3540 54px 108px)}
+.cross h2{margin-bottom:22px}
+footer{padding:22px 24px 34px;text-align:center;color:var(--muted);font-size:14px}
+
+@media(max-width:760px){
+  body{font-size:16px}
+  .hero{min-height:88vh}
+  .road{padding-left:30px}
+  .road::before{width:11px;border-width:0 3px}
+  .loop,.split{grid-template-columns:1fr}
+  .modes li{grid-template-columns:1fr;gap:0}
+  section{padding-top:44px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoGame","name":"Last Wave","alternateName":["라스트 웨이브","LastWave"],"url":"https://2550563-jung.github.io/Last_wave/","image":"https://2550563-jung.github.io/Last_wave/about/og.jpg","description":"설치와 가입 없이 브라우저에서 바로 하는 무료 좀비 생존 로그라이크. 최대 4명 온라인 협동.","genre":["로그라이크","생존","슈팅"],"gamePlatform":["Web browser","Windows"],"applicationCategory":"Game","operatingSystem":"Windows, macOS, Android, iOS","playMode":["SinglePlayer","CoOp"],"numberOfPlayers":{"@type":"QuantitativeValue","minValue":1,"maxValue":4},"inLanguage":"ko","offers":{"@type":"Offer","price":0,"priceCurrency":"KRW"},"author":{"@type":"Person","name":"정우"}}
+</script>
+</head>
+<body>
+
+<header class="hero">
+  <img src="./hero.webp" width="1280" height="720" alt="파란 작업복의 생존자가 도로 위에서 몰려오는 감염체 무리와 싸우는 Last Wave 전투 화면">
+  <div class="hero-text">
+    <h1>Last Wave<small>라스트 웨이브, 감염된 도시에서 살아남는 생존 게임</small></h1>
+    <p class="lead">밀려오는 감염체를 쏘고 베며 웨이브를 넘기세요. 판이 끝나도 성장은 남아서, 다음 판은 더 멀리 갑니다.</p>
+    <a class="play" href="../">지금 플레이</a>
+    <span class="note">무료입니다. 설치와 회원가입 없이 PC와 모바일 브라우저에서 바로 시작합니다.</span>
+  </div>
+</header>
+
+<main>
+<div class="road">
+
+<section>
+  <h2>한 판은 이렇게 흘러갑니다</h2>
+  <ol class="loop">
+    <li><b>웨이브를 버팁니다</b><p>사방에서 몰려오는 적을 피하며 쏩니다. 위험하면 대시로 빠져나오고, 게이지가 차면 궁극기를 씁니다.</p></li>
+    <li><b>상점에서 정비합니다</b><p>번 돈으로 무기를 사고 강화합니다. 다음 전투의 경로와 위험 계약도 여기서 고릅니다.</p></li>
+    <li><b>더 강해져 돌아갑니다</b><p>무기를 진화시키고 합쳐 가며 100웨이브 이후의 붕괴 구간까지 도전합니다.</p></li>
+  </ol>
+</section>
+
+<section class="split">
+  <div>
+    <h2>같은 판이 나오지 않습니다</h2>
+    <dl class="feat">
+      <dt>50종이 넘는 무기와 10가지 탄환 색상</dt>
+      <dd>색상마다 화상, 폭발, 중독, 관통, 유도처럼 전투 방식이 바뀝니다. 조건을 맞추면 특수 무기로 합체합니다.</dd>
+      <dt>12개 직업, 직업마다 궁극기 2종</dt>
+      <dd>군인, 과학자, 의무병, 소방관 등 직업에 따라 능력과 외형이 달라집니다.</dd>
+      <dt>함께 싸우는 펫</dt>
+      <dd>공격, 회복, 방어 펫을 여러 마리 조합합니다. 환생할수록 함께 데려갈 수 있는 수가 늘어납니다.</dd>
+      <dt>매번 달라지는 전장</dt>
+      <dd>블러드 문 같은 이벤트 웨이브, 엘리트 변이, 비와 안개, 아침부터 밤까지 바뀌는 시간이 판마다 변수가 됩니다.</dd>
+    </dl>
+  </div>
+  <img src="./shop.webp" width="1040" height="620" loading="lazy" alt="웨이브 사이 상점에서 위험 계약과 다음 경로를 고르는 화면">
+</section>
+
+<section>
+  <h2>혼자도, 친구와도</h2>
+  <ul class="modes">
+    <li><b>솔로 플레이</b><span>난이도 네 단계 중 하나를 골라 어디까지 가는지 시험합니다.</span></li>
+    <li><b>온라인 협동</b><span>최대 4명이 함께합니다. 코드로 친구를 부르거나 공개 방과 랜덤 매치로 들어갑니다.</span></li>
+    <li><b>일일 도전</b><span>매일 규칙이 바뀌고, 그날은 모두가 같은 조건으로 기록을 겨룹니다.</span></li>
+    <li><b>온라인 랭킹</b><span>내 최고 기록을 다른 생존자와 비교합니다.</span></li>
+  </ul>
+</section>
+
+<section>
+  <h2>조작</h2>
+  <dl class="keys">
+    <div><dt>WASD</dt><dd>이동</dd></div>
+    <div><dt>마우스</dt><dd>조준과 사격</dd></div>
+    <div><dt>Shift</dt><dd>대시</dd></div>
+    <div><dt>F</dt><dd>근접 공격</dd></div>
+    <div><dt>Q</dt><dd>궁극기</dd></div>
+    <div><dt>모바일</dt><dd>이동 스틱과 조준 스틱</dd></div>
+  </dl>
+</section>
+
+<section>
+  <h2>자주 묻는 질문</h2>
+  <details><summary>정말 무료인가요?</summary><p>네. 게임 안에 결제 기능이 없습니다.</p></details>
+  <details><summary>설치하거나 가입해야 하나요?</summary><p>아니요. 링크를 열고 바로 시작하면 됩니다. Windows 앱은 원하는 사람만 게임 메뉴에서 받으면 됩니다.</p></details>
+  <details><summary>휴대폰에서도 되나요?</summary><p>네. 터치 조작을 지원하고, 사양에 맞춰 그래픽 모드를 낮출 수 있습니다.</p></details>
+  <details><summary>기록은 어떻게 저장되나요?</summary><p>기본으로 지금 쓰는 기기에 저장됩니다. 계정을 만들면 다른 기기에서도 이어서 할 수 있습니다.</p></details>
+</section>
+
+</div>
+</main>
+
+<div class="cross">
+  <h2>어디까지 버틸 수 있을까요?</h2>
+  <a class="play" href="../">지금 플레이</a>
+</div>
+<footer>Last Wave는 정우가 만들고 계속 업데이트하는 게임입니다.</footer>
+</body>
+</html>
