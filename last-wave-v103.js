@@ -158,7 +158,7 @@
         saveRankingOutbox(entries);
       }
 
-      const response=await rankingFetch(RANKINGS_URL,{
+      const response=await rankingFetch(entry.payload.mode==="daily"?DAILY_RANKINGS_URL:RANKINGS_URL,{
         method:"POST",
         headers:{
           "Content-Type":"application/json",

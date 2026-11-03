@@ -58,7 +58,7 @@ LW_CLOUDFLARE_TEST_URL=http://127.0.0.1:8787 node tests/run.mjs
 
 ## Supabase Edge Function
 
-배포된 함수는 `admin-auth`, `accounts`, `rankings`입니다. `rankings` 소스는 아직 저장소에 없습니다. 다음 명령으로 받아 추가하세요.
+배포된 함수는 `admin-auth`, `accounts`, `feedback`, `daily-rankings`, `rankings`입니다. `rankings` 소스는 아직 저장소에 없습니다. 다음 명령으로 받아 추가하세요.
 
 ```bash
 supabase functions download rankings --project-ref nkeeayhodmauifevmaga

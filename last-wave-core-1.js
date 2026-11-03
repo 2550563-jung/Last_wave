@@ -15,6 +15,11 @@ const RANKINGS_URL =
   SUPABASE_URL +
   "/functions/v1/rankings";
 
+// Daily boards live in their own function, one board per Korean calendar day.
+const DAILY_RANKINGS_URL =
+  SUPABASE_URL +
+  "/functions/v1/daily-rankings";
+
 const ACCOUNTS_URL =
   SUPABASE_URL +
   "/functions/v1/accounts";
@@ -23,7 +28,7 @@ const ADMIN_AUTH_URL =
   SUPABASE_URL +
   "/functions/v1/admin-auth";
 
-const GAME_VERSION="v122";
+const GAME_VERSION="v123";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -13414,7 +13419,7 @@ async function loadRankings(mode){
         : "";
 
     const response=await rankingFetch(
-      `${RANKINGS_URL}?mode=${encodeURIComponent(mode)}${dailyDateQuery}&limit=7&_=${Date.now()}`,
+      `${mode==="daily"?DAILY_RANKINGS_URL:RANKINGS_URL}?mode=${encodeURIComponent(mode)}${dailyDateQuery}&limit=7&_=${Date.now()}`,
       {
         method:"GET",
         headers:{
@@ -13444,6 +13449,13 @@ async function loadRankings(mode){
 
     ui.rankingList.innerHTML="";
 
+    if(mode==="daily"){
+      const boardDate=document.createElement("p");
+      boardDate.id="dailyRankingDate";
+      boardDate.textContent=`${rankingDailyDateKey()} 일일 랭킹 · 한국 시간 자정에 새로 시작합니다.`;
+      ui.rankingList.append(boardDate);
+    }
+
     const header=document.createElement("div");
     header.className="rank-row";
 
@@ -13457,7 +13469,9 @@ async function loadRankings(mode){
 
     if(rankings.length===0){
       const empty=document.createElement("p");
-      empty.textContent="아직 등록된 랭킹 기록이 없습니다.";
+      empty.textContent=mode==="daily"
+        ? "오늘은 아직 기록이 없습니다. 일일 도전에서 첫 기록을 남겨 보세요."
+        : "아직 등록된 랭킹 기록이 없습니다.";
       ui.rankingList.append(empty);
       return;
     }
