@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Last Wave 방문 통계</title>
+<link rel="icon" type="image/png" sizes="64x64" href="../icons/last-wave-64.png?v=96">
+<style>
+:root{--bg:#1b232c;--line:#47535f;--text:#eef1f3;--muted:#b4bfc9;--lane:#f2b92c}
+*{box-sizing:border-box}
+body{margin:0;padding:24px 16px 48px;background:var(--bg);color:var(--text);font:16px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+main{max-width:860px;margin:0 auto}
+h1{margin:0 0 16px;font-size:28px}
+h2{margin:32px 0 8px;font-size:19px}
+form{display:flex;flex-wrap:wrap;gap:8px}
+input,button{padding:10px 14px;border-radius:6px;font:inherit}
+input{border:1px solid var(--line);background:#10161c;color:var(--text)}
+button{border:0;background:var(--lane);color:#14191f;font-weight:700;cursor:pointer}
+:focus-visible{outline:3px solid #a8e03a;outline-offset:2px}
+#status{min-height:1.6em;color:var(--muted)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:600}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.flow b{display:block;font-size:30px;line-height:1.2}
+.flow span{color:var(--muted);font-size:14px}
+p.note{color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<h1>Last Wave 방문 통계</h1>
+<form id="login">
+  <input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="관리자 비밀번호" aria-label="관리자 비밀번호" required>
+  <button type="submit">통계 보기</button>
+</form>
+<p id="status" role="status"></p>
+<div id="result" hidden>
+  <p class="note">최근 14일, 한국 시간 기준입니다.</p>
+  <h2>처음 온 사람은 어디까지 갔나</h2>
+  <div class="flow" id="flow"></div>
+  <h2>날짜별</h2>
+  <div class="scroll"><table><thead><tr><th>날짜</th><th>방문자</th><th>첫 방문</th><th>게임 시작</th><th>게임 종료</th><th>공유</th><th>의견</th></tr></thead><tbody id="daily"></tbody></table></div>
+  <h2>어디서 왔나</h2>
+  <div class="scroll"><table><thead><tr><th>유입 경로</th><th>방문자</th></tr></thead><tbody id="sources"></tbody></table></div>
+  <h2>어떤 기기로 왔나</h2>
+  <div class="scroll"><table><thead><tr><th>기기</th><th>방문자</th></tr></thead><tbody id="devices"></tbody></table></div>
+</div>
+</main>
+<script>
+"use strict";
+const AUTH_URL="https://nkeeayhodmauifevmaga.supabase.co/functions/v1/admin-auth";
+const SOURCE_NAMES={direct:"직접 접속 또는 알 수 없음",about:"소개 페이지",share:"기록 공유 링크"};
+const DEVICE_NAMES={desktop:"PC",mobile:"휴대폰",tablet:"태블릿",windows_app:"Windows 앱",unknown:"알 수 없음"};
+const byId=id=>document.getElementById(id);
+function fill(id,rows,empty,columns){
+  const body=byId(id);body.textContent="";
+  if(!rows.length){
+    const row=body.insertRow(),cell=row.insertCell();
+    cell.colSpan=columns;cell.textContent=empty;return;
+  }
+  for(const values of rows){
+    const row=body.insertRow();
+    for(const value of values)row.insertCell().textContent=String(value);
+  }
+}
+function render(stats){
+  const n=stats.newcomers,percent=value=>n.visited?` (${Math.round(value/n.visited*100)}%)`:"";
+  const flow=byId("flow");flow.textContent="";
+  for(const [label,value] of [["첫 방문",n.visited],["게임 시작",n.started],["한 판 끝냄",n.finished],["다른 날 다시 옴",n.returned]]){
+    const item=document.createElement("div"),b=document.createElement("b"),span=document.createElement("span");
+    b.textContent=value;span.textContent=label+(label==="첫 방문"?"":percent(value));
+    item.append(b,span);flow.append(item);
+  }
+  fill("daily",stats.daily.map(d=>[d.day,d.visitors,d.new_visitors,d.run_starts,d.run_ends,d.shares,d.feedback]),"아직 집계된 방문이 없습니다.",7);
+  fill("sources",stats.sources.map(s=>[SOURCE_NAMES[s.source]||s.source,s.visitors]),"아직 집계된 방문이 없습니다.",2);
+  fill("devices",stats.devices.map(s=>[DEVICE_NAMES[s.device]||s.device,s.visitors]),"아직 집계된 방문이 없습니다.",2);
+  byId("result").hidden=false;
+}
+byId("login").addEventListener("submit",async event=>{
+  event.preventDefault();
+  const status=byId("status");status.textContent="불러오는 중입니다.";
+  try{
+    const response=await fetch(AUTH_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:byId("password").value,stats:true})});
+    if(response.status===401)throw new Error("비밀번호가 맞지 않습니다.");
+    if(response.status===429)throw new Error("시도가 너무 많습니다. 잠시 후 다시 시도하세요.");
+    const data=await response.json();
+    if(!data.ok||!data.stats)throw new Error("통계를 불러오지 못했습니다. 잠시 후 다시 시도하세요.");
+    byId("password").value="";status.textContent="";
+    render(data.stats);
+  }catch(error){
+    status.textContent=error.message||"통계를 불러오지 못했습니다.";
+  }
+});
+</script>
+</body>
+</html>

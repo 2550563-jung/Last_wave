@@ -176,5 +176,13 @@ footer{padding:22px 24px 34px;text-align:center;color:var(--muted);font-size:14p
   <a class="play" href="../">지금 플레이</a>
 </div>
 <footer>Last Wave는 정우가 만들고 계속 업데이트하는 게임입니다.</footer>
+<script>
+// Pass on where this visitor came from, so visit statistics can credit it.
+try{
+  var from=document.referrer?new URL(document.referrer).hostname:"";
+  var ref=new URLSearchParams(location.search).get("ref")||(from&&from!==location.hostname?from:"")||"about";
+  document.querySelectorAll("a.play").forEach(function(a){a.href="../?ref="+encodeURIComponent(ref);});
+}catch(e){}
+</script>
 </body>
 </html>

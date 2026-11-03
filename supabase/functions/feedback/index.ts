@@ -34,10 +34,12 @@ async function rest(path: string, body: unknown, prefer?: string) {
     body: JSON.stringify(body)
   });
   if (!response.ok) throw new Error(`${path} failed: ${response.status}`);
-  return prefer ? null : await response.json();
+  // Functions returning void answer with an empty body.
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
 
-async function sendEmail(entry: { message: string; nickname: string; version: string }) {
+async function sendEmail(entry: { message: string; nickname: string; version: string; plays: number | null; source: string }) {
   const key = Deno.env.get("RESEND_API_KEY");
   const to = Deno.env.get("FEEDBACK_EMAIL");
   if (!key || !to) return false;
@@ -47,8 +49,8 @@ async function sendEmail(entry: { message: string; nickname: string; version: st
     body: JSON.stringify({
       from: "Last Wave <onboarding@resend.dev>",
       to: [to],
-      subject: `[Last Wave 의견] ${entry.nickname || "익명"} (${entry.version})`,
-      text: `닉네임: ${entry.nickname || "익명"}\n버전: ${entry.version}\n\n${entry.message}`
+      subject: `[Last Wave ${entry.plays !== null && entry.plays <= 3 ? "첫 플레이 의견" : "의견"}] ${entry.nickname || "익명"} (${entry.version})`,
+      text: `닉네임: ${entry.nickname || "익명"}\n버전: ${entry.version}\n플레이 횟수: ${entry.plays ?? "알 수 없음"}\n유입 경로: ${entry.source || "알 수 없음"}\n\n${entry.message}`
     })
   });
   if (!response.ok) console.error(`email failed: ${response.status}`);
@@ -72,6 +74,9 @@ Deno.serve(async (req: Request) => {
   const message = String(body.message ?? "").trim().slice(0, 2000);
   const nickname = String(body.nickname ?? "").trim().slice(0, 16);
   const version = String(body.version ?? "").trim().slice(0, 16);
+  const playCount = Math.floor(Number(body.plays));
+  const plays = body.plays !== undefined && Number.isSafeInteger(playCount) && playCount >= 0 ? playCount : null;
+  const source = String(body.source ?? "").trim().slice(0, 64);
   if (message.length < 2) return reply({ ok: false, code: "MESSAGE_TOO_SHORT" }, 400);
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
@@ -80,11 +85,11 @@ Deno.serve(async (req: Request) => {
     const retryAfter = Number(await rest("rpc/lw_auth_retry_after", { p_key: limitKey, p_max: MAX_PER_HOUR })) || 0;
     if (retryAfter > 0) return reply({ ok: false, code: "TOO_MANY", retryAfter }, 429);
     await rest("rpc/lw_auth_record_failure", { p_key: limitKey, p_window_seconds: WINDOW_SECONDS });
-    await rest("last_wave_feedback", { message, nickname, version }, "return=minimal");
+    await rest("last_wave_feedback", { message, nickname, version, plays, source }, "return=minimal");
   } catch (error) {
     console.error(String(error));
     return reply({ ok: false, code: "SAVE_FAILED" }, 500);
   }
-  await sendEmail({ message, nickname, version }).catch((error) => console.error(String(error)));
+  await sendEmail({ message, nickname, version, plays, source }).catch((error) => console.error(String(error)));
   return reply({ ok: true });
 });

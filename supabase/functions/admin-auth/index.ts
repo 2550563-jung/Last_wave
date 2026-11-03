@@ -22,7 +22,9 @@ async function rpc(name: string, args: Record<string, unknown>) {
     body: JSON.stringify(args)
   });
   if (!response.ok) throw new Error(`${name} failed: ${response.status}`);
-  return await response.json();
+  // Functions returning void answer with an empty body.
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
 function recordFailure(key: string) {
   return rpc("lw_auth_record_failure", { p_key: key, p_window_seconds: WINDOW_SECONDS });
@@ -79,9 +81,11 @@ Deno.serve(async (req: Request) => {
   }
 
   let password = "";
+  let wantsStats = false;
   try {
     const body = await req.json();
     password = typeof body?.password === "string" ? body.password : "";
+    wantsStats = body?.stats === true;
   } catch {
     return new Response(JSON.stringify({ ok: false }), { status: 400, headers });
   }
@@ -95,6 +99,13 @@ Deno.serve(async (req: Request) => {
   if (!valid) {
     await recordFailure(attemptKey).catch((error) => console.error(String(error)));
     return new Response(JSON.stringify({ ok: false }), { status: 401, headers });
+  }
+  if (wantsStats) {
+    const stats = await rpc("lw_analytics_summary", { p_days: 14 }).catch((error) => {
+      console.error(String(error));
+      return null;
+    });
+    return new Response(JSON.stringify({ ok: Boolean(stats), stats }), { status: stats ? 200 : 500, headers });
   }
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 });

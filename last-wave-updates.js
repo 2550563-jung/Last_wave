@@ -2,6 +2,12 @@
 (() => {
   "use strict";
   const UPDATES={
+    v124:[
+      "게임이 끝난 화면에서 기록 이미지를 친구에게 공유할 수 있습니다.",
+      "게임이 끝난 화면에서 바로 의견을 보낼 수 있습니다.",
+      "안 본 업데이트가 여러 개면 이 안내에 한 번에 모아서 보여 줍니다.",
+      "게임 개선을 위해 방문과 플레이 횟수를 익명으로 집계합니다. IP 주소와 닉네임은 저장하지 않습니다."
+    ],
     v123:[
       "일일 랭킹이 이제 매일 새로 시작합니다. 한국 시간 자정마다 새 순위표가 열립니다.",
       "랭킹 화면에서 어느 날짜의 일일 랭킹인지 볼 수 있습니다."
@@ -27,20 +33,34 @@
   function markSeen(){
     try{localStorage.setItem(STORE_KEY,GAME_VERSION);}catch{}
   }
+  const versionNumber=version=>Number(/^v(\d+)$/.exec(version||"")?.[1])||0;
+  // Every release the player has not seen, newest first. A player with no
+  // history only gets the current release, not the whole changelog.
+  function pendingVersions(lastSeen){
+    const current=versionNumber(GAME_VERSION),last=versionNumber(lastSeen);
+    if(!UPDATES[GAME_VERSION]||last>=current)return[];
+    if(!last)return[GAME_VERSION];
+    return Object.keys(UPDATES)
+      .filter(version=>versionNumber(version)>last&&versionNumber(version)<=current)
+      .sort((a,b)=>versionNumber(b)-versionNumber(a));
+  }
   function show(){
-    const notes=UPDATES[GAME_VERSION];
-    if(!notes||seen()===GAME_VERSION||document.getElementById("lw122Updates"))return;
+    const versions=pendingVersions(seen());
+    if(!versions.length||document.getElementById("lw122Updates"))return;
     const overlay=document.createElement("div");
     overlay.id="lw122Updates";overlay.className="overlay";
     overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");
-    const items=notes.map(note=>`<li>${note}</li>`).join("");
+    const list=notes=>`<ul class="lw121-notes">${notes.map(note=>`<li>${note}</li>`).join("")}</ul>`;
+    const body=versions.length===1
+      ? list(UPDATES[versions[0]])
+      : versions.map(version=>`<h3 class="lw124-update-version">${version}</h3>${list(UPDATES[version])}`).join("");
     overlay.innerHTML=`<div class="panel lw122-panel"><div class="eyebrow">UPDATE</div>
-      <h2>${GAME_VERSION} 업데이트 내용</h2><ul class="lw121-notes">${items}</ul>
+      <h2>${GAME_VERSION} 업데이트 내용</h2>${body}
       <div class="actions"><button id="lw122UpdatesClose" class="btn primary" type="button">확인</button></div></div>`;
     document.body.append(overlay);
     document.getElementById("lw122UpdatesClose").onclick=()=>{markSeen();hideOverlay(overlay);overlay.remove();};
     showOverlay(overlay);
   }
-  window.__lastWaveUpdates={UPDATES,show};
+  window.__lastWaveUpdates={UPDATES,show,pendingVersions};
   if(document.readyState==="complete")show();else addEventListener("load",show,{once:true});
 })();

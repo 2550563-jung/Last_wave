@@ -56,9 +56,13 @@ LW_CLOUDFLARE_TEST_URL=http://127.0.0.1:8787 node tests/run.mjs
 - `exe-v*` 태그를 푸시하면 Windows 실행 파일을 빌드해 릴리스에 올립니다.
 - 오프라인 실행은 `sw.js`가 맡습니다. 새 파일을 게임에 추가할 때 이름이 `last-wave-*`가 아니면 `.github/workflows/static.yml`의 복사 목록에 추가하세요.
 
+## 방문 통계
+
+`stats/`(https://2550563-jung.github.io/Last_wave/stats/)에서 관리자 비밀번호로 봅니다. 내 플레이가 집계되지 않게 하려면 쓰는 브라우저에서 게임 주소 뒤에 `?analytics=off`를 붙여 한 번 엽니다. 게시물별로 유입을 구분하려면 `?ref=이름`을 붙인 링크를 쓰세요.
+
 ## Supabase Edge Function
 
-배포된 함수는 `admin-auth`, `accounts`, `feedback`, `daily-rankings`, `rankings`입니다. `rankings` 소스는 아직 저장소에 없습니다. 다음 명령으로 받아 추가하세요.
+배포된 함수는 `admin-auth`, `accounts`, `feedback`, `analytics`, `daily-rankings`, `rankings`입니다. `rankings` 소스는 아직 저장소에 없습니다. 다음 명령으로 받아 추가하세요.
 
 ```bash
 supabase functions download rankings --project-ref nkeeayhodmauifevmaga
