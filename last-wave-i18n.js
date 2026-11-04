@@ -8,7 +8,9 @@
   let query=null;
   try{query=new URLSearchParams(location.search).get("lang");}catch{}
   if(query==="en"||query==="ko"){stored=query;try{localStorage.setItem(KEY,query);}catch{}}
-  const lang=stored||(/^ko\b/i.test(navigator.language||"ko")?"ko":"en");
+  const detect=language=>/^ko\b/i.test(language||"ko")?"ko":"en";
+  // Automated tests read the Korean interface unless they ask for English.
+  const lang=stored||(navigator.webdriver?"ko":detect(navigator.language));
   const HANGUL=/[가-힣]/;
   const DICT={
 "특급":"Express",
@@ -785,7 +787,7 @@
 "Last Wave(라스트 웨이브) | 무료 브라우저 좀비 생존 게임|Last Wave ": " Free browser zombie survival game",
 "Last Wave(라스트 웨이브) | 무료 브라우저 좀비 생존 게임": "Last Wave | Free browser zombie survival game"
 };
-  const TERMS=[["시작 보호막","Starting shield"],["초당 재생","Regen/s"],["일반 스킬 재사용","Skill cooldown"],["상태 이상 지속","Status duration"],["속성 피해","Element damage"],["화상 피해","Burn damage"],["펫 화력","Pet damage"],["이동","Move"],["권총","Pistol"],["최대 체력","Max HP"],["이동 속도","Move speed"],["이동속도","Move speed"],["공격 속도","Attack speed"],["공격력","Damage"],["피해 감소","Damage reduction"],["치명타 확률","Crit chance"],["치명타","Crit"],["스킬 재사용","Skill cooldown"],["대시 재사용","Dash cooldown"],["획득 범위","Pickup range"],["습득 범위","Pickup range"],["보호막","Shield"],["연사","Fire rate"],["회피","Dodge"],["재생","Regen"],["방어율","Armor"],["방어력","Armor"],["적 체력","Enemy HP"],["적 속도","Enemy speed"],["적 수","Enemy count"],["웨이브 자금","Wave funds"],["경험치","XP"],["전리품","Loot"],["점수","Score"],["피해","Damage"],["체력","HP"],["크레딧","Credits"],["프리즘","Prism"],["유물","Relics"],["랭크","rank"],["돈","Money"],["관통","Pierce"],["범위","Range"],["폭발","Blast"],["연쇄","Chain"],["회복","Heal"]];
+  const TERMS=[["시작 보호막","Starting shield"],["초당 재생","Regen/s"],["일반 스킬 재사용","Skill cooldown"],["상태 이상 지속","Status duration"],["속성 피해","Element damage"],["화상 피해","Burn damage"],["펫 화력","Pet damage"],["최대 체력","Max HP"],["이동 속도","Move speed"],["이동속도","Move speed"],["공격 속도","Attack speed"],["공격력","Damage"],["피해 감소","Damage reduction"],["치명타 확률","Crit chance"],["치명타","Crit"],["스킬 재사용","Skill cooldown"],["대시 재사용","Dash cooldown"],["획득 범위","Pickup range"],["습득 범위","Pickup range"],["보호막","Shield"],["연사","Fire rate"],["회피","Dodge"],["재생","Regen"],["방어율","Armor"],["방어력","Armor"],["적 체력","Enemy HP"],["적 속도","Enemy speed"],["적 수","Enemy count"],["웨이브 자금","Wave funds"],["경험치","XP"],["전리품","Loot"],["점수","Score"],["피해","Damage"],["체력","HP"],["크레딧","Credits"],["프리즘","Prism"],["유물","Relics"],["랭크","rank"],["돈","Money"],["관통","Pierce"],["범위","Range"],["폭발","Blast"],["연쇄","Chain"],["회복","Heal"],["이동","Move"],["권총","Pistol"]];
   const PATTERNS=[];
   for(const [ko,en] of Object.entries(DICT)){
     if(!ko.includes("{}"))continue;
@@ -833,7 +835,7 @@
     cache.set(text,out);
     return out;
   }
-  window.__lastWaveLang={lang,translate,DICT};
+  window.__lastWaveLang={lang,translate,detect,DICT};
 
   function addSwitch(){
     const quick=document.getElementById("lw125Quick");

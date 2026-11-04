@@ -22,8 +22,9 @@ try{
   assert.equal(await page.locator("#lw126Lang").textContent(),"English");
 
   // Other browsers start in English, and play works.
-  page=await open("en-US");
+  page=await open("en-US","?lang=en");
   assert.equal(await page.evaluate(()=>window.__lastWaveLang.lang),"en");
+  assert.deepEqual(await page.evaluate(()=>["en-US","ko-KR","ko","ja"].map(window.__lastWaveLang.detect)),["en","ko","ko","en"]);
   assert.match(await page.locator("#lw125QuickStart").textContent(),/Play now/);
   assert.equal(await page.locator("#lw126Lang").textContent(),"한국어");
   const leftovers=await page.evaluate(async()=>{
