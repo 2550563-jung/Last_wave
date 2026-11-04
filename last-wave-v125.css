@@ -1,0 +1,42 @@
+/* LAST WAVE v125 */
+#lw125Quick{display:grid;gap:10px;margin:14px 0}
+#lw125QuickStart{width:100%;min-height:64px;font-size:24px}
+.lw125-quick-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.lw125-quick-row .btn{min-height:44px;padding:8px 6px;font-size:14px}
+#lw125AccountFold{margin:0 0 14px;border:1px solid rgba(113,220,255,.3);border-radius:12px;padding:10px 12px}
+#lw125AccountFold>summary{cursor:pointer;font-weight:700;text-align:center;min-height:24px}
+#lw125AccountFold[open]>summary{margin-bottom:10px}
+#lw125Tip{position:fixed;left:50%;bottom:26%;transform:translateX(-50%);z-index:9000;max-width:88vw;padding:9px 16px;border-radius:10px;background:rgba(5,14,22,.9);border:1px solid #ffd34d;color:#fff;font-size:15px;text-align:center;pointer-events:none;display:none}
+#lw125Result{margin:10px 0;text-align:center}
+#lw125Result p{margin:4px 0}
+#lw125Result p:empty{display:none}
+#lw125Goals{list-style:none;margin:8px 0;padding:0;line-height:1.6}
+#lw125Goals:empty{display:none}
+#lw125Retry{width:100%;min-height:56px;font-size:20px;margin-top:6px}
+#lw125Retry[hidden]{display:none}
+#lw125Challenge.won{color:#7dff8a;font-weight:700}
+#lw125Challenge.lost{color:#ffb34f;font-weight:700}
+#lw124ShareButton[hidden]{display:none}
+#lw125InviteBox{display:grid;gap:6px;margin:10px 0;text-align:center}
+#lw125InviteStatus{min-height:1.3em;overflow-wrap:anywhere}
+.lw125-creative-panel,.lw125-trophy-panel{max-width:720px;width:min(94vw,720px);max-height:90vh;overflow:auto}
+.lw125-note{line-height:1.55}
+.lw125-presets{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.lw125-presets .btn{flex:1 1 90px;min-height:44px}
+.lw125-rule-group{margin:14px 0;text-align:left}
+.lw125-rule-group h3{margin:0 0 6px}
+.lw125-rule{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:8px 0;border-top:1px solid rgba(255,255,255,.1);min-height:44px}
+.lw125-rule input[type=range]{grid-column:1/-1;width:100%;min-height:28px;margin:0}
+.lw125-rule input[type=checkbox]{width:24px;height:24px;margin:0}
+.lw125-rule select{min-height:38px;max-width:50vw}
+.lw125-trophy{display:grid;gap:2px;padding:10px 0;border-top:1px solid rgba(255,255,255,.1);text-align:left;opacity:.62}
+.lw125-trophy.owned{opacity:1}
+.lw125-trophy.owned b{color:#ffd34d}
+.lw125-link-panel{max-width:480px}
+.lw125-link-body{line-height:1.6;overflow-wrap:anywhere}
+.lw125-admin-trial .lw125-trial-hidden{display:none!important}
+@media (max-width:480px){#lw125QuickStart{font-size:22px}.lw125-quick-row .btn{font-size:13px}}
+.lw125-over #lw108DirectorHud{display:none!important}
+.lw125-quick-row .btn{word-break:keep-all}
+#lw126Lang{justify-self:center;min-height:40px;padding:6px 18px;font-size:14px}
+#lw126HelpNote{font-weight:700}

@@ -46,6 +46,14 @@ cd cloudflare-multiplayer && npm ci && npx wrangler dev --local --port 8787 --va
 LW_CLOUDFLARE_TEST_URL=http://127.0.0.1:8787 node tests/run.mjs
 ```
 
+## 크리에이티브 모드
+
+`last-wave-v125.js`가 담당합니다. 판이 끝날 때까지 저장을 막고 시작 전 저장 데이터로 되돌리므로 랭킹과 보상에 반영되지 않습니다.
+
+## 영어 버전
+
+`last-wave-i18n.js`의 사전으로 화면에 나오는 글자만 바꿉니다. 한국어 브라우저에서는 실행되지 않습니다. 게임에 새 글자를 넣으면 이 사전에도 추가하세요. 없는 문장은 한국어로 나옵니다.
+
 ## 릴리스
 
 게임에 영향을 주는 업데이트는 `last-wave-core-1.js`의 `GAME_VERSION`과 `index.html`의 `#gameVersion`을 함께 올립니다. 메인 화면에 표시됩니다. `last-wave-updates.js`에 그 버전의 내용을 추가하면, 해당 버전으로 처음 들어온 플레이어에게 팝업으로 보여 줍니다. 내용이 없으면 테스트가 실패합니다.

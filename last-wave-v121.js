@@ -226,7 +226,7 @@
     }
     const result=baseStartWave();
     advance("wave",wave,true);
-    if(authority()&&state==="playing"&&wave>=3&&wave%10!==0&&runRandom()<.3)startEvent();
+    if(authority()&&state==="playing"&&wave>=3&&wave%10!==0&&runRandom()<.3&&!window.__lastWaveCreative?.noEvents)startEvent();
     return result;
   };
   const baseCompleteWave=completeWave;
