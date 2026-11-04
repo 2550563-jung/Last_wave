@@ -13,6 +13,11 @@
   const lang=stored||(navigator.webdriver?"ko":detect(navigator.language));
   const HANGUL=/[가-힣]/;
   const DICT={
+"관리자 버튼을 누르면 비밀번호 없이 패널이 열립니다. 이번 판에만 적용됩니다.":"The admin button opens the panel without a password. It applies to this run only.",
+"Last Wave(라스트 웨이브) | 무료 브라우저 좀비 생존 로그라이크":"Last Wave | Free browser zombie survival roguelike",
+"v127 업데이트 내용":"v127 update",
+"크리에이티브 모드의 관리자 체험을 비밀번호 없이 쓸 수 있도록 고쳤습니다.":"The creative mode admin trial no longer asks for a password.",
+"게임 중에 메뉴로 나왔을 때 전투 안내가 남던 문제를 고쳤습니다.":"Combat tips no longer stay on screen after returning to the menu.",
 "특급":"Express",
 "황색":"Yellow",
 "연두":"Lime",
