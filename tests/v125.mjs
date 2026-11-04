@@ -23,8 +23,8 @@ try{
   assert.equal(await page.evaluate(()=>state),"playing");
 
   // First runs are gentle, later ones are not.
-  const easy=await page.evaluate(()=>{wave=1;enemies.length=0;spawnEnemy();const e=enemies[0];const hp=e.maxHp,dmg=e.damage;return{hp,dmg};});
-  const normal=await page.evaluate(()=>{save.v125=save.v125||{};const base=getProfileStats;getProfileStats=()=>({...base(),runs:9});returnToMenu();startRun("normal");wave=1;enemies.length=0;spawnEnemy();const e=enemies[0];getProfileStats=base;return{hp:e.maxHp,dmg:e.damage};});
+  const easy=await page.evaluate(()=>{runRandom=seededRandom(7);wave=1;enemies.length=0;spawnEnemy();const e=enemies[0];const hp=e.maxHp,dmg=e.damage;return{hp,dmg};});
+  const normal=await page.evaluate(()=>{save.v125=save.v125||{};const base=getProfileStats;getProfileStats=()=>({...base(),runs:9});returnToMenu();startRun("normal");runRandom=seededRandom(7);wave=1;enemies.length=0;spawnEnemy();const e=enemies[0];getProfileStats=base;return{hp:e.maxHp,dmg:e.damage};});
   assert.ok(easy.dmg<normal.dmg,JSON.stringify({easy,normal}));
 
   // Zones follow the wave, and hazards become warned marks and then shots.
