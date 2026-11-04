@@ -38,3 +38,5 @@
 @media (max-width:480px){#lw125QuickStart{font-size:22px}.lw125-quick-row .btn{font-size:13px}}
 .lw125-over #lw108DirectorHud{display:none!important}
 .lw125-quick-row .btn{word-break:keep-all}
+#lw126Lang{justify-self:center;min-height:40px;padding:6px 18px;font-size:14px}
+#lw126HelpNote{font-weight:700}

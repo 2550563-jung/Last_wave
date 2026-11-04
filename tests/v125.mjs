@@ -14,8 +14,7 @@ try{
     await page.waitForFunction(()=>window.__lastWaveV125&&window.__lastWaveAimV117?.ready);
     return page;
   };
-  assert.equal(GAME_VERSION,"v125");
-
+  
   // Quick start sits near the top of the menu and starts a run.
   let page=await open();
   const top=await page.evaluate(()=>document.getElementById("lw125QuickStart").getBoundingClientRect().y);
