@@ -71,23 +71,24 @@
 
   async function share(){
     const button=byId("lw124ShareButton"),run=runSummary();
-    const text=`Last Wave ${run.daily?"일일 도전 ":""}웨이브 ${run.wave}, 점수 ${formatNumber(run.score)} 기록! 나보다 오래 버틸 수 있어?`;
+    const text=`Last Wave ${run.daily?"일일 도전 ":""}웨이브 ${run.wave}, 점수 ${formatNumber(run.score)} 기록! 같은 조건으로 이겨 볼래?`;
+    const shareUrl=window.__lastWaveV125?.shareUrl(run)||GAME_URL;
     button.disabled=true;status("");
     try{
       const canvas=await drawCard(run);
       const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/png"));
       const file=blob&&new File([blob],`last-wave-wave-${run.wave}.png`,{type:"image/png"});
       if(file&&navigator.canShare?.({files:[file]})){
-        await navigator.share({files:[file],text:`${text}\n${GAME_URL}`});
+        await navigator.share({files:[file],text:`${text}\n${shareUrl}`});
       }else if(navigator.share&&/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
-        await navigator.share({text,url:GAME_URL});
+        await navigator.share({text,url:shareUrl});
       }else{
         if(blob){
           const link=document.createElement("a");
           link.href=URL.createObjectURL(blob);link.download=file.name;link.click();
           setTimeout(()=>URL.revokeObjectURL(link.href),10000);
         }
-        const copied=await copyText(`${text}\n${GAME_URL}`);
+        const copied=await copyText(`${text}\n${shareUrl}`);
         status(copied?"이미지를 저장하고 공유 문구를 복사했습니다. 붙여 넣어 공유하세요.":"이미지를 저장했습니다. 게임 링크와 함께 공유하세요.");
       }
       window.__lastWaveAnalytics?.track("share",{wave:run.wave,mode:run.daily?"daily":"normal"});
