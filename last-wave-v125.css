@@ -40,3 +40,27 @@
 .lw125-quick-row .btn{word-break:keep-all}
 #lw126Lang{justify-self:center;min-height:40px;padding:6px 18px;font-size:14px}
 #lw126HelpNote{font-weight:700}
+#lw128ShopTimer{font-variant-numeric:tabular-nums}
+
+/* v128: phone layout, so panels no longer cover each other or the controls. */
+@media (orientation:portrait) and (max-width:600px){
+  body.mobile #stats{left:7px;right:7px;width:auto;max-width:none}
+  body.mobile #missionHud{top:88px;left:7px;right:auto;width:calc(46% - 10px);transform:none;margin:0}
+  body.mobile #weaponHud{top:88px;right:7px;left:auto;width:54%;max-width:none}
+  body.mobile #dangerHud{top:144px}
+  body.mobile #networkHud{top:144px}
+  body.mobile #effects{top:180px}
+  body.mobile #timeHud{top:200px}
+  body.mobile #pauseButton{top:184px}
+  body.mobile #bossHud{top:144px;left:116px;right:88px;width:auto;transform:none;margin:0}
+  body.mobile #lw108DirectorHud{top:auto;bottom:222px;left:7px;right:7px;width:auto}
+  body.mobile #lw121Hint,body.mobile #lw125Tip{top:auto;bottom:292px}
+}
+@media (orientation:portrait) and (max-width:600px) and (max-height:760px){
+  body.mobile #lw108DirectorHud{display:none}
+  body.mobile #lw121Hint,body.mobile #lw125Tip{bottom:196px}
+}
+@media (orientation:landscape) and (max-height:480px){
+  body.mobile #lw108DirectorHud{display:none}
+  body.mobile #lw121Hint,body.mobile #lw125Tip{top:222px;bottom:auto}
+}

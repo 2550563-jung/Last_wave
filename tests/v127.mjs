@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
-import { chromium, GAME_VERSION } from "./browser.mjs";
+import { chromium } from "./browser.mjs";
 
 const browser=await chromium.launch({headless:true,args:["--allow-file-access-from-files"]});
 try{
-  assert.equal(GAME_VERSION,"v127");
   const context=await browser.newContext({viewport:{width:1280,height:800}});
   await context.addInitScript(()=>localStorage.setItem("lw_seen_update","v999"));
   const page=await context.newPage();
