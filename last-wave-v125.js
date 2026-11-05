@@ -128,7 +128,7 @@
       adminMode=true;
       document.body.classList.add("lw125-admin-trial");
       updateAdminButton?.();
-      showMessage("관리자 체험","오른쪽의 관리자 버튼으로 패널을 엽니다. 이번 판에만 적용됩니다.",4);
+      showMessage("관리자 체험","관리자 버튼을 누르면 비밀번호 없이 패널이 열립니다. 이번 판에만 적용됩니다.",4);
     }else showMessage("크리에이티브 모드","랭킹과 보상에서 제외됩니다.",2.4);
   }
   const localStorageSet=(key,value)=>{try{localStorage.setItem(key,value);}catch{}};
@@ -203,6 +203,28 @@
     return result;
   };
 
+  // Inside the trial the admin button opens the panel directly, without the password.
+  // Everywhere else the regular login stays exactly as it was.
+  const trialOn=()=>creative.active&&creative.rules.adminTrial;
+  const floatingAdmin=byId("adminFloatingButton");
+  if(floatingAdmin){
+    const baseOpen=floatingAdmin.onclick;
+    floatingAdmin.onclick=function(...args){
+      if(trialOn()){adminMode=true;openAdminPanel();return;}
+      return baseOpen?.apply(this,args);
+    };
+  }
+  const adminClose=byId("adminPanelCloseButton");
+  if(adminClose){
+    const baseClose=adminClose.onclick;
+    adminClose.onclick=function(...args){
+      const result=baseClose?.apply(this,args);
+      // Closing the panel normally ends admin mode, but the trial lasts the whole run.
+      if(trialOn()){adminMode=true;updateAdminButton?.();}
+      return result;
+    };
+  }
+
   /* ---------- Menu: quick start ---------- */
   function buildMenu(){
     const panel=byId("menu")?.querySelector(".panel");
@@ -238,6 +260,10 @@
   const plainRun=()=>gameMode==="normal"&&!multiplayer.active&&!creative.active&&!challenge.active&&(v92()?.runType||"normal")==="normal";
   const easyRun=()=>plainRun()&&runStartCount<EASY_RUNS&&wave<=EASY_WAVES;
   let tipTime=0;
+  function hideTips(){
+    tipTime=0;
+    for(const id of ["lw125Tip","lw121Hint"]){const el=byId(id);if(el)el.style.display="none";}
+  }
   function tip(id,text,seconds=6){
     const m=meta();
     if(runStartCount>=TIP_RUNS||creative.active||m.tips.includes(id))return;
@@ -669,9 +695,8 @@
       :null;
     const result=baseFinishRun(...args);
     // Combat tips must not cover the result screen.
-    tipTime=0;
     document.body.classList.add("lw125-over");
-    for(const id of ["lw125Tip","lw121Hint"]){const el=byId(id);if(el)el.style.display="none";}
+    hideTips();
     byId("lw125Retry").hidden=!replay;
     const challengeLine=byId("lw125Challenge");
     if(wasChallenge&&data){
@@ -698,7 +723,9 @@
   const baseReturnToMenu=returnToMenu;
   returnToMenu=function(...args){
     const result=baseReturnToMenu(...args);
-    document.body.classList.remove("lw125-over");
+    // Combat HUD and tips belong to a run, not to the menu.
+    document.body.classList.add("lw125-over");
+    hideTips();
     marks=[];
     challenge.active=false;challenge.data=null;
     if(creative.active)endCreative();
@@ -708,6 +735,7 @@
   /* ---------- Hooks into waves, spawns and the game loop ---------- */
   const baseStartRun=startRun;
   startRun=function(...args){
+    document.body.classList.remove("lw125-over");
     marks=[];shownZone=0;hazardTimer=8;bossEvents=[];bossEventId=0;seenBossEvent=0;
     runStartCount=getProfileStats().runs;
     runSeed="";

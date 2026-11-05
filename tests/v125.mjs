@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chromium, GAME_VERSION } from "./browser.mjs";
+import { chromium } from "./browser.mjs";
 
 const browser=await chromium.launch({headless:true,args:["--allow-file-access-from-files"]});
 try{
