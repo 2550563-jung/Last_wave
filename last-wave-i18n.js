@@ -13,6 +13,10 @@
   const lang=stored||(navigator.webdriver?"ko":detect(navigator.language));
   const HANGUL=/[가-힣]/;
   const DICT={
+"휴대폰에서 상단 정보와 버튼이 서로 겹치지 않게 다시 배치했습니다.":"Rearranged the phone HUD so panels and buttons no longer overlap.",
+"웨이브 사이 상점은 20초가 지나면 자동으로 닫히고 다음 웨이브가 시작됩니다.":"The shop now closes after 20 seconds and the next wave starts.",
+"v128 업데이트 내용":"v128 update",
+"휴대폰에서 캐릭터와 맵이 길쭉하게 늘어나 보이던 문제를 고쳤습니다.":"Fixed characters and the map looking stretched on phones.",
 "관리자 버튼을 누르면 비밀번호 없이 패널이 열립니다. 이번 판에만 적용됩니다.":"The admin button opens the panel without a password. It applies to this run only.",
 "Last Wave(라스트 웨이브) | 무료 브라우저 좀비 생존 로그라이크":"Last Wave | Free browser zombie survival roguelike",
 "v127 업데이트 내용":"v127 update",

@@ -28,7 +28,7 @@ const ADMIN_AUTH_URL =
   SUPABASE_URL +
   "/functions/v1/admin-auth";
 
-const GAME_VERSION="v127";
+const GAME_VERSION="v128";
 
 /*
   여기에 네가 정한 관리자 비밀번호를 입력.
@@ -3894,17 +3894,20 @@ function resize(){
       1
     );
 
-  HEIGHT=
-    Math.max(
-      540,
-      Math.min(
-        1300,
-        Math.round(
-          WIDTH*
-          ratio
-        )
-      )
-    );
+  /* Keep the drawing size in the screen's shape, otherwise everything is
+     stretched. Tall phones see a fixed area, so characters stay large enough to read. */
+  const BASE_WIDTH=960,MIN_HEIGHT=540,MAX_HEIGHT=1300;
+  if(ratio>MAX_HEIGHT/BASE_WIDTH){
+    const area=1000000;
+    WIDTH=Math.round(Math.sqrt(area/ratio));
+    HEIGHT=Math.round(WIDTH*ratio);
+  }else if(ratio<MIN_HEIGHT/BASE_WIDTH){
+    HEIGHT=MIN_HEIGHT;
+    WIDTH=Math.round(MIN_HEIGHT/ratio);
+  }else{
+    WIDTH=BASE_WIDTH;
+    HEIGHT=Math.round(BASE_WIDTH*ratio);
+  }
 
   const mode=
     GRAPHICS_MODES[save.graphicsMode] ||

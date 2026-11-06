@@ -813,10 +813,49 @@
     if(!safeText(save.nickname||"",16))setTimeout(()=>showMessage("닉네임 없음","닉네임을 정해야 주간 랭킹에 등록됩니다.",4),2600);
   });
 
+  /* ---------- v128: the shop closes itself after 20 seconds ---------- */
+  const SHOP_SECONDS=20;
+  let shopLeft=0,shopTimer=0,shopLast=0;
+  const isShown=el=>Boolean(el)&&getComputedStyle(el).display!=="none"&&getComputedStyle(el).visibility!=="hidden";
+  function shopLabel(text){
+    const button=byId("nextWaveButton");
+    if(!button)return;
+    let label=byId("lw128ShopTimer");
+    if(!label){label=document.createElement("span");label.id="lw128ShopTimer";button.append(label);}
+    label.textContent=text;
+  }
+  function stopShopTimer(){
+    clearInterval(shopTimer);shopTimer=0;
+    shopLabel("");
+  }
+  function tickShop(){
+    if(state==="menu"||runEnded||!isShown(ui.shop)){stopShopTimer();return;}
+    const now=performance.now(),elapsed=(now-shopLast)/1000;
+    shopLast=now;
+    // Rewards and equipment open above the shop. A choice in progress is never thrown away.
+    const covered=[...document.querySelectorAll(".overlay")].some(el=>el!==ui.shop&&isShown(el));
+    if(covered)return;
+    shopLeft=Math.max(0,shopLeft-elapsed);
+    shopLabel(` (${Math.ceil(shopLeft)})`);
+    if(shopLeft>0)return;
+    stopShopTimer();
+    // In multiplayer only the host may start the wave; the others follow its signal.
+    if(!multiplayer.active||multiplayer.isHost)byId("nextWaveButton").click();
+  }
+  const baseOpenShop=openShop;
+  openShop=function(...args){
+    const result=baseOpenShop(...args);
+    clearInterval(shopTimer);
+    shopLeft=SHOP_SECONDS;shopLast=performance.now();
+    shopLabel(` (${SHOP_SECONDS})`);
+    shopTimer=setInterval(tickShop,200);
+    return result;
+  };
+
   buildMenu();
   buildInvite();
   buildGameOver();
   if(document.readyState==="complete")readLinks();else addEventListener("load",readLinks,{once:true});
   window.__lastWaveV125={ZONES,BOSS_PATTERNS,RULES,DEFAULT_RULES,PRESETS,creative,challenge,zoneIndex,decode,encode,shareUrl,spawnHazard,
-    get marks(){return marks;},get runSeed(){return runSeed;},startCreative,setRules(rules){draftRules={...DEFAULT_RULES,...rules};}};
+    get shopLeft(){return shopLeft;},setShopLeft(value){shopLeft=value;},get marks(){return marks;},get runSeed(){return runSeed;},startCreative,setRules(rules){draftRules={...DEFAULT_RULES,...rules};}};
 })();
