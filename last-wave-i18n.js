@@ -13,6 +13,7 @@
   const lang=stored||(navigator.webdriver?"ko":detect(navigator.language));
   const HANGUL=/[가-힣]/;
   const DICT={
+"상점 자동 닫기를 30초로 늘렸습니다. 다른 창이 열려 있어도 시간은 멈추지 않고, 고르지 않은 전술 보급은 첫 번째로 자동 선택됩니다.":"The shop now closes after 30 seconds. The clock keeps running with other windows open, and an unpicked tactical supply takes the first option.",
 "v129 업데이트 내용":"v129 update",
 "상점, 일시정지, 게임 종료 화면에서는 웨이브 정보와 안내 문구를 숨깁니다. 게임으로 돌아가면 다시 보입니다.":"Wave info and tips are hidden on the shop, pause and game over screens, and come back when you resume.",
 "화면 크기와 방향에 맞춰 전투 정보가 서로 겹치지 않게 자동으로 자리를 잡습니다.":"Combat info now arranges itself so nothing overlaps on any screen size.",

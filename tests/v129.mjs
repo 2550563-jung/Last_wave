@@ -65,6 +65,17 @@ try{
   await settle(page);
   assert.equal(await hudShown(),true);
 
+  // A real wave end: the reward window sits above the shop, and time running out picks for you.
+  await page.evaluate(()=>{enemies.length=0;spawnRemaining=0;completeWave();});
+  await page.waitForTimeout(900);
+  const before=await page.evaluate(()=>({reward:document.getElementById("lw108RewardOverlay")?.classList.contains("show"),shop:getComputedStyle(ui.shop).display!=="none",wave}));
+  assert.equal(before.shop,true);
+  await page.evaluate(()=>window.__lastWaveV125.setShopLeft(.2));
+  await page.waitForTimeout(900);
+  const after=await page.evaluate(()=>({reward:document.getElementById("lw108RewardOverlay")?.classList.contains("show")||false,shop:getComputedStyle(ui.shop).display!=="none",paused,state,wave}));
+  assert.deepEqual({reward:after.reward,shop:after.shop,paused:after.paused,state:after.state},{reward:false,shop:false,paused:false,state:"playing"},JSON.stringify({before,after}));
+  assert.equal(after.wave,before.wave+1);
+
   // Only the pause menu's quit button ends the run.
   await page.keyboard.press("Escape");
   await page.click("#quitButton");
