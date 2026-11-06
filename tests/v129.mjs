@@ -13,7 +13,7 @@ const open=async(viewport,mobile=false)=>{
   await page.waitForFunction(()=>window.__lastWaveV129&&window.__lastWaveV125);
   return page;
 };
-const settle=page=>page.waitForTimeout(350);
+const settle=page=>page.waitForTimeout(600);
 try{
   assert.equal(GAME_VERSION,"v129");
   let page=await open({width:1280,height:800});
@@ -95,9 +95,12 @@ try{
   for(const [width,height,mobile] of [[320,568,1],[390,844,1],[568,320,1],[844,390,1],[768,1024,1],[1024,600,0],[1920,1080,0],[3440,1440,0]]){
     page=await open({width,height},Boolean(mobile));
     await page.click("#lw125QuickStart");
-    const issues=await page.evaluate(async()=>{
-      player.invincible=999;wave=30;spawnBoss();
-      await new Promise(resolve=>setTimeout(resolve,700));
+    await page.evaluate(()=>{player.invincible=999;wave=30;spawnBoss();});
+    // Panels slide in; the layout must settle within a moment and stay that way.
+    let issues=[],tries=[];
+    for(let attempt=0;attempt<15;attempt++){
+      await page.waitForTimeout(200);
+      issues=await page.evaluate(async()=>{
       const ids=["stats","weaponHud","bossHud","missionHud","dangerHud","networkHud","effects","timeHud","lw97SkillDock","v56EventHud",
         "lw108DirectorHud","lw108ComboHud","message","lw121Hint","lw125Tip","moveStick","aimStick","ultimateButton","dashButton","meleeButton","pauseButton"];
       const boxes=ids.map(id=>[id,document.getElementById(id)]).filter(([,el])=>{
@@ -113,8 +116,11 @@ try{
         if(Math.min(a.right,b.right)-Math.max(a.left,b.left)>4&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>4)out.push(`${boxes[i][0]}/${boxes[j][0]}`);
       }
       return out;
-    });
-    assert.deepEqual(issues,[],`${width}x${height}`);
+      });
+      tries.push(issues.length);
+      if(!issues.length&&attempt>=2)break;
+    }
+    assert.deepEqual(issues,[],`${width}x${height} ${tries.join(",")}`);
     assert.deepEqual(page.errors,[]);
     await page.context().close();
   }

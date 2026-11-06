@@ -86,6 +86,17 @@
   addEventListener("resize",schedule,{passive:true});
   addEventListener("orientationchange",()=>setTimeout(schedule,250),{passive:true});
   setInterval(()=>{updateCalm();if(!calm)layout();},150);
+  // React the moment a panel appears or changes, not only on the next tick.
+  const watched=new WeakSet();
+  const watcher=new MutationObserver(schedule);
+  function watch(){
+    for(const id of [...ANCHORS,...FLOATING]){
+      const el=byId(id);
+      if(el&&!watched.has(el)){watched.add(el);watcher.observe(el,{attributes:true,attributeFilter:["class","hidden"]});}
+    }
+  }
+  new MutationObserver(()=>{watch();schedule();}).observe(document.body,{childList:true});
+  watch();
 
   /* ---------- Closing the tab during a run asks first ---------- */
   addEventListener("beforeunload",event=>{
