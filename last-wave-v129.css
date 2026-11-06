@@ -1,0 +1,23 @@
+/* LAST WAVE v129: combat HUD only during a fight. */
+body.lw129-calm :is(#stats,#weaponHud,#bossHud,#missionHud,#dangerHud,#lw88NetworkHud,#networkHud,#effects,#timeHud,
+  #lw97SkillDock,#v56EventHud,#lw108DirectorHud,#lw108ComboHud,#message,#lw121Hint,#lw125Tip,
+  #touchControls,#ultimateButton,#dashButton,#meleeButton,#pauseButton,#lw92TrainingBar){
+  visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+}
+.lw129-nofit{visibility:hidden!important}
+
+/* Short landscape phones: the same HUD, a bit smaller, so it fits around the controls. */
+@media (orientation:landscape) and (max-height:430px){
+  :is(#stats,#weaponHud,#missionHud,#bossHud,#dangerHud,#networkHud,#lw88NetworkHud,#effects,#timeHud,#lw97SkillDock,#v56EventHud,#lw108ComboHud){
+    zoom:calc(var(--lw111-ui-scale,1)*.76);
+  }
+  #stats{max-width:calc(62vw / .76)}
+  #lw121Hint,#lw125Tip{font-size:13px;padding:6px 12px}
+  #message{zoom:.8}
+}
+@media (orientation:landscape) and (max-height:340px){
+  :is(#stats,#weaponHud,#missionHud,#bossHud,#dangerHud,#networkHud,#lw88NetworkHud,#effects,#timeHud,#lw97SkillDock,#v56EventHud,#lw108ComboHud){
+    zoom:calc(var(--lw111-ui-scale,1)*.66);
+  }
+  #stats{max-width:calc(60vw / .66)}
+}

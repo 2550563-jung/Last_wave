@@ -13,6 +13,11 @@
   const lang=stored||(navigator.webdriver?"ko":detect(navigator.language));
   const HANGUL=/[가-힣]/;
   const DICT={
+"v129 업데이트 내용":"v129 update",
+"상점, 일시정지, 게임 종료 화면에서는 웨이브 정보와 안내 문구를 숨깁니다. 게임으로 돌아가면 다시 보입니다.":"Wave info and tips are hidden on the shop, pause and game over screens, and come back when you resume.",
+"화면 크기와 방향에 맞춰 전투 정보가 서로 겹치지 않게 자동으로 자리를 잡습니다.":"Combat info now arranges itself so nothing overlaps on any screen size.",
+"판은 일시정지 화면의 종료 버튼으로만 끝납니다. 뒤로 가기를 누르면 일시정지 화면이 열립니다.":"A run only ends from the pause menu's quit button. Back opens the pause menu.",
+"게임 중에 탭이나 창을 닫으려 하면 확인창이 뜹니다.":"Closing the tab during a run now asks for confirmation.",
 "휴대폰에서 상단 정보와 버튼이 서로 겹치지 않게 다시 배치했습니다.":"Rearranged the phone HUD so panels and buttons no longer overlap.",
 "웨이브 사이 상점은 20초가 지나면 자동으로 닫히고 다음 웨이브가 시작됩니다.":"The shop now closes after 20 seconds and the next wave starts.",
 "v128 업데이트 내용":"v128 update",

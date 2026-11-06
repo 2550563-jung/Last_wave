@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
-import { chromium, GAME_VERSION } from "./browser.mjs";
+import { chromium } from "./browser.mjs";
 
 const browser=await chromium.launch({headless:true,args:["--allow-file-access-from-files"]});
 try{
-  assert.equal(GAME_VERSION,"v128");
   // The drawing keeps the screen's shape, so nothing is stretched.
   for(const [width,height,mobile] of [[390,844,true],[360,640,true],[412,915,true],[844,390,true],[768,1024,true],[1280,800,false],[2560,1080,false]]){
     const context=await browser.newContext({viewport:{width,height},isMobile:mobile,hasTouch:mobile});
