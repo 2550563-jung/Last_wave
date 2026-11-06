@@ -814,7 +814,7 @@
   });
 
   /* ---------- v128: the shop closes itself after 20 seconds ---------- */
-  const SHOP_SECONDS=20;
+  const SHOP_SECONDS=30;
   let shopLeft=0,shopTimer=0,shopLast=0;
   const isShown=el=>Boolean(el)&&getComputedStyle(el).display!=="none"&&getComputedStyle(el).visibility!=="hidden";
   function shopLabel(text){
@@ -832,15 +832,26 @@
     if(state==="menu"||runEnded||!isShown(ui.shop)){stopShopTimer();return;}
     const now=performance.now(),elapsed=(now-shopLast)/1000;
     shopLast=now;
-    // Rewards and equipment open above the shop. A choice in progress is never thrown away.
-    const covered=[...document.querySelectorAll(".overlay")].some(el=>el!==ui.shop&&isShown(el));
-    if(covered)return;
+    // The clock never stops, even with another window open above the shop.
     shopLeft=Math.max(0,shopLeft-elapsed);
     shopLabel(` (${Math.ceil(shopLeft)})`);
+    const reward=byId("lw108RewardOverlay");
+    if(reward)reward.dataset.lw129Left=` · ${Math.ceil(shopLeft)}초`;
     if(shopLeft>0)return;
     stopShopTimer();
+    closeAboveShop();
     // In multiplayer only the host may start the wave; the others follow its signal.
     if(!multiplayer.active||multiplayer.isHost)byId("nextWaveButton").click();
+  }
+  // Time is up: a pending reward takes its first option, other windows close.
+  function closeAboveShop(){
+    const reward=byId("lw108RewardOverlay");
+    if(reward?.classList.contains("show"))reward.querySelector(".lw108-reward-card")?.click();
+    for(const el of document.querySelectorAll(".overlay")){
+      if(el===ui.shop||el.id==="lw108RewardOverlay"||!isShown(el))continue;
+      const close=el.querySelector("button[data-close],button[id$='CloseButton'],button[id$='Close'],button[id$='CancelButton'],button[id$='Cancel']");
+      if(close&&!close.disabled)close.click();else hideOverlay(el);
+    }
   }
   const baseOpenShop=openShop;
   openShop=function(...args){

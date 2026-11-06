@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
-import { chromium, GAME_VERSION } from "./browser.mjs";
+import { chromium } from "./browser.mjs";
 
 const browser=await chromium.launch({headless:true,args:["--allow-file-access-from-files"]});
 try{
-  assert.equal(GAME_VERSION,"v128");
   // The drawing keeps the screen's shape, so nothing is stretched.
   for(const [width,height,mobile] of [[390,844,true],[360,640,true],[412,915,true],[844,390,true],[768,1024,true],[1280,800,false],[2560,1080,false]]){
     const context=await browser.newContext({viewport:{width,height},isMobile:mobile,hasTouch:mobile});
@@ -37,18 +36,22 @@ try{
   const shown=()=>page.evaluate(()=>getComputedStyle(ui.shop).display!=="none");
   const api="window.__lastWaveV125";
   await page.evaluate(()=>{gameMode="normal";startRun("normal");player.invincible=999;state="waveComplete";openShop();});
-  assert.equal(await page.evaluate(`${api}.shopLeft`),20);
-  assert.match(await page.locator("#nextWaveButton").innerText(),/\(20\)/);
+  assert.equal(await page.evaluate(`${api}.shopLeft`),30);
+  assert.match(await page.locator("#nextWaveButton").innerText(),/\(30\)/);
   await page.waitForTimeout(1300);
   const left=await page.evaluate(`${api}.shopLeft`);
-  assert.ok(left<19.5&&left>17,`counted down to ${left}`);
-  // Covered by another window: the clock holds.
-  await page.evaluate(`document.getElementById("adminLogin").classList.add("show");showOverlay(ui.adminLogin);${api}.setShopLeft(.3)`);
-  await page.waitForTimeout(800);
-  assert.equal(await shown(),true,"held while covered");
-  await page.evaluate(()=>hideOverlay(ui.adminLogin));
+  assert.ok(left<29.5&&left>27,`counted down to ${left}`);
+  // Another window above the shop does not stop the clock; an open reward takes its first option.
+  const before=await page.evaluate(`${api}.shopLeft`);
+  await page.evaluate(()=>showOverlay(ui.adminLogin));
+  await page.waitForTimeout(700);
+  assert.ok(await page.evaluate(`${api}.shopLeft`)<before-.4,"keeps counting while covered");
+  await page.evaluate(()=>{const o=document.getElementById("lw108RewardOverlay");if(o){o.classList.add("show");}});
+  await page.evaluate(`${api}.setShopLeft(.2)`);
   await page.waitForTimeout(800);
   assert.equal(await shown(),false,"closed at zero");
+  assert.equal(await page.evaluate(()=>getComputedStyle(ui.adminLogin).display),"none");
+  assert.equal(await page.evaluate(()=>paused),false);
   assert.equal(await page.evaluate(()=>state),"playing");
   const waveAfter=await page.evaluate(()=>wave);
   // A guest keeps waiting for the host.

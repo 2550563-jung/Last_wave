@@ -206,6 +206,16 @@
       Combat-phase screens own mandatory pause/state locks. Back now uses the
       full menu cleanup path instead of merely hiding the visible element.
     */
+    /*
+      v129: a live run only ends from the pause menu's quit button. Back or
+      Escape on a combat screen resumes from pause and otherwise does nothing.
+    */
+    const liveRun=typeof state!=="undefined"&&state!=="menu"&&typeof runEnded!=="undefined"&&!runEnded;
+    if(liveRun&&element.id==="pauseMenu"){
+      byId("resumeButton")?.click();
+      return true;
+    }
+    if(liveRun&&["levelUp","shop","gameOver"].includes(element.id)) return true;
     if(["levelUp","shop","pauseMenu","gameOver"].includes(element.id)){
       goToMainScreen();
       return true;
@@ -262,6 +272,8 @@
       semanticCloseButton.click();
       return true;
     }
+    // A choice window inside a run has no close button and must be answered.
+    if(liveRun) return true;
 
     hideOverlay(element);
     return true;
@@ -274,7 +286,8 @@
       return closeOverlaySemantically(top);
     }
     if(typeof state!=="undefined"&&(state==="playing"||state==="waveComplete")){
-      goToMainScreen();
+      // v129: Back during a fight opens the pause menu instead of ending the run.
+      if(state==="playing"&&!paused) togglePause();
       return true;
     }
     if(typeof ui!=="undefined"&&ui.multiMenu&&visible(ui.multiMenu)){
